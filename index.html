@@ -3,110 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live TV - Android TV Edition</title>
-    
+    <title>Ultimate Android TV Player</title>
     <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
-    <link href="https://unpkg.com/@videojs/themes@1.0.1/dist/city/index.css" rel="stylesheet">
-
     <style>
-        /* টিভির জন্য ফুল স্ক্রিন ডিজাইন */
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        body, html { margin: 0; padding: 0; height: 100%; background: #000; color: #fff; overflow: hidden; font-family: sans-serif; }
+        .main-container { display: flex; height: 100vh; width: 100vw; }
+        
+        /* বাম পাশে চ্যানেল লিস্ট */
+        #playlist {
+            width: 25%;
+            background: rgba(20, 20, 20, 0.9);
+            overflow-y: auto;
+            border-right: 2px solid #333;
+            display: block; /* টিভিতে রিমোট দিয়ে দেখানোর জন্য */
         }
+        .playlist-item {
+            padding: 15px;
+            border-bottom: 1px solid #222;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .playlist-item:hover, .playlist-item.active { background: #ff0000; color: white; }
 
-        .video-wrapper {
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
-        }
+        /* ডান পাশে ভিডিও প্লেয়ার */
+        .player-container { width: 75%; position: relative; }
+        .video-js { width: 100% !important; height: 100% !important; }
 
-        .video-js {
-            width: 100% !important;
-            height: 100% !important;
-        }
-
-        /* রিমোট কন্ট্রোল দিয়ে দেখার জন্য বড় প্লে বাটন */
-        .vjs-big-play-button {
-            background-color: rgba(255, 0, 0, 0.7) !important;
-            border: none !important;
-            width: 100px !important;
-            height: 100px !important;
-            line-height: 100px !important;
-            border-radius: 50% !important;
-            top: 50% !important;
-            left: 50% !important;
-            margin-top: -50px !important;
-            margin-left: -50px !important;
-        }
-
-        /* লোডিং স্পিনার ডিজাইন */
-        .vjs-loading-spinner {
-            border: 6px solid rgba(255, 0, 0, 0.5) !important;
-        }
-
-        /* টিভির নিচের টেক্সট */
-        .tv-status {
-            position: absolute;
-            bottom: 20px;
-            left: 30px;
-            color: rgba(255, 255, 255, 0.5);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 14px;
-            z-index: 10;
-        }
+        /* টিভির জন্য নির্দেশিকা */
+        .hint { position: absolute; bottom: 10px; right: 20px; font-size: 12px; color: #666; }
     </style>
 </head>
 <body>
 
-    <div class="video-wrapper">
-        <div class="tv-status">Android TV Mode | High Quality Stream</div>
-        
-        <video id="android-tv-player" class="video-js vjs-theme-city vjs-big-play-centered" controls autoplay preload="auto">
-            <source src="https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/refs/heads/main/Live-tv2" type="application/x-mpegURL">
-            <p class="vjs-no-js">আপনার ব্রাউজারটি ভিডিও সাপোর্ট করছে না।</p>
-        </video>
+<div class="main-container">
+    <div id="playlist">
+        <div style="padding: 20px; font-weight: bold; border-bottom: 2px solid #ff0000;">চ্যানেল লিস্ট</div>
+        <div id="items">লোডিং...</div>
     </div>
+    
+    <div class="player-container">
+        <video id="tv-player" class="video-js vjs-big-play-centered" controls autoplay preload="auto"></video>
+        <div class="hint">রিমোটের অ্যারো বাটন ব্যবহার করুন</div>
+    </div>
+</div>
 
-    <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+<script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+<script>
+    const m3uUrl = 'https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/refs/heads/main/Live-tv2';
+    const player = videojs('tv-player');
 
-    <script>
-        var player = videojs('android-tv-player', {
-            autoplay: true,
-            fluid: true,
-            playbackRates: [0.5, 1, 1.5, 2]
-        });
+    // M3U ফাইলটি পড়া এবং চ্যানেল লিস্ট তৈরি করা
+    async function loadPlaylist() {
+        try {
+            const response = await fetch(m3uUrl);
+            const data = await response.text();
+            const lines = data.split('\n');
+            const itemsContainer = document.getElementById('items');
+            itemsContainer.innerHTML = '';
 
-        // ১. রিমোটের 'OK' বা 'Enter' বাটন সাপোর্ট
-        document.addEventListener('keydown', function(e) {
-            if (e.keyCode === 13) { // 13 = Enter/OK button
-                if (player.paused()) {
-                    player.play();
-                } else {
-                    player.pause();
+            let currentName = '';
+            lines.forEach(line => {
+                if (line.startsWith('#EXTINF')) {
+                    currentName = line.split(',')[1] || 'Unknown Channel';
+                } else if (line.startsWith('http')) {
+                    const url = line.trim();
+                    const div = document.createElement('div');
+                    div.className = 'playlist-item';
+                    div.innerText = currentName;
+                    div.onclick = () => playVideo(url, div);
+                    itemsContainer.appendChild(div);
                 }
-            }
-            
-            // ২. রিমোটের বাম/ডান বাটন দিয়ে ১০ সেকেন্ড আগানো বা পেছানো
-            if (e.keyCode === 39) { // Right Arrow
-                player.currentTime(player.currentTime() + 10);
-            }
-            if (e.keyCode === 37) { // Left Arrow
-                player.currentTime(player.currentTime() - 10);
-            }
-        });
+            });
+        } catch (error) {
+            document.getElementById('items').innerText = 'চ্যানেল লোড করতে সমস্যা হয়েছে!';
+        }
+    }
 
-        // এরর হ্যান্ডলিং (যদি লিঙ্ক কাজ না করে)
-        player.on('error', function() {
-            console.log("ভিডিও লোড হতে সমস্যা হচ্ছে। লিঙ্কটি চেক করুন।");
-        });
-    </script>
+    function playVideo(url, element) {
+        // লিস্টের কালার পরিবর্তন
+        document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        
+        // ভিডিও প্লে করা
+        player.src({ src: url, type: 'application/x-mpegURL' });
+        player.play();
+    }
+
+    // প্রথমবার লোড করা
+    loadPlaylist();
+
+    // রিমোট কন্ট্রোল সাপোর্ট (Up/Down/OK)
+    document.addEventListener('keydown', (e) => {
+        if (e.keyCode === 13) { // OK
+            if (player.paused()) player.play(); else player.pause();
+        }
+    });
+</script>
 </body>
 </html>
