@@ -3,47 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Android TV Player</title>
+    <title>Multi-Device Live Player</title>
     <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; background: #000; color: #fff; overflow: hidden; font-family: sans-serif; }
-        .main-container { display: flex; height: 100vh; width: 100vw; }
+        body, html { margin: 0; padding: 0; height: 100%; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
         
-        /* বাম পাশে চ্যানেল লিস্ট */
-        #playlist {
-            width: 25%;
-            background: rgba(20, 20, 20, 0.9);
-            overflow-y: auto;
-            border-right: 2px solid #333;
-            display: block; /* টিভিতে রিমোট দিয়ে দেখানোর জন্য */
-        }
-        .playlist-item {
-            padding: 15px;
-            border-bottom: 1px solid #222;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        .playlist-item:hover, .playlist-item.active { background: #ff0000; color: white; }
+        /* মেইন লেআউট */
+        .main-container { display: flex; height: 100vh; width: 100vw; flex-direction: row; }
 
-        /* ডান পাশে ভিডিও প্লেয়ার */
-        .player-container { width: 75%; position: relative; }
+        /* ভিডিও প্লেয়ার অংশ */
+        .player-container { flex-grow: 1; background: #000; position: relative; display: flex; align-items: center; justify-content: center; }
         .video-js { width: 100% !important; height: 100% !important; }
 
-        /* টিভির জন্য নির্দেশিকা */
-        .hint { position: absolute; bottom: 10px; right: 20px; font-size: 12px; color: #666; }
+        /* চ্যানেল লিস্ট অংশ */
+        #playlist {
+            width: 300px;
+            background: #111;
+            overflow-y: auto;
+            border-left: 1px solid #333;
+        }
+        .playlist-header { padding: 15px; font-weight: bold; background: #222; border-bottom: 2px solid #ff0000; position: sticky; top: 0; }
+        .playlist-item { padding: 12px 15px; border-bottom: 1px solid #222; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .playlist-item:hover, .playlist-item.active { background: #ff0000; color: #fff; }
+
+        /* মোবাইল ডিভাইসের জন্য বিশেষ পরিবর্তন (Responsive) */
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; }
+            #playlist { width: 100%; height: 40%; border-left: none; border-top: 1px solid #333; }
+            .player-container { height: 60%; }
+        }
+
+        .loading-text { padding: 20px; color: #888; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="main-container">
-    <div id="playlist">
-        <div style="padding: 20px; font-weight: bold; border-bottom: 2px solid #ff0000;">চ্যানেল লিস্ট</div>
-        <div id="items">লোডিং...</div>
-    </div>
-    
     <div class="player-container">
-        <video id="tv-player" class="video-js vjs-big-play-centered" controls autoplay preload="auto"></video>
-        <div class="hint">রিমোটের অ্যারো বাটন ব্যবহার করুন</div>
+        <video id="tv-player" class="video-js vjs-big-play-centered" controls autoplay preload="auto">
+            <p class="vjs-no-js">আপনার ব্রাউজারটি ভিডিও সাপোর্ট করছে না।</p>
+        </video>
+    </div>
+
+    <div id="playlist">
+        <div class="playlist-header">📺 চ্যানেল লিস্ট</div>
+        <div id="items" class="loading-text">চ্যানেল লোড হচ্ছে...</div>
     </div>
 </div>
 
@@ -52,7 +56,6 @@
     const m3uUrl = 'https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/refs/heads/main/Live-tv2';
     const player = videojs('tv-player');
 
-    // M3U ফাইলটি পড়া এবং চ্যানেল লিস্ট তৈরি করা
     async function loadPlaylist() {
         try {
             const response = await fetch(m3uUrl);
@@ -62,40 +65,55 @@
             itemsContainer.innerHTML = '';
 
             let currentName = '';
+            let count = 0;
+
             lines.forEach(line => {
                 if (line.startsWith('#EXTINF')) {
+                    // চ্যানেলের নাম বের করা
                     currentName = line.split(',')[1] || 'Unknown Channel';
                 } else if (line.startsWith('http')) {
                     const url = line.trim();
                     const div = document.createElement('div');
                     div.className = 'playlist-item';
-                    div.innerText = currentName;
-                    div.onclick = () => playVideo(url, div);
+                    div.innerText = (count + 1) + ". " + currentName;
+                    
+                    div.onclick = () => {
+                        playVideo(url, div);
+                        // মোবাইলে ক্লিক করার পর স্ক্রিন উপরে নিয়ে যাওয়া
+                        if(window.innerWidth <= 768) {
+                            window.scrollTo({top: 0, behavior: 'smooth'});
+                        }
+                    };
+                    
                     itemsContainer.appendChild(div);
+                    
+                    // প্রথম চ্যানেলটি অটোমেটিক লোড করা
+                    if (count === 0) playVideo(url, div);
+                    count++;
                 }
             });
+
+            if(count === 0) {
+                itemsContainer.innerHTML = '<div class="loading-text">কোনো চ্যানেল পাওয়া যায়নি। লিঙ্কটি চেক করুন।</div>';
+            }
         } catch (error) {
-            document.getElementById('items').innerText = 'চ্যানেল লোড করতে সমস্যা হয়েছে!';
+            document.getElementById('items').innerHTML = '<div class="loading-text">লোড করতে ব্যর্থ! ইন্টারনেট চেক করুন।</div>';
         }
     }
 
     function playVideo(url, element) {
-        // লিস্টের কালার পরিবর্তন
         document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
         element.classList.add('active');
-        
-        // ভিডিও প্লে করা
         player.src({ src: url, type: 'application/x-mpegURL' });
-        player.play();
+        player.play().catch(e => console.log("Autoplay blocked"));
     }
 
-    // প্রথমবার লোড করা
     loadPlaylist();
 
-    // রিমোট কন্ট্রোল সাপোর্ট (Up/Down/OK)
+    // টিভিতে রিমোট কন্ট্রোল সাপোর্ট (Enter/OK)
     document.addEventListener('keydown', (e) => {
-        if (e.keyCode === 13) { // OK
-            if (player.paused()) player.play(); else player.pause();
+        if (e.keyCode === 13) {
+            player.paused() ? player.play() : player.pause();
         }
     });
 </script>
