@@ -15,80 +15,74 @@
 
         .app-container { display: flex; height: 100vh; }
 
-        /* টিভি সাইডবার */
         .sidebar {
-            width: 100px; background: #000; display: flex; flex-direction: column;
-            align-items: center; padding-top: 30px; gap: 25px; border-right: 1px solid #222;
+            width: 80px; background: #000; display: flex; flex-direction: column;
+            align-items: center; padding-top: 30px; gap: 20px; border-right: 1px solid #222;
         }
 
         .main-content { flex: 1; display: flex; flex-direction: column; height: 100vh; }
 
-        .video-box { width: 100%; height: 55vh; background: #000; position: relative; }
+        .video-box { width: 100%; height: 50vh; background: #000; position: relative; cursor: pointer; }
         video { width: 100%; height: 100%; object-fit: contain; }
 
-        /* ক্যাটাগরি বার */
-        .controls-wrapper { background: var(--bg); border-bottom: 1px solid #222; padding: 15px 0; }
-        .cat-bar { display: flex; overflow-x: auto; white-space: nowrap; padding: 0 20px; gap: 15px; }
+        .controls-wrapper { background: var(--bg); border-bottom: 1px solid #222; padding: 10px 0; }
+        .cat-bar { display: flex; overflow-x: auto; white-space: nowrap; padding: 0 15px; gap: 10px; }
         .cat-bar::-webkit-scrollbar { display: none; }
 
         .nav-btn {
-            background: #222; border: 2px solid transparent; color: #aaa; padding: 10px 20px;
-            border-radius: 8px; cursor: pointer; font-size: 16px; outline: none; transition: 0.2s;
+            background: #222; border: 2px solid transparent; color: #aaa; padding: 8px 16px;
+            border-radius: 6px; cursor: pointer; font-size: 14px; outline: none;
         }
-        .nav-btn:focus { border-color: var(--focus); background: var(--primary); color: #fff; transform: scale(1.1); }
+        .nav-btn:focus { border-color: var(--focus); background: var(--primary); color: #fff; }
         .nav-btn.active { background: var(--primary); color: #fff; }
 
-        /* চ্যানেল গ্রিড */
         .grid { 
-            flex: 1; overflow-y: auto; display: grid; padding: 20px; gap: 20px;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            flex: 1; overflow-y: auto; display: grid; padding: 15px; gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             scroll-behavior: smooth;
         }
 
         .card {
-            background: var(--card); border-radius: 12px; padding: 15px; text-align: center;
+            background: var(--card); border-radius: 10px; padding: 12px; text-align: center;
             border: 3px solid transparent; transition: 0.2s; cursor: pointer; outline: none;
+            position: relative;
         }
-        /* রিমোট ফোকাস স্টাইল */
-        .card:focus { 
-            border-color: var(--focus); 
-            transform: scale(1.1); 
-            background: #333;
-            box-shadow: 0 0 15px rgba(255,255,255,0.2);
-        }
-        
+        .card:focus { border-color: var(--focus); transform: scale(1.08); background: #252525; }
         .card.is-fav { background: #151d25; }
-        .card.is-fav::after { content: '⭐'; position: absolute; top: 5px; right: 5px; font-size: 12px; }
 
-        .card img { width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px; pointer-events: none; }
-        .card span { font-size: 15px; font-weight: bold; display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .card img { width: 70px; height: 70px; object-fit: contain; margin-bottom: 8px; pointer-events: none; }
+        .card span { font-size: 14px; font-weight: bold; display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
-        /* টিভি গ্রিড স্ক্রলবার */
-        .grid::-webkit-scrollbar { width: 5px; }
-        .grid::-webkit-scrollbar-thumb { background: #333; }
-
+        /* লোডিং স্পিনার */
+        #loader {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            border: 4px solid #f3f3f3; border-top: 4px solid var(--primary);
+            border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;
+            display: none; z-index: 10;
+        }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div class="app-container">
         <nav class="sidebar">
-            <button class="nav-btn active" onclick="filter('All', this)" id="btn-all">🏠</button>
+            <button class="nav-btn active" onclick="filter('All', this)" id="home-btn">🏠</button>
             <button class="nav-btn" onclick="filter('Favorite', this)">⭐</button>
         </nav>
 
         <main class="main-content">
-            <div class="video-box">
-                <video id="player" controls autoplay></video>
+            <div class="video-box" onclick="toggleFullScreen()" id="v-container">
+                <div id="loader"></div>
+                <video id="player" autoplay></video>
             </div>
 
             <div class="controls-wrapper">
-                <div class="cat-bar" id="catBar">
+                <div class="cat-bar">
                     <button class="nav-btn active" onclick="filter('All', this)">All</button>
                     <button class="nav-btn" onclick="filter('Favorite', this)">Favorite</button>
                     <button class="nav-btn" onclick="filter('বাংলা', this)">বাংলা</button>
                     <button class="nav-btn" onclick="filter('Sports', this)">Sports</button>
-                    <button class="nav-btn" onclick="filter('News', this)">News</button>
                 </div>
             </div>
 
@@ -99,7 +93,10 @@
     <script>
         const m3u = 'https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/refs/heads/main/Live-tv2';
         const video = document.getElementById('player');
+        const loader = document.getElementById('loader');
         let channels = [];
+        let filteredChannels = [];
+        let currentUrl = "";
         let favorites = JSON.parse(localStorage.getItem('tv_favs')) || [];
 
         async function init() {
@@ -107,9 +104,9 @@
                 const res = await fetch(m3u);
                 const text = await res.text();
                 parse(text);
-                render(channels);
-                // শুরুতে প্রথম বাটনে ফোকাস করা
-                document.getElementById('btn-all').focus();
+                filteredChannels = [...channels];
+                render(filteredChannels);
+                document.getElementById('home-btn').focus();
             } catch (e) { console.log("Load error"); }
         }
 
@@ -131,11 +128,7 @@
 
         function render(list) {
             const g = document.getElementById('grid');
-            if (list.length === 0) {
-                g.innerHTML = `<p style="padding:20px">কোনো চ্যানেল পাওয়া যায়নি।</p>`;
-                return;
-            }
-            g.innerHTML = list.map((c, index) => {
+            g.innerHTML = list.map(c => {
                 const isFav = favorites.includes(c.url);
                 return `
                 <div class="card ${isFav ? 'is-fav' : ''}" 
@@ -148,70 +141,73 @@
             `}).join('');
         }
 
-        // রিমোট কন্ট্রোল সাপোর্ট (D-Pad)
+        // নেক্সট/প্রিভিয়াস চ্যানেল লজিক
+        function switchChannel(direction) {
+            let index = filteredChannels.findIndex(c => c.url === currentUrl);
+            if (direction === 'next') index = (index + 1) % filteredChannels.length;
+            else index = (index - 1 + filteredChannels.length) % filteredChannels.length;
+            
+            const nextChannel = filteredChannels[index];
+            if (nextChannel) play(nextChannel.url);
+        }
+
+        // রিমোট কন্ট্রোল ইভেন্টস
         window.addEventListener('keydown', (e) => {
             const active = document.activeElement;
-            
-            if (e.key === 'Enter' || e.keyCode === 13) {
-                // ওকে বাটন চাপলে প্লে হবে
-                if (active.classList.contains('card')) {
-                    play(active.dataset.url);
-                }
+
+            if (e.key === 'Enter') {
+                if (active.classList.contains('card')) play(active.dataset.url);
+                else if (active.id === 'v-container') toggleFullScreen();
             }
 
-            // রিমোটের 'Play/Pause' বা অন্য কোনো স্পেশাল বাটন দিয়ে ফেভারিট করার অপশন
-            if (e.key === 'f' || e.keyCode === 404) { // 'f' কি বা রিমোটের গ্রিন বাটন
-                if (active.classList.contains('card')) {
-                    toggleFav(active.dataset.url);
+            // রিমোটের Channel Up/Down (বা কিবোর্ডের [ ] ব্র্যাকেট) দিয়ে চ্যানেল বদলানো
+            if (e.keyCode === 166 || e.key === 'ArrowUp' && active.id === 'v-container') switchChannel('prev');
+            if (e.keyCode === 167 || e.key === 'ArrowDown' && active.id === 'v-container') switchChannel('next');
+
+            // ব্যাক বাটন চাপলে ফুলস্ক্রিন থেকে বের হওয়া বা গ্রিডে ফোকাস করা
+            if (e.key === 'Backspace' || e.key === 'Escape') {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                    e.preventDefault();
                 }
             }
         });
 
-        function toggleFav(url) {
-            if (favorites.includes(url)) {
-                favorites = favorites.filter(f => f !== url);
-            } else {
-                favorites.push(url);
-            }
-            localStorage.setItem('tv_favs', JSON.stringify(favorites));
-            
-            // রেন্ডার করার পর ফোকাস হারিয়ে যায়, তাই আগের জায়গায় ফোকাস ফেরানো
-            const lastFocusedUrl = document.activeElement.dataset?.url;
-            render(currentList());
-            if(lastFocusedUrl) {
-                const cards = document.querySelectorAll('.card');
-                cards.forEach(c => { if(c.dataset.url === lastFocusedUrl) c.focus(); });
-            }
-        }
-
-        function currentList() {
-            const activeCat = document.querySelector('.nav-btn.active').innerText;
-            if (activeCat === 'Favorite') return channels.filter(c => favorites.includes(c.url));
-            if (activeCat === 'All' || activeCat === '🏠') return channels;
-            return channels.filter(c => c.group.toLowerCase().includes(activeCat.toLowerCase()));
-        }
-
         function play(url) {
+            currentUrl = url;
+            loader.style.display = 'block';
             if (Hls.isSupported()) {
                 const hls = new Hls();
                 hls.loadSource(url);
                 hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-            } else { 
-                video.src = url; 
-                video.play(); 
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    video.play();
+                    loader.style.display = 'none';
+                });
+                hls.on(Hls.Events.ERROR, () => loader.style.display = 'none');
+            } else {
+                video.src = url;
+                video.play();
+                video.onplaying = () => loader.style.display = 'none';
             }
-            // প্লে হওয়ার পর স্ক্রিন স্ক্রল করে ওপরে নিয়ে যাওয়া (টিভির জন্য সুবিধা)
-            window.scrollTo(0, 0);
+        }
+
+        function toggleFullScreen() {
+            const container = document.getElementById('v-container');
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen();
+            }
         }
 
         function filter(cat, btn) {
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            let res = (cat === 'All') ? channels : 
-                      (cat === 'Favorite') ? channels.filter(c => favorites.includes(c.url)) :
-                      channels.filter(c => c.group.toLowerCase().includes(cat.toLowerCase()));
-            render(res);
+            filteredChannels = (cat === 'All') ? channels : 
+                               (cat === 'Favorite') ? channels.filter(c => favorites.includes(c.url)) :
+                               channels.filter(c => c.group.toLowerCase().includes(cat.toLowerCase()));
+            render(filteredChannels);
         }
 
         init();
