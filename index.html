@@ -98,7 +98,6 @@ video{width:100%;height:100%;object-fit:contain;background:#000;border-radius:8p
 </div>
 
 <script>
-// ===== CONFIG =====
 const M3U="https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
 const video=document.getElementById("player");
 const grid=document.getElementById("grid");
@@ -107,7 +106,7 @@ const now=document.getElementById("now");
 
 let channels=[],filtered=[],current="",hls,favorites=JSON.parse(localStorage.getItem("tv_favs"))||[];
 
-// ===== INIT =====
+// INIT
 async function init(){
 try{
 let res=await fetch(M3U);
@@ -115,6 +114,7 @@ let data=await res.text();
 parseData(data);
 }catch(e){console.log("Load Error",e);}
 }
+
 function parseData(data){
 let lines=data.split("\n"),item={};
 lines.forEach(l=>{
@@ -130,12 +130,11 @@ item={};
 });
 filtered=[...channels];
 render(filtered);
-
 let last=localStorage.getItem("last_tv");
 if(last) play(last);
 }
 
-// ===== RENDER CHANNELS =====
+// RENDER
 function render(list){
 grid.innerHTML=list.map(c=>`
 <div class="card ${favorites.includes(c.url)?'is-fav':''}" tabindex="0" onclick="play('${c.url}')" oncontextmenu="toggleFav(event,'${c.url}')">
@@ -145,15 +144,13 @@ grid.innerHTML=list.map(c=>`
 </div>`).join("");
 }
 
-// ===== PLAY =====
+// PLAY
 function play(url){
 current=url;
 localStorage.setItem("last_tv",url);
 loader.style.display="block";
-
 let ch=channels.find(x=>x.url===url);
 now.innerText=ch?.name||"";
-
 if(hls) hls.destroy();
 if(Hls.isSupported()){
 hls=new Hls({lowLatencyMode:true});
@@ -164,12 +161,11 @@ hls.on(Hls.Events.ERROR,(e,d)=>{if(d.fatal) next();});
 }else{
 video.src=url; video.play();
 }
-
 video.onplaying=()=>loader.style.display="none";
 setTimeout(()=>{if(video.readyState<3) next();},7000);
 }
 
-// ===== NEXT CHANNEL =====
+// NEXT CHANNEL
 function next(){
 if(filtered.length===0) return;
 let i=filtered.findIndex(c=>c.url===current);
@@ -177,13 +173,14 @@ i=(i+1)%filtered.length;
 play(filtered[i].url);
 }
 
-// ===== SEARCH =====
+// SEARCH
 function search(q){
 filtered=channels.filter(c=>c.name.toLowerCase().includes(q.toLowerCase()));
 render(filtered);
+grid.scrollTop=0;
 }
 
-// ===== CATEGORY =====
+// CATEGORY
 function filterCategory(cat,btn){
 document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
 btn.classList.add('active');
@@ -192,10 +189,10 @@ filtered = (cat==='All') ? channels :
            (cat==='Favorite') ? channels.filter(c=>favorites.includes(c.url)) :
            channels.filter(c=>c.group.toLowerCase().includes(cat.toLowerCase()));
 render(filtered);
-grid.scrollTop=0; // scroll top fix for refresh
+grid.scrollTop=0;
 }
 
-// ===== FAVORITES =====
+// FAVORITES
 function toggleFav(e,url){
 e.preventDefault();
 if(favorites.includes(url)){
@@ -205,14 +202,14 @@ localStorage.setItem("tv_favs",JSON.stringify(favorites));
 render(filtered);
 }
 
-// ===== FULLSCREEN =====
+// FULLSCREEN
 function toggleFS(){
 !document.fullscreenElement?
 document.getElementById("vbox").requestFullscreen():
 document.exitFullscreen();
 }
 
-// ===== REMOTE KEYS =====
+// REMOTE KEYS
 window.addEventListener("keydown",e=>{
 let active=document.activeElement;
 if(e.key==="ArrowUp") next();
@@ -223,7 +220,7 @@ if(active.id==="vbox") toggleFS();
 }
 });
 
-// ===== PULL-DOWN REFRESH MOBILE =====
+// PULL-DOWN REFRESH MOBILE (web compatible)
 let touchStartY=0;
 grid.addEventListener('touchstart',e=>{touchStartY=e.touches[0].clientY;});
 grid.addEventListener('touchend',e=>{
