@@ -3,132 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Premium TV | Ultimate Experience</title>
+    <title>RoarZone TV Pro</title>
+    
+    <meta name="theme-color" content="#050505">
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22RoarZone%20TV%22,%22short_name%22:%22RoarTV%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22#050505%22,%22theme_color%22:%22#ff2a2a%22}">
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
     <style>
-        :root {
-            --primary: #ff2a2a;
-            --bg: #050505;
-            --card-bg: #1a1a1a;
-            --glass: rgba(255, 255, 255, 0.05);
-            --text: #ffffff;
-        }
-
+        :root { --primary: #ff2a2a; --bg: #050505; --card-bg: #1a1a1a; --text: #fff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* ১. ভিডিও প্লেয়ার সেকশন */
-        .video-box {
-            width: 100%;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: #000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
-        }
+        /* ১. ভিডিও প্লেয়ার সেকশন (বড় ডিসপ্লে) */
+        .video-box { width: 100%; position: sticky; top: 0; z-index: 1000; background: #000; position: relative; }
         video { width: 100%; aspect-ratio: 16/9; display: block; border-bottom: 2px solid var(--primary); }
 
-        .container { padding: 12px; }
-
-        /* ২. রিসেন্টলি প্লেড - ছোট ও ইউনিক ডিজাইন */
-        #recent-section { margin-bottom: 20px; display: none; }
-        .recent-header {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        /* এরর মেসেজ ডিজাইন */
+        #error-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); display: none; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center; z-index: 10;
         }
-        .live-dot { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        #error-overlay p { font-size: 14px; margin-bottom: 10px; color: #ccc; }
+        .retry-btn { padding: 8px 20px; background: var(--primary); border: none; border-radius: 5px; color: #fff; cursor: pointer; font-size: 12px; }
 
-        .recent-list { display: flex; gap: 12px; overflow-x: auto; padding: 5px 0; scrollbar-width: none; }
+        .container { padding: 10px; }
+
+        /* ২. অ্যাপ বাটন - ছোট ও স্মার্ট লেআউট */
+        .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; }
+        .app-btns { display: flex; gap: 5px; }
+        .btn-mini { padding: 5px 10px; border-radius: 6px; border: none; font-size: 10px; font-weight: 700; color: #fff; cursor: pointer; text-transform: uppercase; }
+        .btn-m { background: #ff4141; }
+        .btn-t { background: #27ae60; }
+
+        /* ৩. রিসেন্টলি প্লেড */
+        #recent-section { margin-bottom: 15px; display: none; }
+        .recent-header { font-size: 10px; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 700; }
+        .recent-list { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
         .recent-list::-webkit-scrollbar { display: none; }
-        
-        .recent-item { flex-shrink: 0; width: 55px; text-align: center; cursor: pointer; }
-        .recent-thumb {
-            width: 50px; height: 50px; border-radius: 50%;
-            background: #fff; padding: 6px; border: 2px solid #333;
-            transition: 0.3s; overflow: hidden; margin: 0 auto 4px;
-        }
+        .recent-item { flex-shrink: 0; width: 50px; text-align: center; }
+        .recent-thumb { width: 45px; height: 45px; border-radius: 50%; background: #fff; padding: 5px; border: 1.5px solid #333; margin: 0 auto 4px; overflow: hidden; }
         .recent-thumb img { width: 100%; height: 100%; object-fit: contain; }
-        .recent-item:active .recent-thumb { transform: scale(0.9); border-color: var(--primary); }
-        .recent-item span { display: block; font-size: 9px; color: #bbb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .recent-item span { display: block; font-size: 8px; color: #bbb; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        /* ৩. সার্চ এবং অ্যাপ বাটন */
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .btn { padding: 10px; border-radius: 8px; border: none; font-weight: 700; color: #fff; cursor: pointer; font-size: 13px; }
-        .btn-red { background: #ff4141; }
-        .btn-green { background: #27ae60; }
+        /* ৪. সার্চ বক্স */
+        .search-box { width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #333; background: #1a1a1a; color: white; margin-bottom: 15px; outline: none; font-size: 13px; }
 
-        .search-box {
-            width: 100%; padding: 12px 15px; border-radius: 10px;
-            border: 1px solid #333; background: #1f1f1f; color: white;
-            margin-bottom: 15px; outline: none; font-size: 14px;
-        }
+        /* ৫. ক্যাটাগরি ও গ্রিড */
+        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
+        .cat-pill { padding: 6px 15px; background: rgba(255,255,255,0.05); border-radius: 20px; white-space: nowrap; font-size: 11px; border: 1px solid #333; cursor: pointer; }
+        .cat-pill.active { background: var(--primary); border-color: var(--primary); }
 
-        /* ৪. ক্যাটাগরি পিলস */
-        .cat-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
-        .cat-row::-webkit-scrollbar { display: none; }
-        .cat-pill {
-            padding: 8px 18px; background: var(--glass); border-radius: 20px;
-            white-space: nowrap; font-size: 13px; font-weight: 600;
-            border: 1px solid #333; cursor: pointer; transition: 0.3s;
-        }
-        .cat-pill.active { background: var(--primary); border-color: var(--primary); color: #fff; }
-
-        /* ৫. মেইন চ্যানেল গ্রিড */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .card {
-            background: var(--card-bg); border-radius: 15px; overflow: hidden;
-            position: relative; border: 1px solid #222; transition: 0.3s;
-        }
-        .card:active { transform: scale(0.97); }
-        
-        .logo-area { height: 90px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 12px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #222; }
+        .logo-area { height: 80px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 10px; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
-        
-        .ch-info { padding: 10px; text-align: center; font-size: 13px; font-weight: 600; }
+        .ch-info { padding: 8px; text-align: center; font-size: 11px; font-weight: 600; }
 
-        /* ফেভারিট হার্ট আইকন */
-        .fav-heart {
-            position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.5);
-            width: 30px; height: 30px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; z-index: 10;
-        }
-        .fav-heart svg { width: 16px; fill: rgba(255,255,255,0.4); transition: 0.3s; }
-        .card.is-fav .fav-heart svg { fill: var(--primary); filter: drop-shadow(0 0 3px red); }
+        .fav-heart { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.5); width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .fav-heart svg { width: 14px; fill: rgba(255,255,255,0.4); }
+        .card.is-fav .fav-heart svg { fill: var(--primary); }
 
-        @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
+        @media (min-width: 768px) { .grid { grid-template-columns: repeat(6, 1fr); } }
     </style>
 </head>
 <body>
 
 <div class="video-box">
-    <video id="player" controls autoplay playsinline></video>
+    <div id="error-overlay">
+        <p>⚠️ ভিডিওটি প্লে করা যাচ্ছে না বা আপনি অফলাইনে আছেন</p>
+        <button class="retry-btn" onclick="retryLastChannel()">Retry</button>
+    </div>
+    <video id="player" controls autoplay playsinline poster="https://via.placeholder.com/640x360/000/fff?text=Select+a+Channel"></video>
 </div>
 
 <div class="container">
+    <div class="top-row">
+        <div class="recent-header" style="margin:0">Live Stream</div>
+        <div class="app-btns">
+            <button class="btn-mini btn-m">Mobile</button>
+            <button class="btn-mini btn-t">TV App</button>
+        </div>
+    </div>
+
     <div id="recent-section">
-        <div class="recent-header"><span class="live-dot"></span> Recently Played</div>
+        <div class="recent-header">Recently Played</div>
         <div class="recent-list" id="recentContainer"></div>
     </div>
 
-    <div class="action-grid">
-        <button class="btn btn-red">📱 Mobile App</button>
-        <button class="btn btn-green">📺 TV App</button>
-    </div>
-
-    <input type="text" class="search-box" id="search" placeholder="Search Channel..." oninput="searchChannels()">
+    <input type="text" class="search-box" id="search" placeholder="Search your channel..." oninput="searchChannels()">
 
     <div class="cat-row">
-        <div class="cat-pill active" onclick="filterData('ALL', this)">All Live</div>
-        <div class="cat-pill" onclick="filterData('FAVORITE', this)">⭐ Favorite</div>
+        <div class="cat-pill active" onclick="filterData('ALL', this)">All</div>
+        <div class="cat-pill" onclick="filterData('FAVORITE', this)">⭐ Fav</div>
         <div class="cat-pill" onclick="filterData('SPORTS', this)">Sports</div>
         <div class="cat-pill" onclick="filterData('BANGLA', this)">Bangla</div>
     </div>
@@ -138,19 +107,20 @@
 
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
-    let allChannels = [], favs = JSON.parse(localStorage.getItem('my_fav_v3')) || [];
-    let recents = JSON.parse(localStorage.getItem('my_recent_v3')) || [];
-    let currentFilter = 'ALL';
+    let allChannels = [], favs = JSON.parse(localStorage.getItem('fav_v4')) || [];
+    let recents = JSON.parse(localStorage.getItem('recent_v4')) || [];
+    let lastPlayedUrl = "";
 
     const grid = document.getElementById('mainGrid');
     const player = document.getElementById('player');
+    const errorOverlay = document.getElementById('error-overlay');
 
     async function init() {
         try {
             const res = await fetch(M3U_URL);
             const data = await res.text();
             parseM3U(data);
-        } catch (e) { console.error(e); }
+        } catch (e) { showError(); }
     }
 
     function parseM3U(data) {
@@ -158,7 +128,7 @@
         let item = {};
         lines.forEach(l => {
             if (l.startsWith('#EXTINF')) {
-                item.name = l.split(',')[1]?.trim() || "TV Channel";
+                item.name = l.split(',')[1]?.trim() || "TV";
                 item.logo = l.match(/tvg-logo="(.*?)"/)?.[1] || "";
                 item.group = l.match(/group-title="(.*?)"/)?.[1] || "General";
             } else if (l.startsWith('http')) {
@@ -177,7 +147,7 @@
                 <div class="fav-heart" onclick="toggleFav(event, '${ch.url}')">
                     <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </div>
-                <div onclick="play('${ch.url}', '${ch.name}')" style="cursor:pointer">
+                <div onclick="play('${ch.url}')">
                     <div class="logo-area"><img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/100?text=TV'"></div>
                     <div class="ch-info">${ch.name}</div>
                 </div>
@@ -185,30 +155,37 @@
         `).join('');
     }
 
-    function play(url, name) {
+    function play(url) {
+        errorOverlay.style.display = 'none';
+        lastPlayedUrl = url;
         if (Hls.isSupported()) {
             const hls = new Hls();
             hls.loadSource(url);
             hls.attachMedia(player);
+            hls.on(Hls.Events.ERROR, (event, data) => { if(data.fatal) showError(); });
             hls.on(Hls.Events.MANIFEST_PARSED, () => player.play());
-        } else { player.src = url; player.play(); }
+        } else { 
+            player.src = url; 
+            player.play().catch(() => showError());
+        }
 
-        // রিসেন্টলি প্লেড আপডেট
-        recents = [url, ...recents.filter(u => u !== url)].slice(0, 10);
-        localStorage.setItem('my_recent_v3', JSON.stringify(recents));
+        recents = [url, ...recents.filter(u => u !== url)].slice(0, 8);
+        localStorage.setItem('recent_v4', JSON.stringify(recents));
         renderRecents();
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
+
+    function showError() { errorOverlay.style.display = 'flex'; }
+    function retryLastChannel() { if(lastPlayedUrl) play(lastPlayedUrl); else location.reload(); }
 
     function renderRecents() {
         const container = document.getElementById('recentContainer');
         const section = document.getElementById('recent-section');
         if (recents.length === 0) return;
         section.style.display = 'block';
-
         const recentData = recents.map(url => allChannels.find(c => c.url === url)).filter(Boolean);
         container.innerHTML = recentData.map(ch => `
-            <div class="recent-item" onclick="play('${ch.url}', '${ch.name}')">
+            <div class="recent-item" onclick="play('${ch.url}')">
                 <div class="recent-thumb"><img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/50'"></div>
                 <span>${ch.name}</span>
             </div>
@@ -218,12 +195,11 @@
     function toggleFav(e, url) {
         e.stopPropagation();
         favs.includes(url) ? favs = favs.filter(u => u !== url) : favs.push(url);
-        localStorage.setItem('my_fav_v3', JSON.stringify(favs));
-        filterData(currentFilter, document.querySelector('.cat-pill.active'));
+        localStorage.setItem('fav_v4', JSON.stringify(favs));
+        render(allChannels);
     }
 
     function filterData(type, el) {
-        currentFilter = type;
         document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
         el.classList.add('active');
         let filtered = type === 'ALL' ? allChannels : 
