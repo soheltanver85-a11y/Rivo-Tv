@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RoarZone TV Pro | Ultra Clean</title>
+    <title>RoarZone TV Pro | Favorite & Search</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -13,33 +13,31 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* ভিডিও প্লেয়ার সেকশন */
+        /* ভিডিও প্লেয়ার */
         .video-box { width: 100%; position: sticky; top: 0; z-index: 1000; background: #000; border-bottom: 2px solid var(--primary); }
         video { width: 100%; aspect-ratio: 16/9; display: block; }
 
         .container { padding: 10px; }
 
-        /* হেডার ও স্মার্ট সার্চ বার */
-        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; position: relative; overflow: hidden; height: 40px; }
-        .logo-text { font-size: 14px; font-weight: 700; color: var(--primary); transition: 0.3s; }
+        /* হেডার ও স্মার্ট সার্চ */
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; position: relative; height: 40px; }
+        .logo-text { font-size: 14px; font-weight: 700; color: var(--primary); }
         
         .nav-right { display: flex; align-items: center; gap: 5px; }
         .btn-mini { padding: 5px 10px; border-radius: 6px; border: none; font-size: 9px; font-weight: 700; color: #fff; cursor: pointer; text-transform: uppercase; }
         .btn-m { background: #ff4141; } .btn-t { background: #27ae60; }
         
-        /* সার্চ আইকন বাটন */
         .search-trigger { background: #333; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
         .search-trigger svg { width: 16px; fill: #fff; }
 
-        /* এনিমেটেড সার্চ ওভারলে */
         .search-overlay {
-            position: absolute; top: 0; right: -100%; width: 100%; height: 100%;
+            position: absolute; top: 0; right: -110%; width: 100%; height: 100%;
             background: var(--bg); display: flex; align-items: center; 
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 5;
+            transition: 0.3s ease; z-index: 15;
         }
         .search-overlay.active { right: 0; }
         .search-input { width: 85%; background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 8px 15px; border-radius: 20px; outline: none; font-size: 13px; }
-        .close-search { width: 15%; background: transparent; border: none; color: var(--primary); font-size: 20px; font-weight: 700; cursor: pointer; }
+        .close-search { width: 15%; background: transparent; border: none; color: var(--primary); font-size: 22px; cursor: pointer; }
 
         /* রিসেন্টলি প্লেড */
         #recent-section { margin-bottom: 15px; display: none; }
@@ -51,16 +49,25 @@
         .recent-circle img { width: 100%; height: 100%; object-fit: contain; }
         .recent-item span { display: block; font-size: 8px; color: #bbb; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        /* ক্যাটাগরি ও গ্রিড */
+        /* ক্যাটাগরি পিলস */
         .cat-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
-        .cat-pill { padding: 6px 14px; background: #1a1a1a; border-radius: 20px; white-space: nowrap; font-size: 11px; border: 1px solid #333; cursor: pointer; color: #aaa; }
+        .cat-pill { padding: 6px 14px; background: #1a1a1a; border-radius: 20px; white-space: nowrap; font-size: 11px; border: 1px solid #333; cursor: pointer; color: #aaa; transition: 0.3s; }
         .cat-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
+        /* চ্যানেল গ্রিড ও লাভ অপশন */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #222; }
-        .logo-area { height: 80px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 10px; }
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #222; transition: 0.2s; }
+        .logo-area { height: 85px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 12px; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
-        .ch-info { padding: 8px; text-align: center; font-size: 11px; font-weight: 600; }
+        .ch-info { padding: 10px; text-align: center; font-size: 11px; font-weight: 600; color: #ddd; }
+
+        .fav-heart { 
+            position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.5); 
+            width: 28px; height: 28px; border-radius: 50%; display: flex; 
+            align-items: center; justify-content: center; z-index: 10; backdrop-filter: blur(4px);
+        }
+        .fav-heart svg { width: 15px; fill: rgba(255,255,255,0.3); transition: 0.3s; }
+        .card.is-fav .fav-heart svg { fill: var(--primary); }
 
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(6, 1fr); } }
     </style>
@@ -84,7 +91,7 @@
         </div>
 
         <div class="search-overlay" id="searchOverlay">
-            <input type="text" class="search-input" id="search" placeholder="চ্যানেলের নাম লিখুন..." oninput="searchChannels()">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search Channels..." oninput="searchChannels()">
             <button class="close-search" onclick="toggleSearch(false)">×</button>
         </div>
     </div>
@@ -106,20 +113,19 @@
 
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
-    let allChannels = [], favs = JSON.parse(localStorage.getItem('fav_v6')) || [];
-    let recents = JSON.parse(localStorage.getItem('recent_v6')) || [];
+    let allChannels = [], favs = JSON.parse(localStorage.getItem('fav_v7')) || [];
+    let recents = JSON.parse(localStorage.getItem('recent_v7')) || [];
+    let currentFilter = 'ALL';
 
     const grid = document.getElementById('mainGrid');
     const player = document.getElementById('player');
     const overlay = document.getElementById('searchOverlay');
 
-    // সার্চ বার চালু/বন্ধ করা
     function toggleSearch(show) {
-        if(show) overlay.classList.add('active');
-        else {
-            overlay.classList.remove('active');
-            document.getElementById('search').value = "";
-            render(allChannels);
+        overlay.classList.toggle('active', show);
+        if(!show) { 
+            document.getElementById('searchInput').value = "";
+            render(allChannels); 
         }
     }
 
@@ -128,7 +134,7 @@
             const res = await fetch(M3U_URL);
             const data = await res.text();
             parseM3U(data);
-        } catch (e) { console.error("Error loading M3U"); }
+        } catch (e) { console.error(e); }
     }
 
     function parseM3U(data) {
@@ -150,14 +156,20 @@
     }
 
     function render(data) {
-        grid.innerHTML = data.map(ch => `
-            <div class="card">
-                <div onclick="play('${ch.url}')">
-                    <div class="logo-area"><img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/100?text=TV'"></div>
-                    <div class="ch-info">${ch.name}</div>
+        grid.innerHTML = data.map(ch => {
+            const isFav = favs.includes(ch.url);
+            return `
+                <div class="card ${isFav ? 'is-fav' : ''}">
+                    <div class="fav-heart" onclick="toggleFav(event, '${ch.url}')">
+                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <div onclick="play('${ch.url}')" style="cursor:pointer">
+                        <div class="logo-area"><img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/100?text=TV'"></div>
+                        <div class="ch-info">${ch.name}</div>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     function play(url) {
@@ -169,9 +181,22 @@
         } else { player.src = url; player.play(); }
 
         recents = [url, ...recents.filter(u => u !== url)].slice(0, 10);
-        localStorage.setItem('recent_v6', JSON.stringify(recents));
+        localStorage.setItem('recent_v7', JSON.stringify(recents));
         renderRecents();
         window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function toggleFav(e, url) {
+        e.stopPropagation();
+        favs.includes(url) ? favs = favs.filter(u => u !== url) : favs.push(url);
+        localStorage.setItem('fav_v7', JSON.stringify(favs));
+        
+        // বর্তমান ভিউ আপডেট
+        if(currentFilter === 'FAVORITE') {
+            render(allChannels.filter(c => favs.includes(c.url)));
+        } else {
+            render(allChannels);
+        }
     }
 
     function renderRecents() {
@@ -189,15 +214,17 @@
     }
 
     function filterData(type, el) {
+        currentFilter = type;
         document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
         el.classList.add('active');
         let filtered = type === 'ALL' ? allChannels : 
+                       type === 'FAVORITE' ? allChannels.filter(c => favs.includes(c.url)) :
                        allChannels.filter(c => (c.group+c.name).toUpperCase().includes(type.toUpperCase()));
         render(filtered);
     }
 
     function searchChannels() {
-        const q = document.getElementById('search').value.toLowerCase();
+        const q = document.getElementById('searchInput').value.toLowerCase();
         render(allChannels.filter(c => c.name.toLowerCase().includes(q)));
     }
 
