@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RoarZone TV Pro | Favorite & Search</title>
+    <title>RoarZone TV | Ultimate Sticky Pro</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -11,16 +11,37 @@
     <style>
         :root { --primary: #ff2a2a; --bg: #050505; --card-bg: #1a1a1a; --text: #fff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); overflow-x: hidden; }
+        body { background-color: var(--bg); color: var(--text); }
 
-        /* ভিডিও প্লেয়ার */
-        .video-box { width: 100%; position: sticky; top: 0; z-index: 1000; background: #000; border-bottom: 2px solid var(--primary); }
+        /* ১. ভিডিও প্লেয়ার (ফিক্সড টপ) */
+        .video-box { 
+            width: 100%; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1001; 
+            background: #000; 
+            border-bottom: 2px solid var(--primary);
+        }
         video { width: 100%; aspect-ratio: 16/9; display: block; }
+
+        /* ২. স্টিকি কন্টেইনার (ক্যাটাগরি ও নেভিগেশন) */
+        .sticky-header {
+            position: sticky;
+            top: 56.25vw; /* ভিডিওর উচ্চতা অনুযায়ী */
+            background: var(--bg);
+            z-index: 1000;
+            padding: 10px 10px 0 10px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.6);
+        }
+
+        @media (min-width: 768px) {
+            .sticky-header { top: 432px; } /* ডেস্কটপের জন্য */
+        }
 
         .container { padding: 10px; }
 
-        /* হেডার ও স্মার্ট সার্চ */
-        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; position: relative; height: 40px; }
+        /* হেডার ও সার্চ */
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; position: relative; height: 35px; }
         .logo-text { font-size: 14px; font-weight: 700; color: var(--primary); }
         
         .nav-right { display: flex; align-items: center; gap: 5px; }
@@ -36,37 +57,37 @@
             transition: 0.3s ease; z-index: 15;
         }
         .search-overlay.active { right: 0; }
-        .search-input { width: 85%; background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 8px 15px; border-radius: 20px; outline: none; font-size: 13px; }
-        .close-search { width: 15%; background: transparent; border: none; color: var(--primary); font-size: 22px; cursor: pointer; }
+        .search-input { width: 85%; background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 6px 15px; border-radius: 20px; outline: none; font-size: 12px; }
+        .close-search { width: 15%; background: transparent; border: none; color: var(--primary); font-size: 20px; cursor: pointer; }
 
         /* রিসেন্টলি প্লেড */
-        #recent-section { margin-bottom: 15px; display: none; }
-        .section-label { font-size: 10px; color: #777; margin-bottom: 8px; font-weight: 600; display: block; text-transform: uppercase; }
-        .recent-list { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; }
+        #recent-section { margin-bottom: 12px; display: none; }
+        .section-label { font-size: 9px; color: #777; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; }
+        .recent-list { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
         .recent-list::-webkit-scrollbar { display: none; }
-        .recent-item { flex-shrink: 0; width: 50px; text-align: center; cursor: pointer; }
-        .recent-circle { width: 45px; height: 45px; border-radius: 50%; background: #fff; padding: 5px; border: 1.5px solid #333; margin: 0 auto 4px; overflow: hidden; }
+        .recent-item { flex-shrink: 0; width: 48px; text-align: center; }
+        .recent-circle { width: 42px; height: 42px; border-radius: 50%; background: #fff; padding: 4px; border: 1.5px solid #333; margin-bottom: 3px; overflow: hidden; }
         .recent-circle img { width: 100%; height: 100%; object-fit: contain; }
-        .recent-item span { display: block; font-size: 8px; color: #bbb; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .recent-item span { font-size: 8px; color: #bbb; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
         /* ক্যাটাগরি পিলস */
-        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
-        .cat-pill { padding: 6px 14px; background: #1a1a1a; border-radius: 20px; white-space: nowrap; font-size: 11px; border: 1px solid #333; cursor: pointer; color: #aaa; transition: 0.3s; }
+        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
+        .cat-pill { padding: 6px 14px; background: #1a1a1a; border-radius: 20px; white-space: nowrap; font-size: 11px; border: 1px solid #333; cursor: pointer; color: #aaa; }
         .cat-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-        /* চ্যানেল গ্রিড ও লাভ অপশন */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #222; transition: 0.2s; }
+        /* ৩. চ্যানেল গ্রিড (স্ক্রল হবে) */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding-bottom: 20px; }
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #222; }
         .logo-area { height: 85px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 12px; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
-        .ch-info { padding: 10px; text-align: center; font-size: 11px; font-weight: 600; color: #ddd; }
+        .ch-info { padding: 8px; text-align: center; font-size: 11px; font-weight: 600; color: #ddd; }
 
         .fav-heart { 
             position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.5); 
             width: 28px; height: 28px; border-radius: 50%; display: flex; 
-            align-items: center; justify-content: center; z-index: 10; backdrop-filter: blur(4px);
+            align-items: center; justify-content: center; z-index: 10;
         }
-        .fav-heart svg { width: 15px; fill: rgba(255,255,255,0.3); transition: 0.3s; }
+        .fav-heart svg { width: 15px; fill: rgba(255,255,255,0.3); }
         .card.is-fav .fav-heart svg { fill: var(--primary); }
 
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(6, 1fr); } }
@@ -78,10 +99,9 @@
     <video id="player" controls autoplay playsinline poster="https://via.placeholder.com/640x360/000/fff?text=RoarZone+TV"></video>
 </div>
 
-<div class="container">
+<div class="sticky-header">
     <div class="top-nav">
         <div class="logo-text">ROARZONE TV</div>
-        
         <div class="nav-right">
             <button class="btn-mini btn-m">Mobile</button>
             <button class="btn-mini btn-t">TV App</button>
@@ -89,7 +109,6 @@
                 <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </button>
         </div>
-
         <div class="search-overlay" id="searchOverlay">
             <input type="text" class="search-input" id="searchInput" placeholder="Search Channels..." oninput="searchChannels()">
             <button class="close-search" onclick="toggleSearch(false)">×</button>
@@ -107,14 +126,16 @@
         <div class="cat-pill" onclick="filterData('SPORTS', this)">Sports</div>
         <div class="cat-pill" onclick="filterData('BANGLA', this)">Bangla</div>
     </div>
+</div>
 
+<div class="container">
     <div class="grid" id="mainGrid"></div>
 </div>
 
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
-    let allChannels = [], favs = JSON.parse(localStorage.getItem('fav_v7')) || [];
-    let recents = JSON.parse(localStorage.getItem('recent_v7')) || [];
+    let allChannels = [], favs = JSON.parse(localStorage.getItem('fav_v8')) || [];
+    let recents = JSON.parse(localStorage.getItem('recent_v8')) || [];
     let currentFilter = 'ALL';
 
     const grid = document.getElementById('mainGrid');
@@ -123,10 +144,7 @@
 
     function toggleSearch(show) {
         overlay.classList.toggle('active', show);
-        if(!show) { 
-            document.getElementById('searchInput').value = "";
-            render(allChannels); 
-        }
+        if(!show) { document.getElementById('searchInput').value = ""; render(allChannels); }
     }
 
     async function init() {
@@ -181,7 +199,7 @@
         } else { player.src = url; player.play(); }
 
         recents = [url, ...recents.filter(u => u !== url)].slice(0, 10);
-        localStorage.setItem('recent_v7', JSON.stringify(recents));
+        localStorage.setItem('recent_v8', JSON.stringify(recents));
         renderRecents();
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
@@ -189,14 +207,8 @@
     function toggleFav(e, url) {
         e.stopPropagation();
         favs.includes(url) ? favs = favs.filter(u => u !== url) : favs.push(url);
-        localStorage.setItem('fav_v7', JSON.stringify(favs));
-        
-        // বর্তমান ভিউ আপডেট
-        if(currentFilter === 'FAVORITE') {
-            render(allChannels.filter(c => favs.includes(c.url)));
-        } else {
-            render(allChannels);
-        }
+        localStorage.setItem('fav_v8', JSON.stringify(favs));
+        filterData(currentFilter, document.querySelector('.cat-pill.active'));
     }
 
     function renderRecents() {
