@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#050505">
-    <title>Rivo TV | Premium Live Streaming</title>
+    <title>Rivo TV | Fixed Count</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -12,79 +12,53 @@
     <style>
         :root { 
             --primary: #00f2ff; 
-            --fire: #ff4500;    
             --bg: #050505; 
             --card-bg: #0f0f0f; 
             --text: #fff; 
-            --accent: #7d5fff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 50px; }
 
         .fixed-top-container {
-            position: sticky;
-            top: 0;
-            z-index: 2000;
-            background: var(--bg);
-            width: 100%;
+            position: sticky; top: 0; z-index: 2000;
+            background: var(--bg); width: 100%;
             box-shadow: 0 4px 20px rgba(0,0,0,0.9);
         }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); }
         video#player { width: 100%; aspect-ratio: 16/9; display: block; background: #000; }
 
         .controls-area { padding: 4px 8px; }
-        
-        .top-nav { display: flex; justify-content: space-between; align-items: center; gap: 6px; height: 45px; margin-bottom: 2px; }
-        .brand-wrapper { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-        .brand-name { 
-            font-size: 17px; font-weight: 900; 
-            background: linear-gradient(90deg, #fff, var(--primary), #fff);
-            background-size: 200% auto;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: shine 3s linear infinite; text-transform: uppercase;
-        }
-        @keyframes shine { to { background-position: 200% center; } }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; height: 45px; }
+        .brand-name { font-size: 17px; font-weight: 900; color: var(--primary); text-transform: uppercase; }
 
-        .live-indicator { display: flex; align-items: center; gap: 3px; background: rgba(255, 0, 0, 0.1); padding: 2px 6px; border-radius: 4px; border: 0.5px solid rgba(255, 0, 0, 0.2); }
-        .dot { width: 6px; height: 6px; background-color: #ff0000; border-radius: 50%; box-shadow: 0 0 6px #ff0000; animation: pulse 1.5s infinite; }
-        .live-text { font-size: 8px; font-weight: 800; color: #ff0000; text-transform: uppercase; letter-spacing: 0.5px; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.5; } }
-
-        #recent-header-list { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; flex-grow: 1; justify-content: flex-end; }
-        .recent-mini-circle { width: 32px; height: 32px; border-radius: 50%; background: #1a1a1a; padding: 2px; border: 1px solid #333; flex-shrink: 0; cursor: pointer; transition: 0.2s; }
-        .recent-mini-circle img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
-
-        .cat-row { display: flex; gap: 5px; overflow-x: auto; padding: 6px 4px 10px 4px; scrollbar-width: none; align-items: center; }
+        .cat-row { display: flex; gap: 5px; overflow-x: auto; padding: 10px 4px; scrollbar-width: none; }
         .cat-pill { 
-            padding: 4px 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; font-size: 9px; 
-            font-weight: 500; border: 1px solid rgba(255, 255, 255, 0.1); color: #bbb; cursor: pointer; 
-            white-space: nowrap; display: flex; align-items: center; gap: 3px; transition: all 0.3s ease;
+            padding: 6px 12px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; font-size: 10px; 
+            font-weight: 600; border: 1px solid rgba(255, 255, 255, 0.1); color: #bbb; cursor: pointer; 
+            white-space: nowrap; display: flex; align-items: center; gap: 4px;
         }
         .cat-pill.active { 
             background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary);
-            box-shadow: 0 0 8px rgba(0, 242, 255, 0.2);
         }
-        .download-btn-fire { background: linear-gradient(45deg, #ff4500, #ff8c00) !important; color: white !important; font-weight: 700 !important; border: none !important; animation: fire-burn 0.8s infinite alternate; }
+        
+        /* সংখ্যা দেখানোর স্টাইল */
+        .count-badge {
+            background: var(--primary);
+            color: #000;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 800;
+            margin-left: 3px;
+        }
 
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
-        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #1a1a1a; transition: 0.3s; }
-        .logo-area { height: 95px; background: radial-gradient(circle, #1a1a1a 0%, #050505 100%); display: flex; align-items: center; justify-content: center; padding: 15px; position: relative; }
-        .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; z-index: 1; cursor: pointer; }
-        
-        .fav-star { 
-            position: absolute; top: 6px; right: 6px; z-index: 15; cursor: pointer; 
-            width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; 
-            background: rgba(0,0,0,0.6); border-radius: 50%; transition: 0.3s;
-        }
-        .fav-star svg { fill: #555; transition: 0.3s; }
-        .fav-star.active svg { fill: #ffcc00; filter: drop-shadow(0 0 4px #ffcc00); }
-
-        .ch-info { display: flex; align-items: center; gap: 6px; padding: 10px 8px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
-        .ch-name { font-size: 11px; font-weight: 600; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .dev-credit { text-align: center; padding: 30px 0; font-size: 9px; letter-spacing: 1px; color: #444; text-transform: uppercase; }
-        .dev-credit span { color: var(--primary); font-weight: 700; text-shadow: 0 0 5px rgba(0,242,255,0.2); }
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; }
+        .logo-area { height: 90px; display: flex; align-items: center; justify-content: center; padding: 15px; }
+        .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
+        .ch-info { padding: 8px; background: #0d0d0d; text-align: center; border-top: 1px solid #1a1a1a; }
+        .ch-name { font-size: 11px; font-weight: 600; color: #eee; }
 
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
     </style>
@@ -97,150 +71,89 @@
     </div>
     <div class="controls-area">
         <div class="top-nav">
-            <div class="brand-wrapper">
-                <div class="brand-name">Rivo TV</div>
-                <div class="live-indicator"><div class="dot"></div><div class="live-text">Live</div></div>
-            </div>
-            <div id="recent-header-list"></div>
+            <div class="brand-name">Rivo TV</div>
+            <div id="recent-header-list" style="display:flex; gap:5px;"></div>
         </div>
         
         <div class="cat-row">
-            <div class="cat-pill active" onclick="filterData('ALL', this)">
-                <svg width="10" height="10" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
-                All <span id="all-count">0</span>
+            <div id="all-btn-container" class="cat-pill active" onclick="filterData('ALL', this)">
+                All <span id="total-count" class="count-badge">0</span>
             </div>
-            <div class="cat-pill" onclick="filterFav(this)">
-                <svg width="10" height="10" fill="#ffcc00" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                Fav
-            </div>
-            <div class="cat-pill download-btn-fire" onclick="window.open('YOUR_APP_LINK', '_blank')">App 📥</div>
-            <div class="cat-pill" onclick="shareSite()">Share 🔗</div>
+            <div class="cat-pill" onclick="filterFav(this)">Fav</div>
             <div class="cat-pill" onclick="toggleSearch()">Search 🔍</div>
         </div>
     </div>
 </div>
 
 <div class="grid" id="mainGrid"></div>
-<div class="dev-credit">Developed by <span>Sohel Tanvir</span></div>
 
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
     let allChannels = [];
-    let recents = JSON.parse(localStorage.getItem('recent_rivo')) || [];
-    let favorites = JSON.parse(localStorage.getItem('fav_rivo')) || [];
-
-    const grid = document.getElementById('mainGrid');
-    const player = document.getElementById('player');
 
     async function init() {
         try {
             const res = await fetch(M3U_URL);
             const data = await res.text();
-            parseM3U(data);
-        } catch (e) { console.error("Load Error:", e); }
-    }
+            const lines = data.split('\n');
+            let item = {}; 
+            allChannels = [];
 
-    function parseM3U(data) {
-        const lines = data.split('\n');
-        let item = {}; allChannels = [];
-        lines.forEach(l => {
-            if (l.startsWith('#EXTINF')) {
-                item.name = l.split(',')[1]?.trim() || "Live TV";
-                item.logo = l.match(/tvg-logo="(.*?)"/)?.[1] || "";
-            } else if (l.startsWith('http')) {
-                item.url = l.trim();
-                allChannels.push({...item});
-                item = {};
+            lines.forEach(l => {
+                if (l.startsWith('#EXTINF')) {
+                    item.name = l.split(',')[1]?.trim() || "Live TV";
+                    item.logo = l.match(/tvg-logo="(.*?)"/)?.[1] || "";
+                } else if (l.startsWith('http')) {
+                    item.url = l.trim();
+                    allChannels.push({...item});
+                    item = {};
+                }
+            });
+
+            // গুরুত্বপূর্ণ: এখানে সংখ্যাটি বসানো হচ্ছে
+            const countElement = document.getElementById('total-count');
+            if(countElement) {
+                countElement.innerText = allChannels.length;
             }
-        });
 
-        // সংখ্যা দেখানোর ফিক্সড লাইন
-        document.getElementById('all-count').innerText = allChannels.length;
-
-        render(allChannels);
-        renderRecentIcons();
+            render(allChannels);
+        } catch (e) { console.error("Error:", e); }
     }
 
     function render(data) {
-        grid.innerHTML = data.map((ch, index) => {
-            const isFav = favorites.includes(ch.url);
-            return `
-                <div class="card">
-                    <div class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav('${ch.url}', this)">
-                        <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                    </div>
-                    <div class="logo-area" onclick="playMain('${ch.url}')">
-                        <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/80?text=TV'">
-                    </div>
-                    <div class="ch-info" onclick="playMain('${ch.url}')">
-                        <span class="ch-name">${ch.name}</span>
-                    </div>
+        const grid = document.getElementById('mainGrid');
+        grid.innerHTML = data.map((ch) => `
+            <div class="card" onclick="playMain('${ch.url}')">
+                <div class="logo-area">
+                    <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/80?text=TV'">
                 </div>
-            `;
-        }).join('');
+                <div class="ch-info">
+                    <span class="ch-name">${ch.name}</span>
+                </div>
+            </div>
+        `).join('');
     }
 
     function playMain(url) {
+        const player = document.getElementById('player');
         if (Hls.isSupported()) {
             const hls = new Hls();
             hls.loadSource(url);
             hls.attachMedia(player);
             hls.on(Hls.Events.MANIFEST_PARSED, () => player.play());
         } else { player.src = url; player.play(); }
-        
-        recents = [url, ...recents.filter(u => u !== url)].slice(0, 10);
-        localStorage.setItem('recent_rivo', JSON.stringify(recents));
-        renderRecentIcons();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function renderRecentIcons() {
-        const container = document.getElementById('recent-header-list');
-        const recentData = recents.map(url => allChannels.find(c => c.url === url)).filter(Boolean);
-        container.innerHTML = recentData.map(ch => `
-            <div class="recent-mini-circle" onclick="playMain('${ch.url}')">
-                <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/50'">
-            </div>
-        `).join('');
-    }
-
-    function toggleFav(url, el) {
-        event.stopPropagation();
-        if (favorites.includes(url)) {
-            favorites = favorites.filter(fav => fav !== url);
-            el.classList.remove('active');
-        } else {
-            favorites.push(url);
-            el.classList.add('active');
-        }
-        localStorage.setItem('fav_rivo', JSON.stringify(favorites));
-    }
-
-    function filterFav(el) {
-        setActive(el);
-        render(allChannels.filter(ch => favorites.includes(ch.url)));
-    }
-
     function filterData(type, el) {
-        setActive(el);
+        document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
         render(allChannels);
     }
 
-    function setActive(el) {
-        document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
-        el.classList.add('active');
-    }
-
     function toggleSearch() {
-        const query = prompt("সার্চ করুন:");
-        if (query) {
-            render(allChannels.filter(c => c.name.toLowerCase().includes(query.toLowerCase())));
-        }
-    }
-
-    function shareSite() {
-        if (navigator.share) navigator.share({ url: location.href });
-        else alert("Link copied!");
+        const q = prompt("Search:");
+        if(q) render(allChannels.filter(c => c.name.toLowerCase().includes(q.toLowerCase())));
     }
 
     init();
