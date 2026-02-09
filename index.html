@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#050505">
     <title>Rivo TV | Premium Live</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     
     <style>
@@ -16,12 +16,13 @@
             --bg: #050505; 
             --card-bg: #0f0f0f; 
             --text: #fff; 
+            --accent: #7d5fff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* স্টিকি প্লেয়ার */
+        /* স্টিকি প্লেয়ার ও টপ সেকশন */
         .fixed-top-container {
             position: sticky;
             top: 0;
@@ -34,15 +35,38 @@
         video#player { width: 100%; aspect-ratio: 16/9; display: block; }
 
         .controls-area { padding: 4px 10px; }
-        .top-nav { display: flex; justify-content: space-between; align-items: center; gap: 8px; height: 38px; }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; gap: 8px; height: 40px; }
         
-        .brand-name { font-size: 15px; font-weight: 700; color: var(--primary); letter-spacing: 0.5px; }
+        /* ইউনিক RIVO TV ব্র্যান্ডিং */
+        .brand-name { 
+            font-size: 15px; 
+            font-weight: 800; 
+            display: flex;
+            align-items: center;
+            background: linear-gradient(to right, var(--primary), #00d2ff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .brand-name::after {
+            content: "";
+            width: 6px;
+            height: 6px;
+            background-color: #ff0000;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #ff0000;
+            animation: blink 1s infinite;
+            margin-left: 4px;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         #recent-header-list { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; flex-grow: 1; }
         .recent-mini-circle { width: 30px; height: 30px; border-radius: 50%; background: #1a1a1a; padding: 3px; border: 1px solid #333; flex-shrink: 0; cursor: pointer; }
         .recent-mini-circle img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* ক্যাটাগরি রো - সুপার কমপ্যাক্ট */
+        /* ক্যাটাগরি রো - সুপার কমপ্যাক্ট এক লাইনে */
         .cat-row { 
             display: flex; 
             gap: 5px; 
@@ -55,7 +79,7 @@
         .cat-row::-webkit-scrollbar { display: none; }
 
         .cat-pill { 
-            padding: 4px 9px; 
+            padding: 4px 10px; 
             background: #1a1a1a; 
             border-radius: 12px; 
             font-size: 9px; 
@@ -75,32 +99,31 @@
             animation: fire-burn 0.8s infinite alternate ease-in-out;
             font-size: 9px !important;
         }
-
         @keyframes fire-burn {
             0% { box-shadow: 0 0 4px #ff4500; transform: scale(1); }
-            100% { box-shadow: 0 0 10px #ff8c00; transform: scale(1.02); }
+            100% { box-shadow: 0 0 12px #ff8c00; transform: scale(1.03); }
         }
 
-        /* ইউনিক এবং ছোট শেয়ার বাটন */
+        /* ইউনিক শেয়ার বাটন */
         .share-btn-unique {
             background: rgba(125, 95, 255, 0.1) !important;
-            color: #7d5fff !important;
-            border: 1px solid #7d5fff !important;
+            color: var(--accent) !important;
+            border: 1px solid var(--accent) !important;
             font-weight: 600 !important;
             font-size: 9px !important;
             display: flex;
             align-items: center;
             gap: 3px;
         }
-        .share-btn-unique svg { width: 10px; fill: #7d5fff; }
+        .share-btn-unique svg { width: 10px; fill: var(--accent); }
 
-        /* কার্ড গ্রিড */
+        /* গ্রিড ও কার্ড */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; padding-bottom: 70px; }
         .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; position: relative; border: 1px solid #1a1a1a; }
-        .logo-area { height: 80px; background: radial-gradient(circle, #1a1a1a 0%, #050505 100%); display: flex; align-items: center; justify-content: center; padding: 10px; }
+        .logo-area { height: 85px; background: radial-gradient(circle, #1a1a1a 0%, #050505 100%); display: flex; align-items: center; justify-content: center; padding: 12px; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
-        .ch-info { display: flex; align-items: center; justify-content: center; padding: 8px 5px; background: #0d0d0d; border-top: 1px solid #1a1a1a; }
-        .ch-name { font-size: 9px; font-weight: 600; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ch-info { display: flex; align-items: center; justify-content: center; padding: 10px 5px; background: #0d0d0d; border-top: 1px solid #1a1a1a; }
+        .ch-name { font-size: 10px; font-weight: 600; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
     </style>
@@ -113,10 +136,10 @@
     </div>
     <div class="controls-area">
         <div class="top-nav">
-            <div class="brand-name">RIVO</div>
+            <div class="brand-name">RIVO TV</div>
             <div id="recent-header-list"></div>
-            <button class="search-trigger" style="background:#1a1a1a; border:1px solid #333; border-radius:6px; width:28px; height:28px; display:flex; align-items:center; justify-content:center;">
-                <svg width="12" fill="#aaa" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <button class="search-trigger" style="background:#1a1a1a; border:1px solid #333; border-radius:6px; width:30px; height:30px; display:flex; align-items:center; justify-content:center;">
+                <svg width="14" fill="#aaa" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </button>
         </div>
         <div class="cat-row">
@@ -124,7 +147,7 @@
             <div class="cat-pill" onclick="filterData('FAVORITE', this)">⭐ Fav</div>
             <div class="cat-pill" onclick="filterData('SPORTS', this)">Sports</div>
             <div class="cat-pill" onclick="filterData('BANGLA', this)">Bangla</div>
-            <div class="cat-pill download-btn-fire" onclick="window.open('আপনার_লিংক_এখানে', '_blank')">App 📥</div>
+            <div class="cat-pill download-btn-fire" onclick="window.open('আপনার_অ্যাপ_লিংক', '_blank')">App 📥</div>
             <div class="cat-pill share-btn-unique" onclick="shareSite()">
                 <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
                 Share
@@ -137,11 +160,9 @@
 
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
-    let allChannels = [], favs = JSON.parse(localStorage.getItem('fav_v13')) || [];
-    let recents = JSON.parse(localStorage.getItem('recent_v13')) || [];
-    let activeInlinePlayer = null;
-    let previewTimeout = null;
-
+    let allChannels = [], favs = JSON.parse(localStorage.getItem('fav_rivo')) || [];
+    let recents = JSON.parse(localStorage.getItem('recent_rivo')) || [];
+    
     const grid = document.getElementById('mainGrid');
     const player = document.getElementById('player');
 
@@ -172,9 +193,8 @@
 
     function render(data) {
         grid.innerHTML = data.map(ch => {
-            const isFav = favs.includes(ch.url);
             return `
-                <div class="card ${isFav ? 'is-fav' : ''}">
+                <div class="card">
                     <div class="logo-area" onclick="playMain('${ch.url}')">
                         <img src="${ch.logo}" loading="lazy" onerror="this.src='https://via.placeholder.com/80?text=TV'">
                     </div>
@@ -195,7 +215,7 @@
         } else { player.src = url; player.play(); }
 
         recents = [url, ...recents.filter(u => u !== url)].slice(0, 10);
-        localStorage.setItem('recent_v13', JSON.stringify(recents));
+        localStorage.setItem('recent_rivo', JSON.stringify(recents));
         renderRecentIcons();
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
