@@ -4,15 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#ff2a2a">
-    <title>RoarZone TV | Pro Edition</title>
+    <title>RoarZone TV | Cyan Preview Edition</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     
     <style>
-        :root { --primary: #ff2a2a; --bg: #050505; --card-bg: #1a1a1a; --text: #fff; }
+        :root { 
+            --primary: #ff2a2a; /* মেইন থিম লাল */
+            --accent: #00f2ff;  /* প্রিভিউ হাইলাইট কালার (সায়ান) */
+            --bg: #050505; 
+            --card-bg: #1a1a1a; 
+            --text: #fff; 
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; }
 
         /* স্টিকি প্লেয়ার এরিয়া */
@@ -24,7 +30,6 @@
             width: 100%;
             box-shadow: 0 4px 15px rgba(0,0,0,0.8);
         }
-
         .video-box { background: #000; border-bottom: 2px solid var(--primary); }
         video#player { width: 100%; aspect-ratio: 16/9; display: block; }
 
@@ -32,50 +37,38 @@
         .top-nav { display: flex; justify-content: space-between; align-items: center; gap: 10px; height: 45px; }
         
         #recent-header-list { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; flex-grow: 1; }
-        #recent-header-list::-webkit-scrollbar { display: none; }
         .recent-mini-circle { width: 36px; height: 36px; border-radius: 50%; background: #fff; padding: 4px; border: 2px solid #333; flex-shrink: 0; cursor: pointer; }
         .recent-mini-circle img { width: 100%; height: 100%; object-fit: contain; }
-
-        .search-trigger { background: #333; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
-        .search-trigger svg { width: 18px; fill: #fff; }
 
         .cat-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
         .cat-pill { padding: 6px 14px; background: #1a1a1a; border-radius: 20px; font-size: 11px; border: 1px solid #333; color: #aaa; cursor: pointer; white-space: nowrap; }
         .cat-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
         /* গ্রিড এবং কার্ড ডিজাইন */
-        .main-grid-container { padding: 10px; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding-bottom: 50px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 10px; padding-bottom: 50px; }
         
         .card { 
             background: var(--card-bg); 
             border-radius: 12px; 
             overflow: hidden; 
             position: relative; 
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-        
-        .card.preview-active { 
-            border-color: var(--primary); 
-            box-shadow: 0 0 15px rgba(255, 42, 42, 0.4); 
-            transform: translateY(-3px);
+            border: 1px solid #222;
+            transition: transform 0.2s ease;
         }
 
         .preview-container { position: relative; }
-        
-        .logo-area { height: 80px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 12px; cursor: pointer; }
+        .logo-area { height: 85px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 12px; cursor: pointer; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
 
-        .inline-player { width: 100%; height: 80px; object-fit: cover; background: #000; display: none; cursor: pointer; }
+        .inline-player { width: 100%; height: 85px; object-fit: cover; background: #000; display: none; cursor: pointer; }
 
-        /* মিনি প্রগ্রেস বার */
+        /* প্রিভিউ প্রগ্রেস বার (সায়ান কালার) */
         .preview-progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); display: none; z-index: 10; }
-        .preview-progress-bar { width: 0%; height: 100%; background: var(--primary); }
+        .preview-progress-bar { width: 0%; height: 100%; background: var(--accent); box-shadow: 0 0 5px var(--accent); }
 
         @keyframes progressAnim { from { width: 0%; } to { width: 100%; } }
 
-        /* ইনফো এরিয়া এবং ইউনিক প্লে বাটন */
+        /* ইনফো এরিয়া এবং হাইলাইট */
         .ch-info { 
             display: flex; 
             align-items: center; 
@@ -83,9 +76,16 @@
             padding: 10px 6px; 
             background: #111; 
             cursor: pointer;
-            transition: background 0.2s;
+            border: 1.5px solid transparent;
+            transition: all 0.3s ease;
         }
-        .ch-info:active { background: #222; }
+
+        /* শুধু টেক্সট এরিয়া হাইলাইট */
+        .ch-info.preview-highlight {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(0, 242, 255, 0.4);
+            background: #0a1a1b;
+        }
 
         .ch-name { 
             font-size: 11px; 
@@ -94,19 +94,20 @@
             white-space: nowrap; 
             overflow: hidden; 
             text-overflow: ellipsis; 
-            max-width: 75%;
+            max-width: 70%;
         }
 
+        /* ইউনিক সায়ান প্লে বাটন */
         .mini-play-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             width: 18px;
             height: 18px;
-            background: linear-gradient(135deg, #ff2a2a, #ff6b6b);
+            background: linear-gradient(135deg, var(--accent), #00a2ff);
             border-radius: 50%;
             margin-left: 8px;
-            box-shadow: 0 0 8px rgba(255, 42, 42, 0.4);
+            box-shadow: 0 0 8px rgba(0, 242, 255, 0.4);
         }
         .mini-play-btn svg { width: 8px; fill: white; margin-left: 1px; }
         
@@ -123,27 +124,22 @@
     <div class="video-box">
         <video id="player" controls autoplay playsinline poster="https://via.placeholder.com/640x360/000/fff?text=RoarZone+TV"></video>
     </div>
-
     <div class="controls-area">
         <div class="top-nav">
             <div id="recent-header-list"></div>
-            <button class="search-trigger" onclick="alert('Search feature coming soon!')">
-                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <button class="search-trigger" style="background:#333; border:none; border-radius:8px; padding:8px;">
+                <svg width="18" fill="white" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </button>
         </div>
-
         <div class="cat-row">
             <div class="cat-pill active" onclick="filterData('ALL', this)">All</div>
             <div class="cat-pill" onclick="filterData('FAVORITE', this)">⭐ Favorite</div>
             <div class="cat-pill" onclick="filterData('SPORTS', this)">Sports</div>
-            <div class="cat-pill" onclick="filterData('BANGLA', this)">Bangla</div>
         </div>
     </div>
 </div>
 
-<div class="main-grid-container">
-    <div class="grid" id="mainGrid"></div>
-</div>
+<div class="grid" id="mainGrid"></div>
 
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
@@ -152,7 +148,7 @@
     
     let activeInlinePlayer = null;
     let previewTimeout = null;
-    let currentActiveCard = null;
+    let currentActiveInfo = null;
 
     const grid = document.getElementById('mainGrid');
     const player = document.getElementById('player');
@@ -162,7 +158,7 @@
             const res = await fetch(M3U_URL);
             const data = await res.text();
             parseM3U(data);
-        } catch (e) { console.error("Error loading channels:", e); }
+        } catch (e) { console.error(e); }
     }
 
     function parseM3U(data) {
@@ -170,9 +166,8 @@
         let item = {};
         lines.forEach(l => {
             if (l.startsWith('#EXTINF')) {
-                item.name = l.split(',')[1]?.trim() || "TV Channel";
+                item.name = l.split(',')[1]?.trim() || "TV";
                 item.logo = l.match(/tvg-logo="(.*?)"/)?.[1] || "";
-                item.group = l.match(/group-title="(.*?)"/)?.[1] || "General";
             } else if (l.startsWith('http')) {
                 item.url = l.trim();
                 allChannels.push({...item});
@@ -195,13 +190,10 @@
                         <div class="logo-area" onclick="playMain('${ch.url}')">
                             <img src="${ch.logo}" loading="lazy" onerror="this.src='https://via.placeholder.com/100?text=TV'">
                         </div>
-
                         <video class="inline-player" muted playsinline onclick="playMain('${ch.url}')"></video>
-                        
                         <div class="preview-progress-container">
                             <div class="preview-progress-bar"></div>
                         </div>
-
                         <div class="ch-info" onclick="handleInlinePreview(this.parentElement, '${ch.url}')">
                             <span class="ch-name">${ch.name}</span>
                             <div class="mini-play-btn">
@@ -215,7 +207,7 @@
     }
 
     function handleInlinePreview(container, url) {
-        const card = container.closest('.card');
+        const infoBox = container.querySelector('.ch-info');
         const inlineVideo = container.querySelector('.inline-player');
         const logoArea = container.querySelector('.logo-area');
         const progressCont = container.querySelector('.preview-progress-container');
@@ -223,8 +215,8 @@
 
         if (activeInlinePlayer) stopPreview();
 
-        card.classList.add('preview-active');
-        currentActiveCard = card;
+        infoBox.classList.add('preview-highlight');
+        currentActiveInfo = infoBox;
 
         if (Hls.isSupported()) {
             const hls = new Hls();
@@ -247,14 +239,11 @@
             activeInlinePlayer.pause();
             activeInlinePlayer.style.display = 'none';
             activeInlinePlayer.src = "";
-            
             const container = activeInlinePlayer.closest('.preview-container');
             container.querySelector('.logo-area').style.display = 'flex';
             container.querySelector('.preview-progress-container').style.display = 'none';
             container.querySelector('.preview-progress-bar').style.animation = 'none';
-            
-            if (currentActiveCard) currentActiveCard.classList.remove('preview-active');
-            
+            if (currentActiveInfo) currentActiveInfo.classList.remove('preview-highlight');
             clearTimeout(previewTimeout);
             activeInlinePlayer = null;
         }
@@ -271,7 +260,6 @@
         recents = [url, ...recents.filter(u => u !== url)].slice(0, 10);
         localStorage.setItem('recent_v13', JSON.stringify(recents));
         renderRecentIcons();
-        // scrollTo(0,0) বাদ দেওয়া হয়েছে যাতে স্ক্রল পজিশন ঠিক থাকে
     }
 
     function renderRecentIcons() {
@@ -296,15 +284,6 @@
             card.classList.add('is-fav');
         }
         localStorage.setItem('fav_v13', JSON.stringify(favs));
-    }
-
-    function filterData(type, el) {
-        document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
-        el.classList.add('active');
-        let filtered = type === 'ALL' ? allChannels : 
-                       type === 'FAVORITE' ? allChannels.filter(c => favs.includes(c.url)) :
-                       allChannels.filter(c => (c.group+c.name).toUpperCase().includes(type.toUpperCase()));
-        render(filtered);
     }
 
     init();
