@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#ff2a2a">
-    <title>RoarZone TV | PWA Pro</title>
+    <title>RoarZone TV | Pro Edition</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -15,7 +15,7 @@
         
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* স্টিকি প্লেয়ার সেকশন */
+        /* স্টিকি প্লেয়ার এরিয়া */
         .fixed-top-container {
             position: sticky;
             top: 0;
@@ -56,28 +56,61 @@
             transition: all 0.3s ease;
         }
         
-        /* প্রিভিউ চলাকালীন কার্ডের গ্লো ইফেক্ট */
         .card.preview-active { 
             border-color: var(--primary); 
             box-shadow: 0 0 15px rgba(255, 42, 42, 0.4); 
             transform: translateY(-3px);
         }
 
-        .preview-container { position: relative; cursor: pointer; }
-        .logo-area { height: 80px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 12px; }
+        .preview-container { position: relative; }
+        
+        .logo-area { height: 80px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 12px; cursor: pointer; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
 
-        .inline-player { width: 100%; height: 80px; object-fit: cover; background: #000; display: none; }
+        .inline-player { width: 100%; height: 80px; object-fit: cover; background: #000; display: none; cursor: pointer; }
 
-        /* মিনিমাল প্রগ্রেস বার */
+        /* মিনি প্রগ্রেস বার */
         .preview-progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); display: none; z-index: 10; }
         .preview-progress-bar { width: 0%; height: 100%; background: var(--primary); }
 
         @keyframes progressAnim { from { width: 0%; } to { width: 100%; } }
 
-        .ch-info { padding: 8px; text-align: center; font-size: 11px; font-weight: 600; color: #eee; }
+        /* ইনফো এরিয়া এবং ইউনিক প্লে বাটন */
+        .ch-info { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 10px 6px; 
+            background: #111; 
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .ch-info:active { background: #222; }
+
+        .ch-name { 
+            font-size: 11px; 
+            font-weight: 600; 
+            color: #eee;
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            max-width: 75%;
+        }
+
+        .mini-play-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #ff2a2a, #ff6b6b);
+            border-radius: 50%;
+            margin-left: 8px;
+            box-shadow: 0 0 8px rgba(255, 42, 42, 0.4);
+        }
+        .mini-play-btn svg { width: 8px; fill: white; margin-left: 1px; }
         
-        .fav-heart { position: absolute; top: 6px; right: 6px; z-index: 20; background: rgba(0,0,0,0.4); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .fav-heart { position: absolute; top: 6px; right: 6px; z-index: 20; background: rgba(0,0,0,0.4); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .fav-heart svg { width: 14px; fill: rgba(255,255,255,0.4); }
         .card.is-fav .fav-heart svg { fill: var(--primary); }
 
@@ -94,7 +127,7 @@
     <div class="controls-area">
         <div class="top-nav">
             <div id="recent-header-list"></div>
-            <button class="search-trigger" onclick="toggleSearch(true)">
+            <button class="search-trigger" onclick="alert('Search feature coming soon!')">
                 <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </button>
         </div>
@@ -137,7 +170,7 @@
         let item = {};
         lines.forEach(l => {
             if (l.startsWith('#EXTINF')) {
-                item.name = l.split(',')[1]?.trim() || "Unknown TV";
+                item.name = l.split(',')[1]?.trim() || "TV Channel";
                 item.logo = l.match(/tvg-logo="(.*?)"/)?.[1] || "";
                 item.group = l.match(/group-title="(.*?)"/)?.[1] || "General";
             } else if (l.startsWith('http')) {
@@ -158,32 +191,38 @@
                     <div class="fav-heart" onclick="toggleFav(event, '${ch.url}')">
                         <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     </div>
-                    <div class="preview-container" onclick="handleCardClick(this, '${ch.url}')">
-                        <div class="logo-area">
+                    <div class="preview-container">
+                        <div class="logo-area" onclick="playMain('${ch.url}')">
                             <img src="${ch.logo}" loading="lazy" onerror="this.src='https://via.placeholder.com/100?text=TV'">
                         </div>
-                        <video class="inline-player" muted playsinline></video>
+
+                        <video class="inline-player" muted playsinline onclick="playMain('${ch.url}')"></video>
+                        
                         <div class="preview-progress-container">
                             <div class="preview-progress-bar"></div>
                         </div>
-                        <div class="ch-info">${ch.name}</div>
+
+                        <div class="ch-info" onclick="handleInlinePreview(this.parentElement, '${ch.url}')">
+                            <span class="ch-name">${ch.name}</span>
+                            <div class="mini-play-btn">
+                                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
         }).join('');
     }
 
-    function handleCardClick(container, url) {
+    function handleInlinePreview(container, url) {
         const card = container.closest('.card');
         const inlineVideo = container.querySelector('.inline-player');
         const logoArea = container.querySelector('.logo-area');
         const progressCont = container.querySelector('.preview-progress-container');
         const progressBar = container.querySelector('.preview-progress-bar');
 
-        // ১. আগের কোনো প্রিভিউ চললে তা বন্ধ করা
         if (activeInlinePlayer) stopPreview();
 
-        // ২. কার্ড অ্যাক্টিভ করা
         card.classList.add('preview-active');
         currentActiveCard = card;
 
@@ -198,14 +237,9 @@
                 progressBar.style.animation = 'progressAnim 10s linear forwards';
                 inlineVideo.play();
                 activeInlinePlayer = inlineVideo;
-
-                // ৩. ১০ সেকেন্ড পর অটো-স্টপ
                 previewTimeout = setTimeout(stopPreview, 10000);
             });
         }
-        
-        // ৪. মেইন প্লেয়ারে প্লে করা
-        playMain(url);
     }
 
     function stopPreview() {
@@ -234,10 +268,10 @@
             hls.on(Hls.Events.MANIFEST_PARSED, () => player.play());
         } else { player.src = url; player.play(); }
 
-        // রিসেন্ট লিস্ট আপডেট (স্ক্রল নড়বে না)
         recents = [url, ...recents.filter(u => u !== url)].slice(0, 10);
         localStorage.setItem('recent_v13', JSON.stringify(recents));
         renderRecentIcons();
+        // scrollTo(0,0) বাদ দেওয়া হয়েছে যাতে স্ক্রল পজিশন ঠিক থাকে
     }
 
     function renderRecentIcons() {
