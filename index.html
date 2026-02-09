@@ -4,31 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#ff2a2a">
-    <title>RoarZone TV | Cyan Preview Edition</title>
+    <title>RoarZone TV | Dark Premium</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     
     <style>
         :root { 
-            --primary: #ff2a2a; /* মেইন থিম লাল */
-            --accent: #00f2ff;  /* প্রিভিউ হাইলাইট কালার (সায়ান) */
+            --primary: #ff2a2a; 
+            --accent: #00f2ff; 
             --bg: #050505; 
-            --card-bg: #1a1a1a; 
+            --card-bg: #0f0f0f; 
             --text: #fff; 
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* স্টিকি প্লেয়ার এরিয়া */
+        /* স্টিকি প্লেয়ার */
         .fixed-top-container {
             position: sticky;
             top: 0;
             z-index: 2000;
             background: var(--bg);
             width: 100%;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.9);
         }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); }
         video#player { width: 100%; aspect-ratio: 16/9; display: block; }
@@ -37,67 +37,73 @@
         .top-nav { display: flex; justify-content: space-between; align-items: center; gap: 10px; height: 45px; }
         
         #recent-header-list { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; flex-grow: 1; }
-        .recent-mini-circle { width: 36px; height: 36px; border-radius: 50%; background: #fff; padding: 4px; border: 2px solid #333; flex-shrink: 0; cursor: pointer; }
-        .recent-mini-circle img { width: 100%; height: 100%; object-fit: contain; }
+        .recent-mini-circle { width: 38px; height: 38px; border-radius: 50%; background: #222; padding: 4px; border: 1.5px solid #444; flex-shrink: 0; cursor: pointer; }
+        .recent-mini-circle img { width: 100%; height: 100%; object-fit: contain; filter: brightness(0.9); }
 
         .cat-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
         .cat-pill { padding: 6px 14px; background: #1a1a1a; border-radius: 20px; font-size: 11px; border: 1px solid #333; color: #aaa; cursor: pointer; white-space: nowrap; }
         .cat-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-        /* গ্রিড এবং কার্ড ডিজাইন */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 10px; padding-bottom: 50px; }
+        /* ডার্ক কার্ড ডিজাইন */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 10px; padding-bottom: 60px; }
         
         .card { 
             background: var(--card-bg); 
             border-radius: 12px; 
             overflow: hidden; 
             position: relative; 
-            border: 1px solid #222;
-            transition: transform 0.2s ease;
+            border: 1px solid #1a1a1a;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
         .preview-container { position: relative; }
-        .logo-area { height: 85px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 12px; cursor: pointer; }
-        .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
+        
+        /* লোগো এরিয়া - এখন সম্পূর্ণ ডার্ক */
+        .logo-area { 
+            height: 90px; 
+            background: radial-gradient(circle, #1a1a1a 0%, #050505 100%);
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 18px; 
+            cursor: pointer;
+        }
+        .logo-area img { 
+            max-height: 100%; 
+            max-width: 100%; 
+            object-fit: contain; 
+            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.8)) brightness(0.85); 
+            transition: all 0.3s ease;
+        }
 
-        .inline-player { width: 100%; height: 85px; object-fit: cover; background: #000; display: none; cursor: pointer; }
+        .inline-player { width: 100%; height: 90px; object-fit: cover; background: #000; display: none; cursor: pointer; }
 
-        /* প্রিভিউ প্রগ্রেস বার (সায়ান কালার) */
-        .preview-progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); display: none; z-index: 10; }
-        .preview-progress-bar { width: 0%; height: 100%; background: var(--accent); box-shadow: 0 0 5px var(--accent); }
+        /* সায়ান প্রগ্রেস বার */
+        .preview-progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.05); display: none; z-index: 10; }
+        .preview-progress-bar { width: 0%; height: 100%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
 
         @keyframes progressAnim { from { width: 0%; } to { width: 100%; } }
 
-        /* ইনফো এরিয়া এবং হাইলাইট */
+        /* ইনফো এবং ইউনিক হাইলাইট */
         .ch-info { 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            padding: 10px 6px; 
-            background: #111; 
+            padding: 12px 6px; 
+            background: #0a0a0a; 
             cursor: pointer;
-            border: 1.5px solid transparent;
+            border-top: 1px solid #1a1a1a;
             transition: all 0.3s ease;
         }
 
-        /* শুধু টেক্সট এরিয়া হাইলাইট */
         .ch-info.preview-highlight {
-            border-color: var(--accent);
-            box-shadow: 0 0 12px rgba(0, 242, 255, 0.4);
-            background: #0a1a1b;
+            border: 1px solid var(--accent);
+            background: #051a1c; /* ডার্ক সায়ান আভা */
+            box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.1), 0 0 15px rgba(0, 242, 255, 0.3);
         }
 
-        .ch-name { 
-            font-size: 11px; 
-            font-weight: 600; 
-            color: #eee;
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            max-width: 70%;
-        }
+        .ch-name { font-size: 11px; font-weight: 600; color: #ccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
 
-        /* ইউনিক সায়ান প্লে বাটন */
         .mini-play-btn {
             display: inline-flex;
             align-items: center;
@@ -107,12 +113,12 @@
             background: linear-gradient(135deg, var(--accent), #00a2ff);
             border-radius: 50%;
             margin-left: 8px;
-            box-shadow: 0 0 8px rgba(0, 242, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
         }
         .mini-play-btn svg { width: 8px; fill: white; margin-left: 1px; }
         
-        .fav-heart { position: absolute; top: 6px; right: 6px; z-index: 20; background: rgba(0,0,0,0.4); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .fav-heart svg { width: 14px; fill: rgba(255,255,255,0.4); }
+        .fav-heart { position: absolute; top: 8px; right: 8px; z-index: 20; background: rgba(0,0,0,0.6); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #333; }
+        .fav-heart svg { width: 14px; fill: rgba(255,255,255,0.3); }
         .card.is-fav .fav-heart svg { fill: var(--primary); }
 
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
@@ -127,14 +133,15 @@
     <div class="controls-area">
         <div class="top-nav">
             <div id="recent-header-list"></div>
-            <button class="search-trigger" style="background:#333; border:none; border-radius:8px; padding:8px;">
-                <svg width="18" fill="white" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <button class="search-trigger" style="background:#222; border:1px solid #444; border-radius:8px; width:36px; height:36px; display:flex; align-items:center; justify-content:center;">
+                <svg width="16" fill="#aaa" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </button>
         </div>
         <div class="cat-row">
             <div class="cat-pill active" onclick="filterData('ALL', this)">All</div>
             <div class="cat-pill" onclick="filterData('FAVORITE', this)">⭐ Favorite</div>
             <div class="cat-pill" onclick="filterData('SPORTS', this)">Sports</div>
+            <div class="cat-pill" onclick="filterData('BANGLA', this)">Bangla</div>
         </div>
     </div>
 </div>
@@ -284,6 +291,15 @@
             card.classList.add('is-fav');
         }
         localStorage.setItem('fav_v13', JSON.stringify(favs));
+    }
+
+    function filterData(type, el) {
+        document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+        let filtered = type === 'ALL' ? allChannels : 
+                       type === 'FAVORITE' ? allChannels.filter(c => favs.includes(c.url)) :
+                       allChannels.filter(c => (c.group+c.name).toUpperCase().includes(type.toUpperCase()));
+        render(filtered);
     }
 
     init();
