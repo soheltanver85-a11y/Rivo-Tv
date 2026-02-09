@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#ff2a2a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" id="pwa-manifest">
-
     <title>RoarZone TV | PWA Pro</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -17,62 +13,75 @@
         :root { --primary: #ff2a2a; --bg: #050505; --card-bg: #1a1a1a; --text: #fff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         
-        body { 
-            background-color: var(--bg); 
-            color: var(--text);
-            overflow-x: hidden;
-            overscroll-behavior-y: contain;
-        }
+        body { background-color: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* স্টিকি টপ সেকশন */
+        /* স্টিকি প্লেয়ার সেকশন */
         .fixed-top-container {
             position: sticky;
             top: 0;
             z-index: 2000;
             background: var(--bg);
             width: 100%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
         }
 
         .video-box { background: #000; border-bottom: 2px solid var(--primary); }
-        video { width: 100%; aspect-ratio: 16/9; display: block; }
+        video#player { width: 100%; aspect-ratio: 16/9; display: block; }
 
-        .controls-area { padding: 8px 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; position: relative; height: 42px; gap: 10px; }
+        .controls-area { padding: 8px 10px; }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; gap: 10px; height: 45px; }
         
-        /* রিসেন্ট আইকন লিস্ট */
-        #recent-header-list { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; flex-grow: 1; align-items: center; }
+        #recent-header-list { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; flex-grow: 1; }
         #recent-header-list::-webkit-scrollbar { display: none; }
-        .recent-mini-circle { width: 34px; height: 34px; border-radius: 50%; background: #fff; padding: 4px; border: 1.5px solid #333; flex-shrink: 0; cursor: pointer; overflow: hidden; }
+        .recent-mini-circle { width: 36px; height: 36px; border-radius: 50%; background: #fff; padding: 4px; border: 2px solid #333; flex-shrink: 0; cursor: pointer; }
         .recent-mini-circle img { width: 100%; height: 100%; object-fit: contain; }
 
-        .nav-right { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
-        .btn-mini { padding: 4px 8px; border-radius: 4px; border: none; font-size: 9px; font-weight: 700; color: #fff; cursor: pointer; }
-        .btn-m { background: #ff4141; } .btn-t { background: #27ae60; }
-        .search-trigger { background: #333; width: 34px; height: 34px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: none; }
-        .search-trigger svg { width: 16px; fill: #fff; }
+        .search-trigger { background: #333; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
+        .search-trigger svg { width: 18px; fill: #fff; }
 
-        .search-overlay {
-            position: absolute; top: 0; right: -110%; width: 100%; height: 100%;
-            background: var(--bg); display: flex; align-items: center; transition: 0.3s; z-index: 20;
-        }
-        .search-overlay.active { right: 0; }
-        .search-input { width: 85%; background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 6px 15px; border-radius: 20px; outline: none; }
-
-        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding: 5px 0; scrollbar-width: none; }
-        .cat-pill { padding: 5px 12px; background: #1a1a1a; border-radius: 15px; white-space: nowrap; font-size: 10px; border: 1px solid #333; color: #aaa; cursor: pointer; }
+        .cat-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
+        .cat-pill { padding: 6px 14px; background: #1a1a1a; border-radius: 20px; font-size: 11px; border: 1px solid #333; color: #aaa; cursor: pointer; white-space: nowrap; }
         .cat-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-        .main-grid-container { padding: 10px; min-height: 100vh; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding-bottom: 100px; }
-        .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; position: relative; border: 1px solid #222; }
-        .logo-area { height: 75px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 10px; }
+        /* গ্রিড এবং কার্ড ডিজাইন */
+        .main-grid-container { padding: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding-bottom: 50px; }
+        
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            position: relative; 
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        /* প্রিভিউ চলাকালীন কার্ডের গ্লো ইফেক্ট */
+        .card.preview-active { 
+            border-color: var(--primary); 
+            box-shadow: 0 0 15px rgba(255, 42, 42, 0.4); 
+            transform: translateY(-3px);
+        }
+
+        .preview-container { position: relative; cursor: pointer; }
+        .logo-area { height: 80px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 12px; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
-        .ch-info { padding: 8px; text-align: center; font-size: 10px; font-weight: 600; }
-        .fav-heart { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.5); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .fav-heart svg { width: 12px; fill: rgba(255,255,255,0.3); }
+
+        .inline-player { width: 100%; height: 80px; object-fit: cover; background: #000; display: none; }
+
+        /* মিনিমাল প্রগ্রেস বার */
+        .preview-progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); display: none; z-index: 10; }
+        .preview-progress-bar { width: 0%; height: 100%; background: var(--primary); }
+
+        @keyframes progressAnim { from { width: 0%; } to { width: 100%; } }
+
+        .ch-info { padding: 8px; text-align: center; font-size: 11px; font-weight: 600; color: #eee; }
+        
+        .fav-heart { position: absolute; top: 6px; right: 6px; z-index: 20; background: rgba(0,0,0,0.4); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .fav-heart svg { width: 14px; fill: rgba(255,255,255,0.4); }
         .card.is-fav .fav-heart svg { fill: var(--primary); }
 
-        @media (min-width: 768px) { .grid { grid-template-columns: repeat(6, 1fr); } }
+        @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
     </style>
 </head>
 <body>
@@ -85,22 +94,14 @@
     <div class="controls-area">
         <div class="top-nav">
             <div id="recent-header-list"></div>
-            <div class="nav-right">
-                <button class="btn-mini btn-m">Mob</button>
-                <button class="btn-mini btn-t">TV</button>
-                <button class="search-trigger" onclick="toggleSearch(true)">
-                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                </button>
-            </div>
-            <div class="search-overlay" id="searchOverlay">
-                <input type="text" class="search-input" id="searchInput" placeholder="Search..." oninput="searchChannels()">
-                <button style="background:none; border:none; color:var(--primary); margin-left:10px; font-weight:bold;" onclick="toggleSearch(false)">×</button>
-            </div>
+            <button class="search-trigger" onclick="toggleSearch(true)">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            </button>
         </div>
 
         <div class="cat-row">
             <div class="cat-pill active" onclick="filterData('ALL', this)">All</div>
-            <div class="cat-pill" onclick="filterData('FAVORITE', this)">⭐ Fav</div>
+            <div class="cat-pill" onclick="filterData('FAVORITE', this)">⭐ Favorite</div>
             <div class="cat-pill" onclick="filterData('SPORTS', this)">Sports</div>
             <div class="cat-pill" onclick="filterData('BANGLA', this)">Bangla</div>
         </div>
@@ -112,55 +113,23 @@
 </div>
 
 <script>
-    // --- PWA SETUP ---
-    const manifest = {
-        "name": "RoarZone Live TV",
-        "short_name": "RoarZone",
-        "start_url": ".",
-        "display": "standalone",
-        "background_color": "#050505",
-        "theme_color": "#ff2a2a",
-        "icons": [{
-            "src": "https://via.placeholder.com/192/ff2a2a/ffffff?text=RZ",
-            "sizes": "192x192",
-            "type": "image/png"
-        }, {
-            "src": "https://via.placeholder.com/512/ff2a2a/ffffff?text=RoarZone",
-            "sizes": "512x512",
-            "type": "image/png"
-        }]
-    };
-    const stringManifest = JSON.stringify(manifest);
-    const blob = new Blob([stringManifest], {type: 'application/json'});
-    document.getElementById('pwa-manifest').setAttribute('href', URL.createObjectURL(blob));
-
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('data:text/javascript;base64,' + btoa('self.addEventListener("fetch", (event) => {});'))
-            .then(reg => console.log('PWA Ready!'), err => console.log('PWA Error'));
-        });
-    }
-
-    // --- MAIN APP LOGIC ---
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
     let allChannels = [], favs = JSON.parse(localStorage.getItem('fav_v13')) || [];
     let recents = JSON.parse(localStorage.getItem('recent_v13')) || [];
+    
+    let activeInlinePlayer = null;
+    let previewTimeout = null;
+    let currentActiveCard = null;
 
     const grid = document.getElementById('mainGrid');
     const player = document.getElementById('player');
-    const overlay = document.getElementById('searchOverlay');
-
-    function toggleSearch(show) {
-        overlay.classList.toggle('active', show);
-        if(!show) { document.getElementById('searchInput').value = ""; render(allChannels); }
-    }
 
     async function init() {
         try {
             const res = await fetch(M3U_URL);
             const data = await res.text();
             parseM3U(data);
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Error loading channels:", e); }
     }
 
     function parseM3U(data) {
@@ -168,7 +137,7 @@
         let item = {};
         lines.forEach(l => {
             if (l.startsWith('#EXTINF')) {
-                item.name = l.split(',')[1]?.trim() || "TV";
+                item.name = l.split(',')[1]?.trim() || "Unknown TV";
                 item.logo = l.match(/tvg-logo="(.*?)"/)?.[1] || "";
                 item.group = l.match(/group-title="(.*?)"/)?.[1] || "General";
             } else if (l.startsWith('http')) {
@@ -189,8 +158,14 @@
                     <div class="fav-heart" onclick="toggleFav(event, '${ch.url}')">
                         <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     </div>
-                    <div onclick="play('${ch.url}')" style="cursor:pointer">
-                        <div class="logo-area"><img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/100?text=TV'"></div>
+                    <div class="preview-container" onclick="handleCardClick(this, '${ch.url}')">
+                        <div class="logo-area">
+                            <img src="${ch.logo}" loading="lazy" onerror="this.src='https://via.placeholder.com/100?text=TV'">
+                        </div>
+                        <video class="inline-player" muted playsinline></video>
+                        <div class="preview-progress-container">
+                            <div class="preview-progress-bar"></div>
+                        </div>
                         <div class="ch-info">${ch.name}</div>
                     </div>
                 </div>
@@ -198,7 +173,60 @@
         }).join('');
     }
 
-    function play(url) {
+    function handleCardClick(container, url) {
+        const card = container.closest('.card');
+        const inlineVideo = container.querySelector('.inline-player');
+        const logoArea = container.querySelector('.logo-area');
+        const progressCont = container.querySelector('.preview-progress-container');
+        const progressBar = container.querySelector('.preview-progress-bar');
+
+        // ১. আগের কোনো প্রিভিউ চললে তা বন্ধ করা
+        if (activeInlinePlayer) stopPreview();
+
+        // ২. কার্ড অ্যাক্টিভ করা
+        card.classList.add('preview-active');
+        currentActiveCard = card;
+
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(url);
+            hls.attachMedia(inlineVideo);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                logoArea.style.display = 'none';
+                inlineVideo.style.display = 'block';
+                progressCont.style.display = 'block';
+                progressBar.style.animation = 'progressAnim 10s linear forwards';
+                inlineVideo.play();
+                activeInlinePlayer = inlineVideo;
+
+                // ৩. ১০ সেকেন্ড পর অটো-স্টপ
+                previewTimeout = setTimeout(stopPreview, 10000);
+            });
+        }
+        
+        // ৪. মেইন প্লেয়ারে প্লে করা
+        playMain(url);
+    }
+
+    function stopPreview() {
+        if (activeInlinePlayer) {
+            activeInlinePlayer.pause();
+            activeInlinePlayer.style.display = 'none';
+            activeInlinePlayer.src = "";
+            
+            const container = activeInlinePlayer.closest('.preview-container');
+            container.querySelector('.logo-area').style.display = 'flex';
+            container.querySelector('.preview-progress-container').style.display = 'none';
+            container.querySelector('.preview-progress-bar').style.animation = 'none';
+            
+            if (currentActiveCard) currentActiveCard.classList.remove('preview-active');
+            
+            clearTimeout(previewTimeout);
+            activeInlinePlayer = null;
+        }
+    }
+
+    function playMain(url) {
         if (Hls.isSupported()) {
             const hls = new Hls();
             hls.loadSource(url);
@@ -206,10 +234,10 @@
             hls.on(Hls.Events.MANIFEST_PARSED, () => player.play());
         } else { player.src = url; player.play(); }
 
+        // রিসেন্ট লিস্ট আপডেট (স্ক্রল নড়বে না)
         recents = [url, ...recents.filter(u => u !== url)].slice(0, 10);
         localStorage.setItem('recent_v13', JSON.stringify(recents));
         renderRecentIcons();
-        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function renderRecentIcons() {
@@ -217,7 +245,7 @@
         if (recents.length === 0 || allChannels.length === 0) return;
         const recentData = recents.map(url => allChannels.find(c => c.url === url)).filter(Boolean);
         container.innerHTML = recentData.map(ch => `
-            <div class="recent-mini-circle" onclick="play('${ch.url}')">
+            <div class="recent-mini-circle" onclick="playMain('${ch.url}')">
                 <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/50'">
             </div>
         `).join('');
@@ -225,9 +253,15 @@
 
     function toggleFav(e, url) {
         e.stopPropagation();
-        favs.includes(url) ? favs = favs.filter(u => u !== url) : favs.push(url);
+        const card = e.currentTarget.closest('.card');
+        if (favs.includes(url)) {
+            favs = favs.filter(u => u !== url);
+            card.classList.remove('is-fav');
+        } else {
+            favs.push(url);
+            card.classList.add('is-fav');
+        }
         localStorage.setItem('fav_v13', JSON.stringify(favs));
-        render(allChannels);
     }
 
     function filterData(type, el) {
@@ -237,11 +271,6 @@
                        type === 'FAVORITE' ? allChannels.filter(c => favs.includes(c.url)) :
                        allChannels.filter(c => (c.group+c.name).toUpperCase().includes(type.toUpperCase()));
         render(filtered);
-    }
-
-    function searchChannels() {
-        const q = document.getElementById('searchInput').value.toLowerCase();
-        render(allChannels.filter(c => c.name.toLowerCase().includes(q)));
     }
 
     init();
