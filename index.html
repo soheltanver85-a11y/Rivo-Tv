@@ -22,7 +22,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 50px; }
 
-        /* স্টিকি হেডার ও প্লেয়ার */
         .fixed-top-container {
             position: sticky;
             top: 0;
@@ -36,7 +35,6 @@
 
         .controls-area { padding: 4px 8px; }
         
-        /* ব্র্যান্ডিং ও লাইভ ইন্ডিকেটর */
         .top-nav { display: flex; justify-content: space-between; align-items: center; gap: 6px; height: 45px; margin-bottom: 2px; }
         .brand-wrapper { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
         .brand-name { 
@@ -53,13 +51,10 @@
         .live-text { font-size: 8px; font-weight: 800; color: #ff0000; text-transform: uppercase; letter-spacing: 0.5px; }
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.5; } }
 
-        /* রিসেন্ট আইকন লিস্ট */
         #recent-header-list { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; flex-grow: 1; justify-content: flex-end; }
         .recent-mini-circle { width: 32px; height: 32px; border-radius: 50%; background: #1a1a1a; padding: 2px; border: 1px solid #333; flex-shrink: 0; cursor: pointer; transition: 0.2s; }
-        .recent-mini-circle:active { transform: scale(0.9); }
         .recent-mini-circle img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
 
-        /* ছোট ও প্রিমিয়াম ক্যাটাগরি পিল */
         .cat-row { display: flex; gap: 5px; overflow-x: auto; padding: 6px 4px 10px 4px; scrollbar-width: none; align-items: center; }
         .cat-pill { 
             padding: 4px 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; font-size: 9px; 
@@ -73,16 +68,13 @@
         .download-btn-fire { background: linear-gradient(45deg, #ff4500, #ff8c00) !important; color: white !important; font-weight: 700 !important; border: none !important; animation: fire-burn 0.8s infinite alternate; }
         @keyframes fire-burn { 0% { box-shadow: 0 0 4px #ff4500; } 100% { box-shadow: 0 0 10px #ff8c00; } }
 
-        /* বড় সার্চ বাটন */
         .search-pill { background: #1a1a1a !important; border-color: #444 !important; min-width: 85px; justify-content: center; font-weight: 600; color: #fff !important; }
 
-        /* গ্রিড ও কার্ড ডিজাইন */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
         .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #1a1a1a; transition: 0.3s; }
         .logo-area { height: 95px; background: radial-gradient(circle, #1a1a1a 0%, #050505 100%); display: flex; align-items: center; justify-content: center; padding: 15px; position: relative; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; z-index: 1; cursor: pointer; }
         
-        /* ফেভারিট স্টার */
         .fav-star { 
             position: absolute; top: 6px; right: 6px; z-index: 15; cursor: pointer; 
             width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; 
@@ -91,7 +83,6 @@
         .fav-star svg { fill: #555; transition: 0.3s; }
         .fav-star.active svg { fill: #ffcc00; filter: drop-shadow(0 0 4px #ffcc00); }
 
-        /* মিনি প্রিভিউ ও প্রোগ্রেস বার */
         .preview-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 10; background: #000; }
         .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); z-index: 11; display: none; }
         .progress-bar { height: 100%; width: 0%; background: var(--primary); box-shadow: 0 0 8px var(--primary); }
@@ -124,9 +115,9 @@
         </div>
         
         <div class="cat-row">
-            <div class="cat-pill active" onclick="filterData('ALL', this)">
+            <div id="all-btn" class="cat-pill active" onclick="filterData('ALL', this)">
                 <svg width="10" height="10" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
-                All
+                All 0
             </div>
             <div class="cat-pill" onclick="filterFav(this)">
                 <svg width="10" height="10" fill="#ffcc00" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
@@ -173,6 +164,13 @@
                 item = {};
             }
         });
+
+        // চ্যানেলের মোট সংখ্যা আপডেট করা (All 99 এর মতো)
+        document.getElementById('all-btn').innerHTML = `
+            <svg width="10" height="10" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+            All ${allChannels.length}
+        `;
+
         render(allChannels);
         renderRecentIcons();
     }
