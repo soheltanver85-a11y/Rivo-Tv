@@ -124,11 +124,7 @@
         </div>
         
         <div class="cat-row">
-            <div class="cat-pill active" onclick="filterData('ALL', this)">
-                <svg width="10" height="10" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
-                All
-            </div>
-            <div class="cat-pill" onclick="filterFav(this)">
+            <div class="cat-pill active" onclick="filterFav(this)">
                 <svg width="10" height="10" fill="#ffcc00" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 Fav
             </div>
@@ -177,6 +173,7 @@
                 item = {};
             }
         });
+        // প্রথম লোড এ সব চ্যানেল দেখাবে
         render(allChannels);
         renderRecentIcons();
     }
