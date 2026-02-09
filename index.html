@@ -33,89 +33,80 @@
         .video-box { background: #000; border-bottom: 2px solid var(--primary); }
         video#player { width: 100%; aspect-ratio: 16/9; display: block; }
 
-        .controls-area { padding: 4px 10px; }
+        .controls-area { padding: 4px 8px; }
         
-        /* উন্নত ব্র্যান্ডিং স্টাইল */
-        .top-nav { display: flex; justify-content: space-between; align-items: center; gap: 8px; height: 45px; margin-bottom: 5px; }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; gap: 6px; height: 45px; margin-bottom: 2px; }
         
-        .brand-wrapper { display: flex; align-items: center; gap: 6px; }
+        .brand-wrapper { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
         
         .brand-name { 
-            font-size: 18px; 
+            font-size: 16px; 
             font-weight: 900; 
-            letter-spacing: 1px;
             background: linear-gradient(90deg, #fff, var(--primary), #fff);
             background-size: 200% auto;
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent;
             animation: shine 3s linear infinite;
             text-transform: uppercase;
-            filter: drop-shadow(0 0 5px rgba(0, 242, 255, 0.3));
         }
 
-        @keyframes shine {
-            to { background-position: 200% center; }
-        }
+        @keyframes shine { to { background-position: 200% center; } }
 
-        /* লাইভ ইন্ডিকেটর */
-        .live-indicator {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(255, 0, 0, 0.15);
-            padding: 2px 6px;
-            border-radius: 4px;
-            border: 0.5px solid rgba(255, 0, 0, 0.3);
-        }
-        .dot {
-            width: 6px;
-            height: 6px;
-            background-color: #ff0000;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #ff0000;
-            animation: pulse 1.5s infinite;
-        }
-        .live-text {
-            font-size: 8px;
-            font-weight: 700;
-            color: #ff0000;
-            text-transform: uppercase;
-        }
+        .live-indicator { display: flex; align-items: center; gap: 3px; background: rgba(255, 0, 0, 0.1); padding: 2px 5px; border-radius: 4px; }
+        .dot { width: 5px; height: 5px; background-color: #ff0000; border-radius: 50%; box-shadow: 0 0 6px #ff0000; animation: pulse 1.5s infinite; }
+        .live-text { font-size: 7px; font-weight: 700; color: #ff0000; text-transform: uppercase; }
 
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.5; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.5; } }
 
-        #recent-header-list { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; flex-grow: 1; margin-left: 5px; }
-        .recent-mini-circle { width: 32px; height: 32px; border-radius: 50%; background: #1a1a1a; padding: 3px; border: 1px solid #333; flex-shrink: 0; cursor: pointer; }
+        #recent-header-list { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; flex-grow: 1; justify-content: flex-end; }
+        .recent-mini-circle { width: 30px; height: 30px; border-radius: 50%; background: #1a1a1a; padding: 2px; border: 1px solid #333; flex-shrink: 0; }
         .recent-mini-circle img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
 
-        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding: 5px 0 10px 0; scrollbar-width: none; align-items: center; white-space: nowrap; }
-        .cat-pill { padding: 5px 12px; background: #1a1a1a; border-radius: 12px; font-size: 10px; border: 1px solid #333; color: #aaa; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        /* ছোট ও এক লাইনে বাটন */
+        .cat-row { 
+            display: flex; 
+            gap: 4px; 
+            overflow-x: auto; 
+            padding: 5px 0 8px 0; 
+            scrollbar-width: none; 
+            align-items: center; 
+        }
+        .cat-pill { 
+            padding: 4px 10px; 
+            background: #1a1a1a; 
+            border-radius: 10px; 
+            font-size: 9px; 
+            border: 1px solid #333; 
+            color: #aaa; 
+            cursor: pointer; 
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
         .cat-pill.active { background: rgba(0, 242, 255, 0.1); color: var(--primary); border-color: var(--primary); }
-        .download-btn-fire { background: linear-gradient(45deg, #ff4500, #ff8c00) !important; color: white !important; font-weight: 700 !important; animation: fire-burn 0.8s infinite alternate ease-in-out; }
-        @keyframes fire-burn { 0% { box-shadow: 0 0 4px #ff4500; transform: scale(1); } 100% { box-shadow: 0 0 10px #ff8c00; transform: scale(1.03); } }
+        .download-btn-fire { background: linear-gradient(45deg, #ff4500, #ff8c00) !important; color: white !important; font-weight: 700 !important; animation: fire-burn 0.8s infinite alternate; }
+        @keyframes fire-burn { 0% { box-shadow: 0 0 4px #ff4500; } 100% { box-shadow: 0 0-8px #ff8c00; } }
 
+        /* গ্রিড */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
         .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; position: relative; border: 1px solid #1a1a1a; }
         .logo-area { height: 85px; background: radial-gradient(circle, #1a1a1a 0%, #050505 100%); display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; }
-        .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; z-index: 1; cursor: pointer; }
+        .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; z-index: 1; }
         
-        .fav-star { position: absolute; top: 5px; right: 5px; z-index: 15; cursor: pointer; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); border-radius: 50%; padding: 4px; }
-        .fav-star svg { fill: #555; transition: 0.3s; }
+        .fav-star { position: absolute; top: 5px; right: 5px; z-index: 15; cursor: pointer; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); border-radius: 50%; }
+        .fav-star svg { fill: #555; }
         .fav-star.active svg { fill: #ffcc00; filter: drop-shadow(0 0 3px #ffcc00); }
 
         .preview-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 10; background: #000; }
         .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); z-index: 11; display: none; }
         .progress-bar { height: 100%; width: 0%; background: var(--primary); }
 
-        .ch-info { display: flex; align-items: center; gap: 6px; padding: 10px 5px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
+        .ch-info { display: flex; align-items: center; gap: 5px; padding: 10px 5px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
         .ch-name { font-size: 10px; font-weight: 600; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .dev-credit { text-align: center; padding: 20px 0; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; color: #444; }
-        .dev-credit span { color: var(--primary); font-weight: 600; }
+        .dev-credit { text-align: center; padding: 20px 0; font-size: 8px; letter-spacing: 1px; color: #444; }
+        .dev-credit span { color: var(--primary); }
 
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
     </style>
@@ -142,11 +133,10 @@
             <div class="cat-pill active" onclick="filterData('ALL', this)">All</div>
             <div class="cat-pill" onclick="filterFav(this)">⭐ Fav</div>
             <div class="cat-pill" onclick="filterData('SPORTS', this)">Sports</div>
-            <div class="cat-pill" onclick="filterData('BANGLA', this)">Bangla</div>
             <div class="cat-pill download-btn-fire" onclick="window.open('YOUR_APP_LINK', '_blank')">App 📥</div>
             <div class="cat-pill" style="border-color:var(--accent); color:var(--accent);" onclick="shareSite()">Share 🔗</div>
             <div class="cat-pill" onclick="alert('Searching...')">
-                <svg width="12" fill="#aaa" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <svg width="10" fill="#aaa" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </div>
         </div>
     </div>
@@ -196,17 +186,14 @@
             return `
                 <div class="card">
                     <div class="fav-star ${isFav ? 'active' : ''}" onclick="toggleFav('${ch.url}', this)">
-                        <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        <svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                     </div>
                     <div class="logo-area" id="logo-box-${index}">
                         <img src="${ch.logo}" onclick="playMain('${ch.url}')" onerror="this.src='https://via.placeholder.com/80?text=TV'">
                         <div class="progress-container" id="prog-cont-${index}"><div class="progress-bar" id="prog-bar-${index}"></div></div>
                     </div>
                     <div class="ch-info" onclick="startMiniPreview('${ch.url}', ${index})">
-                        <svg class="play-icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
-                            <circle cx="12" cy="12" r="12" fill="var(--primary)" fill-opacity="0.2"/>
-                            <path d="M10 8L16 12L10 16V8Z" fill="var(--primary)"/>
-                        </svg>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--primary)"><path d="M10 8L16 12L10 16V8Z"/></svg>
                         <span class="ch-name">${ch.name}</span>
                     </div>
                 </div>
@@ -229,8 +216,7 @@
     function filterFav(el) {
         document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
         el.classList.add('active');
-        const favData = allChannels.filter(ch => favorites.includes(ch.url));
-        render(favData);
+        render(allChannels.filter(ch => favorites.includes(ch.url)));
     }
 
     function playMain(url) {
@@ -255,7 +241,6 @@
         videoElem.className = 'preview-video';
         videoElem.muted = true; videoElem.autoplay = true; videoElem.playsinline = true;
         container.appendChild(videoElem);
-
         progCont.style.display = 'block';
         progBar.style.width = '0%';
         progBar.style.transition = 'width 10s linear';
@@ -279,7 +264,6 @@
 
     function renderRecentIcons() {
         const container = document.getElementById('recent-header-list');
-        if(!container) return;
         const recentData = recents.map(url => allChannels.find(c => c.url === url)).filter(Boolean);
         container.innerHTML = recentData.map(ch => `
             <div class="recent-mini-circle" onclick="playMain('${ch.url}')">
@@ -296,11 +280,8 @@
     }
 
     function shareSite() {
-        if (navigator.share) {
-            navigator.share({ title: 'Rivo TV', url: window.location.href });
-        } else {
-            navigator.clipboard.writeText(window.location.href); alert("Link Copied!");
-        }
+        if (navigator.share) { navigator.share({ title: 'Rivo TV', url: window.location.href }); }
+        else { navigator.clipboard.writeText(window.location.href); alert("Link Copied!"); }
     }
 
     init();
