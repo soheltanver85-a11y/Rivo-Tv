@@ -231,12 +231,15 @@
             hls.loadSource(url);
             hls.attachMedia(player);
             hls.on(Hls.Events.MANIFEST_PARSED, () => player.play());
-        } else { player.src = url; player.play(); }
+        } else { 
+            player.src = url; 
+            player.play(); 
+        }
         
         recents = [url, ...recents.filter(u => u !== url)].slice(0, 10);
         localStorage.setItem('recent_rivo', JSON.stringify(recents));
         renderRecentIcons();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // এখানে আগে window.scrollTo ছিল যা এখন সরিয়ে ফেলা হয়েছে যেন পেজ স্থির থাকে।
     }
 
     function startMiniPreview(url, index) {
