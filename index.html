@@ -59,7 +59,7 @@
         .recent-mini-circle:active { transform: scale(0.9); }
         .recent-mini-circle img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
 
-        /* ছোট ও প্রিমিয়াম ক্যাটাগরি পিল */
+        /* ক্যাটাগরি পিল */
         .cat-row { display: flex; gap: 5px; overflow-x: auto; padding: 6px 4px 10px 4px; scrollbar-width: none; align-items: center; }
         .cat-pill { 
             padding: 4px 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; font-size: 9px; 
@@ -70,11 +70,38 @@
             background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary);
             box-shadow: 0 0 8px rgba(0, 242, 255, 0.2);
         }
+
+        /* উন্নত সার্চ বার ডিজাইন */
+        .search-container {
+            padding: 0 8px 10px 8px;
+            display: none;
+        }
+        .search-container.active {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            background: #151515;
+            border: 1px solid #333;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
+        }
+
         .download-btn-fire { background: linear-gradient(45deg, #ff4500, #ff8c00) !important; color: white !important; font-weight: 700 !important; border: none !important; animation: fire-burn 0.8s infinite alternate; }
         @keyframes fire-burn { 0% { box-shadow: 0 0 4px #ff4500; } 100% { box-shadow: 0 0 10px #ff8c00; } }
-
-        /* বড় সার্চ বাটন */
-        .search-pill { background: #1a1a1a !important; border-color: #444 !important; min-width: 85px; justify-content: center; font-weight: 600; color: #fff !important; }
 
         /* গ্রিড ও কার্ড ডিজাইন */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
@@ -91,8 +118,6 @@
         .fav-star svg { fill: #555; transition: 0.3s; }
         .fav-star.active svg { fill: #ffcc00; filter: drop-shadow(0 0 4px #ffcc00); }
 
-        /* মিনি প্রিভিউ ও প্রোগ্রেস বার */
-        .preview-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 10; background: #000; }
         .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); z-index: 11; display: none; }
         .progress-bar { height: 100%; width: 0%; background: var(--primary); box-shadow: 0 0 8px var(--primary); }
 
@@ -134,7 +159,11 @@
             </div>
             <div class="cat-pill download-btn-fire" onclick="window.open('YOUR_APP_LINK', '_blank')">App 📥</div>
             <div class="cat-pill" style="border-color:var(--accent); color:var(--accent);" onclick="shareSite()">Share 🔗</div>
-            <div class="cat-pill search-pill" onclick="toggleSearch()">Search 🔍</div>
+            <div class="cat-pill" style="background:#1a1a1a; min-width:80px; justify-content:center;" onclick="toggleSearch()">Search 🔍</div>
+        </div>
+
+        <div class="search-container" id="searchWrapper">
+            <input type="text" id="searchInput" class="search-input" placeholder="চ্যানেলের নাম টাইপ করুন..." oninput="liveSearch()">
         </div>
     </div>
 </div>
@@ -178,6 +207,10 @@
     }
 
     function render(data) {
+        if(data.length === 0) {
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:50px; color:#555;">কোন চ্যানেল খুঁজে পাওয়া যায়নি!</div>`;
+            return;
+        }
         grid.innerHTML = data.map((ch, index) => {
             const isFav = favorites.includes(ch.url);
             return `
@@ -198,6 +231,26 @@
         }).join('');
     }
 
+    function toggleSearch() {
+        const wrapper = document.getElementById('searchWrapper');
+        const input = document.getElementById('searchInput');
+        if (wrapper.classList.contains('active')) {
+            wrapper.classList.remove('active');
+            input.value = '';
+            render(allChannels);
+        } else {
+            wrapper.classList.add('active');
+            input.focus();
+        }
+    }
+
+    function liveSearch() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+        const filtered = allChannels.filter(ch => ch.name.toLowerCase().includes(query));
+        render(filtered);
+    }
+
     function toggleFav(url, el) {
         event.stopPropagation();
         if (favorites.includes(url)) {
@@ -212,16 +265,8 @@
 
     function filterFav(el) {
         setActive(el);
+        document.getElementById('searchWrapper').classList.remove('active');
         render(allChannels.filter(ch => favorites.includes(ch.url)));
-    }
-
-    function toggleSearch() {
-        const query = prompt("সার্চ করুন (চ্যানেলের নাম লিখুন):");
-        if (query !== null) {
-            const filtered = allChannels.filter(c => c.name.toLowerCase().includes(query.toLowerCase()));
-            render(filtered);
-            document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
-        }
     }
 
     function playMain(url) {
@@ -239,7 +284,6 @@
         recents = [url, ...recents.filter(u => u !== url)].slice(0, 10);
         localStorage.setItem('recent_rivo', JSON.stringify(recents));
         renderRecentIcons();
-        // এখানে আগে window.scrollTo ছিল যা এখন সরিয়ে ফেলা হয়েছে যেন পেজ স্থির থাকে।
     }
 
     function startMiniPreview(url, index) {
@@ -250,6 +294,7 @@
         
         const videoElem = document.createElement('video');
         videoElem.className = 'preview-video';
+        videoElem.style.cssText = "position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:10;";
         videoElem.muted = true; videoElem.autoplay = true; videoElem.playsinline = true;
         container.appendChild(videoElem);
 
@@ -286,6 +331,7 @@
 
     function filterData(type, el) {
         setActive(el);
+        document.getElementById('searchWrapper').classList.remove('active');
         let filtered = type === 'ALL' ? allChannels : allChannels.filter(c => (c.name).toUpperCase().includes(type.toUpperCase()));
         render(filtered);
     }
