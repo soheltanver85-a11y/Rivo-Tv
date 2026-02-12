@@ -20,14 +20,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 50px; }
 
-        /* স্টিকি হেডার ও প্লেয়ার */
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.9); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); }
         video#player { width: 100%; aspect-ratio: 16/9; display: block; background: #000; }
 
         .controls-area { padding: 4px 8px; }
-        
-        /* ব্র্যান্ডিং ও লাইভ ইন্ডিকেটর */
         .top-nav { display: flex; justify-content: space-between; align-items: center; gap: 6px; height: 45px; margin-bottom: 2px; }
         .brand-name { font-size: 17px; font-weight: 900; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; text-transform: uppercase; }
         @keyframes shine { to { background-position: 200% center; } }
@@ -37,34 +34,31 @@
         .live-text { font-size: 8px; font-weight: 800; color: #ff0000; text-transform: uppercase; }
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.5; } }
 
-        /* রিসেন্ট আইকন লিস্ট */
         #recent-header-list { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; flex-grow: 1; justify-content: flex-end; }
-        .recent-mini-circle { width: 32px; height: 32px; border-radius: 50%; background: #1a1a1a; padding: 2px; border: 1px solid #333; flex-shrink: 0; cursor: pointer; transition: 0.2s; }
+        .recent-mini-circle { width: 32px; height: 32px; border-radius: 50%; background: #1a1a1a; padding: 2px; border: 1px solid #333; flex-shrink: 0; cursor: pointer; }
         .recent-mini-circle img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
 
-        /* ক্যাটাগরি পিল */
         .cat-row { display: flex; gap: 5px; overflow-x: auto; padding: 6px 4px 10px 4px; scrollbar-width: none; align-items: center; }
         .cat-pill { padding: 4px 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; font-size: 9px; border: 1px solid rgba(255, 255, 255, 0.1); color: #bbb; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 3px; }
         .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); }
 
-        /* রিয়েল-টাইম সার্চ */
+        /* ডাউনলোড বাটন এনিমেশন */
+        .download-btn-fire { background: linear-gradient(45deg, #ff4500, #ff8c00) !important; color: white !important; font-weight: 700 !important; border: none !important; animation: fire-burn 0.8s infinite alternate; }
+        @keyframes fire-burn { 0% { box-shadow: 0 0 4px #ff4500; } 100% { box-shadow: 0 0 10px #ff8c00; } }
+
         .search-container { padding: 0 8px 10px 8px; display: none; }
         .search-container.active { display: block; animation: slideDown 0.3s ease-out; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .search-input { width: 100%; padding: 10px 15px; background: #151515; border: 1px solid #333; border-radius: 12px; color: #fff; font-size: 13px; outline: none; }
 
-        /* গ্রিড ও কার্ড */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
         .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #1a1a1a; }
         .logo-area { height: 95px; background: radial-gradient(circle, #1a1a1a 0%, #050505 100%); display: flex; align-items: center; justify-content: center; padding: 15px; position: relative; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; z-index: 1; cursor: pointer; }
         
-        /* ফেভারিট স্টার */
         .fav-star { position: absolute; top: 6px; right: 6px; z-index: 15; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); border-radius: 50%; }
         .fav-star svg { fill: #555; }
         .fav-star.active svg { fill: #ffcc00; }
 
-        /* প্রোগ্রেস বার */
         .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); z-index: 11; display: none; }
         .progress-bar { height: 100%; width: 0%; background: var(--primary); }
 
@@ -93,12 +87,13 @@
         <div class="cat-row">
             <div class="cat-pill active" onclick="filterData('ALL', this)">All</div>
             <div class="cat-pill" onclick="filterFav(this)">Fav ⭐</div>
+            <div class="cat-pill download-btn-fire" onclick="window.open('YOUR_APP_LINK', '_blank')">App 📥</div>
             <div class="cat-pill" style="border-color:var(--accent); color:var(--accent);" onclick="shareSite()">Share 🔗</div>
             <div class="cat-pill" style="background:#1a1a1a; min-width:80px; justify-content:center;" onclick="toggleSearch()">Search 🔍</div>
         </div>
 
         <div class="search-container" id="searchWrapper">
-            <input type="text" id="searchInput" class="search-input" placeholder="চ্যানেলের নাম লিখুন..." oninput="liveSearch()">
+            <input type="text" id="searchInput" class="search-input" placeholder="চ্যানেলের নাম টাইপ করুন..." oninput="liveSearch()">
         </div>
     </div>
 </div>
@@ -123,7 +118,6 @@
     }
 
     async function init() {
-        // অফলাইন সাপোর্ট: ক্যাশ থেকে আগে ডাটা লোড করা
         const cached = localStorage.getItem('offline_channels');
         if (cached) parseM3U(cached);
 
@@ -132,7 +126,7 @@
             const data = await res.text();
             localStorage.setItem('offline_channels', data);
             parseM3U(data);
-        } catch (e) { console.log("Running in offline mode"); }
+        } catch (e) { console.log("Offline mode"); }
     }
 
     function parseM3U(data) {
