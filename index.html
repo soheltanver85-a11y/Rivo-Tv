@@ -7,7 +7,9 @@
     <title>Rivo TV | Premium Live Streaming</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
     
     <style>
         :root { 
@@ -27,16 +29,9 @@
         
         .brand-wrapper { display: flex; align-items: center; gap: 8px; }
 
-        /* 🔥 Flaming Logo Style */
         .brand-name { 
-            font-family: 'Orbitron', sans-serif; 
-            font-size: 22px; 
-            font-weight: 900; 
-            color: #fff;
-            text-transform: uppercase;
-            position: relative;
-            letter-spacing: 1px;
-            /* Fire Glow Effect */
+            font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; color: #fff;
+            text-transform: uppercase; letter-spacing: 1px;
             text-shadow: 0 0 4px #fff, 0 -1px 4px #ff0, 2px -2px 6px #ff8000, -2px -4px 10px #f00;
             animation: flicker 1.5s infinite alternate;
         }
@@ -130,10 +125,10 @@
 </div>
 
 <script>
-    // Configuration
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
     let allChannels = [], recents = JSON.parse(localStorage.getItem('recent_rivo')) || [], favorites = JSON.parse(localStorage.getItem('fav_rivo')) || [];
-    let activePreviewHls = null;
+    let activeMainHls = null, activeMainDash = null;
+    let activePreviewHls = null, activePreviewDash = null;
     const player = document.getElementById('player'), grid = document.getElementById('mainGrid');
 
     let touchStartX = 0, touchEndX = 0;
@@ -182,12 +177,35 @@
         }).join('');
     }
 
+    // Unified player to handle both HLS and DASH (MPD)
     function playMain(url) {
         stopAllPreviews();
-        if (Hls.isSupported()) {
-            const hls = new Hls(); hls.loadSource(url); hls.attachMedia(player);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => player.play());
-        } else { player.src = url; player.play(); }
+        
+        // Reset previous players
+        if (activeMainHls) { activeMainHls.destroy(); activeMainHls = null; }
+        if (activeMainDash) { activeMainDash.reset(); activeMainDash = null; }
+
+        if (url.includes('.mpd')) {
+            // Play DASH (MPD)
+            activeMainDash = dashjs.MediaPlayer().create();
+            activeMainDash.initialize(player, url, true);
+        } else if (url.includes('.m3u8')) {
+            // Play HLS
+            if (Hls.isSupported()) {
+                activeMainHls = new Hls();
+                activeMainHls.loadSource(url);
+                activeMainHls.attachMedia(player);
+                activeMainHls.on(Hls.Events.MANIFEST_PARSED, () => player.play());
+            } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+                player.src = url;
+                player.play();
+            }
+        } else {
+            // Fallback for regular mp4 or other types
+            player.src = url;
+            player.play();
+        }
+
         recents = [url, ...recents.filter(u => u !== url)].slice(0, 5);
         localStorage.setItem('recent_rivo', JSON.stringify(recents));
         renderRecentIcons();
@@ -198,24 +216,34 @@
         const container = document.getElementById(`logo-box-${index}`);
         const progCont = document.getElementById(`prog-cont-${index}`);
         const progBar = document.getElementById(`prog-bar-${index}`);
+        
         const videoElem = document.createElement('video');
         videoElem.className = 'preview-video';
         videoElem.style.cssText = "position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:10; border-radius:12px;";
         videoElem.muted = true; videoElem.autoplay = true; videoElem.playsinline = true;
         videoElem.onclick = (e) => { e.stopPropagation(); playMain(url); };
+        
         container.appendChild(videoElem);
         progCont.style.display = 'block';
         setTimeout(() => { progBar.style.width = '100%'; }, 50);
-        if (Hls.isSupported()) {
-            activePreviewHls = new Hls(); activePreviewHls.loadSource(url);
+
+        if (url.includes('.mpd')) {
+            activePreviewDash = dashjs.MediaPlayer().create();
+            activePreviewDash.initialize(videoElem, url, true);
+        } else if (Hls.isSupported()) {
+            activePreviewHls = new Hls();
+            activePreviewHls.loadSource(url);
             activePreviewHls.attachMedia(videoElem);
-            activePreviewHls.on(Hls.Events.MANIFEST_PARSED, () => videoElem.play());
-        } else { videoElem.src = url; videoElem.play(); }
+        } else {
+            videoElem.src = url;
+        }
+
         setTimeout(() => stopAllPreviews(), 10000);
     }
 
     function stopAllPreviews() {
         if (activePreviewHls) { activePreviewHls.destroy(); activePreviewHls = null; }
+        if (activePreviewDash) { activePreviewDash.reset(); activePreviewDash = null; }
         document.querySelectorAll('.preview-video').forEach(el => el.remove());
         document.querySelectorAll('.progress-container').forEach(el => el.style.display = 'none');
         document.querySelectorAll('.progress-bar').forEach(el => { el.style.width = '0%'; });
