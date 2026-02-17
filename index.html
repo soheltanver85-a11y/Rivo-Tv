@@ -28,11 +28,9 @@
         .top-nav { display: flex; justify-content: space-between; align-items: center; gap: 6px; height: 50px; }
         
         .brand-wrapper { display: flex; align-items: center; gap: 8px; }
-
-        /* 🔥 Flaming Logo Style (Back as requested) */
         .brand-name { 
-            font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; color: #fff;
-            text-transform: uppercase; letter-spacing: 1px;
+            font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; 
+            color: #fff; text-transform: uppercase;
             text-shadow: 0 0 4px #fff, 0 -1px 4px #ff0, 2px -2px 6px #ff8000, -2px -4px 10px #f00;
             animation: flicker 1.5s infinite alternate;
         }
@@ -42,8 +40,7 @@
         }
 
         .status-indicator { display: flex; align-items: center; gap: 4px; background: rgba(0, 242, 255, 0.1); padding: 2px 6px; border-radius: 20px; border: 0.5px solid rgba(0, 242, 255, 0.3); }
-        .status-dot { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; animation: blink 1.2s infinite; box-shadow: 0 0 8px var(--primary); }
-        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        .status-dot { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; animation: blink 1.2s infinite; }
         .status-text { font-size: 8px; font-weight: 700; color: var(--primary); text-transform: uppercase; }
 
         #recent-header-list { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; flex-grow: 1; justify-content: flex-end; max-width: 160px; }
@@ -68,13 +65,13 @@
         .fav-star.active svg { fill: #ffcc00; }
 
         .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); z-index: 11; display: none; }
-        .progress-bar { height: 100%; width: 0%; background: var(--primary); box-shadow: 0 0 8px var(--primary); transition: width 10s linear; }
+        .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: width 10s linear; }
 
         .ch-info { display: flex; align-items: center; gap: 6px; padding: 10px 8px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
         .ch-name { font-size: 11px; font-weight: 600; color: #eee; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
         #exitModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: flex-end; }
-        .modal-content { background: #111; width: 100%; padding: 30px; border-radius: 25px 25px 0; text-align: center; border-top: 3px solid var(--primary); animation: slideUp 0.3s; }
+        .modal-content { background: #111; width: 100%; padding: 30px; border-radius: 25px 25px 0 0; text-align: center; border-top: 3px solid var(--primary); animation: slideUp 0.3s; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .m-btn { padding: 12px 35px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; margin: 10px; }
 
@@ -125,14 +122,18 @@
     const player = document.getElementById('player'), grid = document.getElementById('mainGrid');
 
     async function init() {
+        // Install Shaka Polyfills
         shaka.polyfil.installAll();
-        shakaPlayer = new shaka.Player(player);
-        
+        if (shaka.Player.isBrowserSupported()) {
+            shakaPlayer = new shaka.Player(player);
+            shakaPlayer.addEventListener('error', (e) => console.error('Shaka Error:', e.detail));
+        }
+
         try {
             const res = await fetch(M3U_URL);
             const data = await res.text();
             parseM3U(data);
-        } catch (e) { console.log("Load Fail"); }
+        } catch (e) { console.error("Could not load M3U file"); }
     }
 
     function parseM3U(data) {
@@ -174,15 +175,22 @@
     async function playMain(url) {
         stopAllPreviews();
         if (hlsPlayer) { hlsPlayer.destroy(); hlsPlayer = null; }
-        await shakaPlayer.unload();
+        if (shakaPlayer) { await shakaPlayer.unload(); }
 
         if (url.includes('.mpd')) {
-            try { await shakaPlayer.load(url); player.play(); } catch (e) { console.error("MPD Load Failed"); }
+            try { 
+                await shakaPlayer.load(url); 
+                player.play(); 
+            } catch (e) { alert("DASH/MPD link error. Check link or CORS."); }
         } else if (url.includes('.m3u8')) {
             if (Hls.isSupported()) {
-                hlsPlayer = new Hls(); hlsPlayer.loadSource(url); hlsPlayer.attachMedia(player);
+                hlsPlayer = new Hls(); 
+                hlsPlayer.loadSource(url); 
+                hlsPlayer.attachMedia(player);
                 hlsPlayer.on(Hls.Events.MANIFEST_PARSED, () => player.play());
-            } else { player.src = url; player.play(); }
+            } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+                player.src = url; player.play();
+            }
         } else {
             player.src = url; player.play();
         }
@@ -197,19 +205,24 @@
         const container = document.getElementById(`logo-box-${index}`);
         const progCont = document.getElementById(`prog-cont-${index}`);
         const progBar = document.getElementById(`prog-bar-${index}`);
+        
         const videoElem = document.createElement('video');
         videoElem.className = 'preview-video';
         videoElem.style.cssText = "position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:10; border-radius:12px;";
         videoElem.muted = true; videoElem.autoplay = true; videoElem.playsinline = true;
         videoElem.onclick = (e) => { e.stopPropagation(); playMain(url); };
+        
         container.appendChild(videoElem);
         progCont.style.display = 'block';
         setTimeout(() => { progBar.style.width = '100%'; }, 50);
 
         if (url.includes('.mpd')) {
-            let miniShaka = new shaka.Player(videoElem); miniShaka.load(url);
+            const miniShaka = new shaka.Player(videoElem);
+            miniShaka.load(url);
         } else if (Hls.isSupported()) {
-            let miniHls = new Hls(); miniHls.loadSource(url); miniHls.attachMedia(videoElem);
+            const miniHls = new Hls();
+            miniHls.loadSource(url);
+            miniHls.attachMedia(videoElem);
         } else { videoElem.src = url; }
         
         setTimeout(() => stopAllPreviews(), 10000);
@@ -247,6 +260,7 @@
         else alert("Link: " + window.location.href);
     }
 
+    let touchStartX = 0;
     window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
     window.addEventListener('touchend', e => {
         if (touchStartX - e.changedTouches[0].screenX > 80) document.getElementById('exitModal').style.display = 'flex';
