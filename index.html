@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#050505">
-    <title>Rivo TV | Premium Live Streaming</title>
+    <title>Rivo TV | Optimized Edition</title>
     
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Orbitron:wght@900&display=swap" rel="stylesheet">
@@ -21,115 +21,137 @@
             --bg: #050505; 
             --card-bg: #0f0f0f; 
             --text: #fff; 
+            --accent: #ff4081;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 30px; }
-
-        .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
-        .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         
-        .video-js { width: 100% !important; aspect-ratio: 16/10; }
-        @media (max-width: 768px) { .video-js { aspect-ratio: 4/3; } }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        html, body { background-color: var(--bg); color: var(--text); overflow-x: hidden; width: 100%; height: 100%; }
 
-        .vjs-loading-spinner { display: none !important; }
+        /* 📺 Top Fixed Section (Avia TV Style) */
+        #top-section { position: fixed; top: 0; left: 0; width: 100%; background: var(--bg); z-index: 1000; border-bottom: 1px solid #222; }
 
-        #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 10; }
+        /* 📱 Video Player Container */
+        .video-container { 
+            position: relative; 
+            width: 100%; 
+            aspect-ratio: 16/9; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: #000; 
+            overflow: hidden; 
+            touch-action: none; 
+        }
+        
+        .video-js { width: 100% !important; height: 100% !important; }
+        
+        /* 🖥️ Fullscreen Optimization */
+        .vjs-fullscreen #brand-header, 
+        .vjs-fullscreen .notice-board, 
+        .vjs-fullscreen header, 
+        .vjs-fullscreen .search-area,
+        .vjs-fullscreen .cat-row { display: none !important; }
+
+        .video-js .vjs-tech { object-fit: contain !important; }
+
+        /* Gesture Indicators */
+        #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 2147483647; }
         .gesture-indicator { 
             position: absolute; top: 50%; transform: translateY(-50%); 
-            background: rgba(0,0,0,0.8); color: var(--primary); padding: 10px 20px; 
-            border-radius: 30px; font-size: 14px; font-weight: bold; z-index: 20; 
+            background: rgba(0,0,0,0.8); color: var(--primary); padding: 12px 20px; 
+            border-radius: 30px; font-size: 14px; font-weight: bold; z-index: 2147483647; 
             display: none; pointer-events: none; border: 1px solid var(--primary); 
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
         }
         #vol-indicator { right: 20px; }
         #bri-indicator { left: 20px; }
 
-        .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 5px 0; }
-        .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 11px; color: #bbb; }
-        .notice-text a { color: var(--primary); text-decoration: none; font-weight: 800; font-family: 'Orbitron', sans-serif; border: 1px solid var(--primary); padding: 1px 6px; border-radius: 4px; margin-left: 5px; text-transform: uppercase; font-size: 10px; }
+        /* Header Styles */
+        .brand-header { padding: 10px 15px; background: #080808; display: flex; align-items: center; justify-content: space-between; }
+        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
 
+        .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 4px 0; }
+        .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 11px; color: #aaa; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* ⚡ Header with Refresh Button */
-        .header-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #080808; }
-        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
+        header { padding: 10px 12px; background: #080808; }
+        .action-btns { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; justify-content: space-between; }
+        .rect-btn { flex: 1; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-size: 16px; outline: none; background: #1a1a1a; color: #fff; text-decoration: none; }
         
-        .action-row { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
-        .action-btn { padding: 4px 8px; background: #1a1a1a; border-radius: 5px; border: 1px solid #333; color: #bbb; font-size: 10px; cursor: pointer; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-        .btn-refresh { color: var(--refresh); border-color: var(--refresh); }
-        .btn-contact { color: var(--telegram); border-color: var(--telegram); }
-        .btn-apk { background: rgba(255, 69, 0, 0.1); color: var(--fire); border-color: var(--fire); font-weight: bold; }
+        .btn-refresh { color: var(--refresh); border-color: var(--refresh); background: rgba(0, 255, 136, 0.05); }
+        .btn-tg { color: var(--telegram); border-color: var(--telegram); background: rgba(0, 136, 204, 0.05); }
+        .btn-rotate { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: bold; }
 
-        .search-area { padding: 0 10px 8px 10px; background: #080808; }
-        .search-input { width: 100%; padding: 7px 12px; background: #121212; border: 1px solid #222; border-radius: 6px; color: #fff; font-size: 11px; outline: none; }
+        .search-area { padding: 0 12px 10px 12px; display: flex; gap: 8px; align-items: center; }
+        .search-input { flex: 1; padding: 8px 12px; background: #121212; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 12px; outline: none; }
+        #count-badge { font-size: 10px; color: var(--primary); font-weight: bold; background: rgba(0, 242, 255, 0.1); padding: 4px 8px; border-radius: 4px; }
 
-        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding: 7px 10px; scrollbar-width: none; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; }
-        .cat-pill { padding: 4px 12px; background: #1a1a1a; border-radius: 5px; font-size: 10px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
-        .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); }
+        .cat-row { display: flex; gap: 8px; overflow-x: auto; padding: 0 12px 10px 12px; scrollbar-width: none; }
+        .cat-pill { padding: 6px 14px; background: #1a1a1a; border: 1px solid #333; color: #bbb; border-radius: 5px; font-size: 11px; cursor: pointer; white-space: nowrap; }
+        .cat-pill.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
-        .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
-        .logo-area { height: 90px; background: #000; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; cursor: pointer; }
-        .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
-        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); display: none; }
-        .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: width 10s linear; }
-        .ch-info { padding: 7px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
-        .ch-name { font-size: 10px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #eee; }
-        .fav-star { position: absolute; top: 5px; right: 5px; z-index: 20; padding: 4px; cursor: pointer; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; }
-        .fav-star svg { fill: #555; width: 12px; height: 12px; }
-        .fav-star.active svg { fill: #ffcc00; }
+        /* 📱 Content Area (Below Fixed Top) */
+        #content-area { margin-top: 280px; padding-bottom: 50px; } /* dynamically adjusted by JS */
 
-        .footer-area { padding: 12px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 10px; background: #080808; }
-        .dev-title { font-size: 8px; color: #444; text-transform: uppercase; margin-bottom: 2px; }
-        .dev-name { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 800; color: #888; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 12px; padding: 15px; }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 12px 5px; text-align: center; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; position: relative; transition: 0.2s; }
+        .card:active { transform: scale(0.95); }
+        .fav-star { position: absolute; top: 6px; right: 8px; font-size: 18px; color: rgba(255,255,255,0.2); z-index: 10; }
+        .fav-star.active { color: #ffcc00; }
+        .channel-logo { height: 35px; object-fit: contain; margin-bottom: 8px; pointer-events: none; }
+        .channel-name { font-size: 10px; color: #ccc; pointer-events: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
+        .footer-area { padding: 30px 0; text-align: center; border-top: 1px solid #1a1a1a; }
+        .dev-info { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+
+        @media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); } }
     </style>
 </head>
 <body>
 
-<div class="fixed-top-container">
-    <div class="video-box" id="player-wrapper">
+<div id="top-section">
+    <div id="brand-header" class="brand-header">
+        <div class="brand-name">RIVO TV</div>
+    </div>
+
+    <div class="notice-board">
+        <div class="notice-text">
+            📢 বর্তমানে আপনি সেরা স্ট্রিমিং সার্ভারে যুক্ত আছেন। কোনো চ্যানেল না চললে রিফ্রেশ দিন। সাপোর্ট: <span style="color:var(--primary)">TECH BD</span>
+        </div>
+    </div>
+
+    <div class="video-container" id="player-wrapper">
         <video id="rivo-player" class="video-js vjs-big-play-centered" controls preload="auto" playsinline></video>
         <div id="brightness-overlay"></div>
         <div id="vol-indicator" class="gesture-indicator">🔊 100%</div>
         <div id="bri-indicator" class="gesture-indicator">☀️ 100%</div>
     </div>
 
-    <div class="notice-board">
-        <div class="notice-text">
-            📢 𝚂𝚞𝚙𝚙𝚘𝚛𝚝 𝙲𝚎𝚗𝚝𝚎𝚛: 🛠️ বাফারিং হচ্ছে? 📡 নতুন চ্যানেল প্রয়োজন? ⚡ দ্রুত সমাধান পেতে এখনই যুক্ত হোন 
-            <a href="https://t.me/techbd_group" target="_blank">𝚃𝚎𝚌𝚑 𝙱𝙳</a>
+    <header>
+        <div class="action-btns">
+            <button class="rect-btn btn-refresh" onclick="location.reload()"><i class="fas fa-sync-alt"></i></button>
+            <a href="https://t.me/techbd_group" target="_blank" class="rect-btn btn-tg"><i class="fab fa-telegram-plane"></i></a>
+            <button class="rect-btn" onclick="shareApp()"><i class="fas fa-share-alt"></i></button>
+            <button class="rect-btn btn-rotate" onclick="toggleRotateManual()"><i class="fas fa-expand"></i></button>
         </div>
-    </div>
-
-    <div class="header-row">
-        <div class="brand-name">RIVO TV</div>
-        <div class="action-row">
-            <button class="action-btn" onclick="shareApp()"><i class="fas fa-share-alt"></i> Share</button>
-            <button class="action-btn btn-refresh" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Refresh</button>
-            <a href="https://t.me/techbd_group" target="_blank" class="action-btn btn-contact"><i class="fab fa-telegram"></i> Contact</a>
-            <a href="YOUR_APK_LINK_HERE" target="_blank" class="action-btn btn-apk">Get App</a>
+        
+        <div class="search-area">
+            <input type="text" id="search-input" class="search-input" placeholder="সার্চ চ্যানেল..." oninput="liveSearch()">
+            <span id="count-badge">0 CH</span>
         </div>
-    </div>
-    
-    <div class="search-area">
-        <input type="text" id="search-input" class="search-input" placeholder="সার্চ চ্যানেল..." oninput="liveSearch()">
-    </div>
 
-    <div class="cat-row">
-        <div class="cat-pill active" onclick="filterCat('ALL', this)">All</div>
-        <div class="cat-pill" onclick="filterCat('Sports', this)">Sports</div>
-        <div class="cat-pill" onclick="filterCat('Bangla', this)">Bangla</div>
-        <div class="cat-pill" onclick="filterCat('Fav', this)">★ Favorites</div>
-    </div>
+        <div class="cat-row">
+            <div class="cat-pill active" onclick="filterCat('ALL', this)">All</div>
+            <div class="cat-pill" onclick="filterCat('Sports', this)">Sports</div>
+            <div class="cat-pill" onclick="filterCat('Bangla', this)">Bangla</div>
+            <div class="cat-pill" style="color:#ffcc00" onclick="filterCat('Fav', this)">★ Favorites</div>
+        </div>
+    </header>
 </div>
 
-<div class="grid" id="mainGrid">Loading...</div>
-
-<div class="footer-area">
-    <div class="dev-title">Developed By</div>
-    <div class="dev-name">Sohel Tanvir</div>
+<div id="content-area">
+    <div class="grid" id="mainGrid">লোডিং...</div>
+    <div class="footer-area">
+        <div class="dev-info">Developed By Sohel Tanvir</div>
+    </div>
 </div>
 
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
@@ -137,11 +159,16 @@
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
     let allChannels = [], favorites = JSON.parse(localStorage.getItem('rivo_favs')) || [];
-    let mainPlayer, previewHls = null;
+    let mainPlayer;
     let currentCategory = 'ALL';
 
     async function init() {
-        mainPlayer = videojs('rivo-player', { fluid: true, userActions: { click: false } });
+        mainPlayer = videojs('rivo-player', { 
+            fluid: true, 
+            aspectRatio: '16:9',
+            userActions: { click: false }
+        });
+        
         setupGestures();
 
         try {
@@ -149,6 +176,13 @@
             const data = await res.text();
             allChannels = parseM3U(data);
             renderChannels(allChannels);
+            
+            // Adjust content area margin
+            setInterval(() => {
+                const topH = document.getElementById('top-section').offsetHeight;
+                document.getElementById('content-area').style.marginTop = topH + 'px';
+            }, 500);
+
             if(allChannels.length > 0) playMain(allChannels[0].url);
         } catch (e) { console.error("M3U Load Error"); }
     }
@@ -159,6 +193,13 @@
         const briOverlay = document.getElementById('brightness-overlay');
         const volInd = document.getElementById('vol-indicator');
         const briInd = document.getElementById('bri-indicator');
+
+        mainPlayer.on('ready', () => {
+            const el = mainPlayer.el();
+            el.appendChild(briOverlay);
+            el.appendChild(volInd);
+            el.appendChild(briInd);
+        });
 
         wrapper.addEventListener('touchstart', (e) => {
             isMoving = false; startY = e.touches[0].pageY;
@@ -210,62 +251,22 @@
 
     function renderChannels(list) {
         const grid = document.getElementById('mainGrid');
-        grid.innerHTML = list.length === 0 ? "<div style='grid-column:1/-1; color:gray; padding:20px; text-align:center; font-size:11px;'>চ্যানেল পাওয়া যায়নি</div>" : 
-        list.map((ch, index) => {
+        grid.innerHTML = list.length === 0 ? "<div style='grid-column:1/-1; color:gray; padding:20px; text-align:center;'>চ্যানেল পাওয়া যায়নি</div>" : 
+        list.map(ch => {
             const isFav = favorites.includes(ch.id);
             return `
-            <div class="card">
-                <div class="fav-star ${isFav?'active':''}" onclick="toggleFav(event, '${ch.id}')">
-                    <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                </div>
-                <div class="logo-area" id="logo-box-${index}" onclick="playMain('${ch.url}')">
-                    <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/80?text=TV'">
-                    <div class="progress-container" id="prog-cont-${index}"><div class="progress-bar" id="prog-bar-${index}"></div></div>
-                </div>
-                <div class="ch-info" onclick="startPreview('${ch.url}', ${index})">
-                    <span class="ch-name">▶ ${ch.name}</span>
-                </div>
+            <div class="card" onclick="playMain('${ch.url}')">
+                <span class="fav-star ${isFav?'active':''}" onclick="toggleFav(event, '${ch.id}')">★</span>
+                <img src="${ch.logo}" class="channel-logo" onerror="this.src='https://via.placeholder.com/50?text=TV'">
+                <div class="channel-name">${ch.name}</div>
             </div>`;
         }).join('');
+        document.getElementById("count-badge").innerText = list.length + " CH";
     }
 
     function playMain(url) {
-        stopAllPreviews();
         mainPlayer.src({ src: url, type: 'application/x-mpegURL' });
         mainPlayer.play().catch(() => {});
-    }
-
-    function startPreview(url, index) {
-        stopAllPreviews();
-        const container = document.getElementById(`logo-box-${index}`);
-        const pCont = document.getElementById(`prog-cont-${index}`);
-        const pBar = document.getElementById(`prog-bar-${index}`);
-        
-        const video = document.createElement('video');
-        video.className = 'preview-v';
-        video.style.cssText = "position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:10; background:#000;";
-        video.muted = true; video.autoplay = true; video.playsinline = true;
-        
-        container.appendChild(video);
-        pCont.style.display = 'block';
-        setTimeout(() => { pBar.style.width = '100%'; }, 50);
-
-        if (window.Hls && Hls.isSupported()) {
-            previewHls = new Hls();
-            previewHls.loadSource(url);
-            previewHls.attachMedia(video);
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = url;
-        }
-
-        setTimeout(() => stopAllPreviews(), 10000);
-    }
-
-    function stopAllPreviews() {
-        if (previewHls) { previewHls.destroy(); previewHls = null; }
-        document.querySelectorAll('.preview-v').forEach(v => v.remove());
-        document.querySelectorAll('.progress-container').forEach(c => c.style.display = 'none');
-        document.querySelectorAll('.progress-bar').forEach(b => b.style.width = '0%');
     }
 
     function toggleFav(event, id) {
@@ -294,8 +295,18 @@
             filterCat(currentCategory, document.querySelector('.cat-pill.active'));
             return;
         }
-        const filtered = allChannels.filter(ch => ch.name.toLowerCase().includes(query));
-        renderChannels(filtered);
+        renderChannels(allChannels.filter(ch => ch.name.toLowerCase().includes(query)));
+    }
+
+    function toggleRotateManual() {
+        if (!mainPlayer.isFullscreen()) {
+            mainPlayer.requestFullscreen();
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(() => {});
+            }
+        } else {
+            mainPlayer.exitFullscreen();
+        }
     }
 
     function shareApp() {
