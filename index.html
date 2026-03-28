@@ -9,52 +9,46 @@
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Orbitron:wght@900&display=swap" rel="stylesheet">
     
-    <style>
-        :root { 
-            --primary: #00f2ff; --fire: #ff4500; --bg: #050505; 
-            --card-bg: #0f0f0f; --text: #fff; --accent: #7d5fff;
-        }
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
+    <style>
+        :root { --primary: #00f2ff; --bg: #050505; --card-bg: #0f0f0f; --text: #fff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 50px; }
 
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.9); }
-        
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         .video-js { width: 100% !important; aspect-ratio: 16/9; }
 
         /* Gesture Elements */
         #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 10; }
-        .gesture-indicator { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.8); color: var(--primary); padding: 10px 18px; border-radius: 30px; font-size: 14px; font-weight: bold; z-index: 20; display: none; pointer-events: none; border: 1px solid var(--primary); backdrop-filter: blur(5px); }
+        .gesture-indicator { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.8); color: var(--primary); padding: 10px 18px; border-radius: 30px; font-size: 13px; font-weight: bold; z-index: 20; display: none; pointer-events: none; border: 1px solid var(--primary); }
         #vol-indicator { right: 20px; }
         #bri-indicator { left: 20px; }
 
-        .controls-area { padding: 4px 8px; }
-        .top-nav { display: flex; justify-content: space-between; align-items: center; height: 50px; }
-        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; color: #fff; text-transform: uppercase; text-shadow: 0 0 4px #fff, 0 -1px 4px #ff0, 2px -2px 6px #ff8000, -2px -4px 10px #f00; animation: flicker 1.5s infinite alternate; }
-
-        .cat-row { display: flex; gap: 5px; overflow-x: auto; padding: 8px 4px; scrollbar-width: none; align-items: center; }
-        .cat-pill { padding: 5px 12px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; font-size: 10px; border: 1px solid rgba(255, 255, 255, 0.1); color: #bbb; white-space: nowrap; cursor: pointer; }
-        .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); }
-
-        /* Channel Grid */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
-        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #1a1a1a; }
-        .logo-area { height: 95px; background: #000; display: flex; align-items: center; justify-content: center; padding: 15px; cursor: pointer; position: relative; }
-        .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
+        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; text-align: center; padding: 10px 0; color: #fff; text-shadow: 0 0 10px var(--primary); }
         
-        /* Progress Bar for Preview */
-        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); z-index: 11; display: none; }
+        .cat-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px; scrollbar-width: none; }
+        .cat-pill { padding: 6px 15px; background: #1a1a1a; border-radius: 8px; font-size: 11px; color: #bbb; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
+        .cat-pill.active { background: rgba(0, 242, 255, 0.2); color: var(--primary); border-color: var(--primary); }
+
+        /* Grid */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
+        
+        .logo-area { height: 100px; background: #000; display: flex; align-items: center; justify-content: center; padding: 15px; position: relative; cursor: pointer; }
+        .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
+
+        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.1); z-index: 15; display: none; }
         .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: width 10s linear; }
 
-        .fav-star { position: absolute; top: 6px; right: 6px; z-index: 15; cursor: pointer; background: rgba(0,0,0,0.6); padding: 5px; border-radius: 50%; display: flex; }
-        .fav-star svg { fill: #555; transition: 0.3s; }
+        .ch-info { padding: 10px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
+        .ch-name { font-size: 11px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .fav-star { position: absolute; top: 6px; right: 6px; z-index: 20; padding: 5px; cursor: pointer; }
+        .fav-star svg { fill: #444; }
         .fav-star.active svg { fill: #ffcc00; }
 
-        .ch-info { display: flex; align-items: center; gap: 6px; padding: 10px 8px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
-        .ch-name { font-size: 11px; font-weight: 600; color: #eee; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-        .dev-credit { text-align: center; padding: 30px 0; font-size: 9px; color: #444; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
     </style>
 </head>
@@ -67,25 +61,22 @@
         <div id="vol-indicator" class="gesture-indicator">🔊 100%</div>
         <div id="bri-indicator" class="gesture-indicator">☀️ 100%</div>
     </div>
-    <div class="controls-area">
-        <div class="top-nav"><div class="brand-name">RIVO TV</div></div>
-        <div class="cat-row">
-            <div class="cat-pill active" onclick="filterCat('ALL', this)">All</div>
-            <div class="cat-pill" onclick="filterCat('Sports', this)">Sports</div>
-            <div class="cat-pill" onclick="filterCat('Fav', this)">★ Favorites</div>
-        </div>
+    <div class="brand-name">RIVO TV</div>
+    <div class="cat-row">
+        <div class="cat-pill active" onclick="filterCat('ALL', this)">All</div>
+        <div class="cat-pill" onclick="filterCat('Sports', this)">Sports</div>
+        <div class="cat-pill" onclick="filterCat('Fav', this)">★ Favorites</div>
     </div>
 </div>
 
 <div class="grid" id="mainGrid">Loading...</div>
-<div class="dev-credit">Developed by <span>Sohel Tanvir</span></div>
 
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
     let allChannels = [], favorites = JSON.parse(localStorage.getItem('rivo_favs')) || [];
-    let mainPlayer;
+    let mainPlayer, previewHls = null;
 
     async function init() {
         mainPlayer = videojs('rivo-player', { fluid: true, userActions: { click: false } });
@@ -112,7 +103,7 @@
             const x = e.touches[0].pageX - wrapper.getBoundingClientRect().left;
             isBrightness = x < wrapper.offsetWidth / 2;
             startVal = isBrightness ? (1 - parseFloat(briOverlay.style.opacity || 0)) : mainPlayer.volume();
-        });
+        }, {passive: true});
 
         wrapper.addEventListener('touchmove', (e) => {
             isMoving = true;
@@ -127,7 +118,7 @@
                 volInd.innerText = `🔊 ${Math.round(newVal * 100)}%`;
                 volInd.style.display = 'block';
             }
-        });
+        }, {passive: true});
 
         wrapper.addEventListener('touchend', () => {
             if (!isMoving) {
@@ -162,7 +153,7 @@
             return `
             <div class="card">
                 <div class="fav-star ${isFav?'active':''}" onclick="toggleFav(event, '${ch.id}')">
-                    <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 </div>
                 <div class="logo-area" id="logo-box-${index}" onclick="playMain('${ch.url}')">
                     <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/80?text=TV'">
@@ -190,25 +181,29 @@
         
         const video = document.createElement('video');
         video.className = 'preview-v';
-        video.style.cssText = "position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:10; border-radius:12px;";
+        video.style.cssText = "position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:10; background:#000;";
         video.muted = true; video.autoplay = true; video.playsinline = true;
         
         container.appendChild(video);
         pCont.style.display = 'block';
         setTimeout(() => { pBar.style.width = '100%'; }, 50);
 
-        // Simple HLS handling for preview
-        if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        if (Hls.isSupported()) {
+            previewHls = new Hls();
+            previewHls.loadSource(url);
+            previewHls.attachMedia(video);
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
             video.src = url;
-        } else {
-            // ইউজ করা যেতে পারে Hls.js ছোট প্রিভিউর জন্য
-            video.src = url; 
         }
 
         setTimeout(() => stopAllPreviews(), 10000);
     }
 
     function stopAllPreviews() {
+        if (previewHls) {
+            previewHls.destroy();
+            previewHls = null;
+        }
         document.querySelectorAll('.preview-v').forEach(v => v.remove());
         document.querySelectorAll('.progress-container').forEach(c => c.style.display = 'none');
         document.querySelectorAll('.progress-bar').forEach(b => b.style.width = '0%');
