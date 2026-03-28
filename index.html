@@ -28,9 +28,8 @@
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         
-        /* 16:9 Ratio Setup */
-        .video-js { width: 100% !important; }
-        .vjs-fluid { padding-top: 56.25% !important; } /* Standard 16:9 */
+        .video-js { width: 100% !important; aspect-ratio: 16/10; }
+        @media (max-width: 768px) { .video-js { aspect-ratio: 4/3; } }
 
         .vjs-loading-spinner { display: none !important; }
 
@@ -51,6 +50,7 @@
 
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
+        /* ⚡ Header with Refresh Button */
         .header-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #080808; }
         .brand-name { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
         
@@ -133,7 +133,6 @@
 </div>
 
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-zoom@1.1.0/dist/videojs-zoom.min.js"></script>
 
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
@@ -142,18 +141,7 @@
     let currentCategory = 'ALL';
 
     async function init() {
-        // Initializing Video.js with 16:9 Aspect Ratio
-        mainPlayer = videojs('rivo-player', { 
-            fluid: true, 
-            aspectRatio: '16:9',
-            userActions: { click: false } 
-        });
-
-        // Activating Zoom Plugin
-        if (typeof mainPlayer.zoom === 'function') {
-            mainPlayer.zoom();
-        }
-
+        mainPlayer = videojs('rivo-player', { fluid: true, userActions: { click: false } });
         setupGestures();
 
         try {
