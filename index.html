@@ -20,110 +20,61 @@
             --text: #fff; 
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 50px; }
+        body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 30px; }
 
-        .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.9); }
+        .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         .video-js { width: 100% !important; aspect-ratio: 16/9; }
 
-        /* Moving Notice Board */
-        .notice-board {
-            background: #111;
-            border-bottom: 1px solid #222;
-            overflow: hidden;
-            white-space: nowrap;
-            padding: 10px 0;
-            display: flex;
-            align-items: center;
-        }
+        /* 📢 Ultra Compact Notice Board */
+        .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 5px 0; }
+        .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 11px; color: #bbb; }
+        .notice-text a { color: var(--primary); text-decoration: none; font-weight: 800; font-family: 'Orbitron', sans-serif; border: 1px solid var(--primary); padding: 1px 6px; border-radius: 4px; margin-left: 5px; text-transform: uppercase; font-size: 10px; box-shadow: 0 0 5px rgba(0, 242, 255, 0.3); }
 
-        .notice-text {
-            display: inline-block;
-            padding-left: 100%;
-            animation: marquee 20s linear infinite;
-            font-size: 13px;
-            color: #ccc;
-        }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        .notice-text a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 800;
-            font-family: 'Orbitron', sans-serif;
-            border: 1px solid var(--primary);
-            padding: 2px 10px;
-            border-radius: 6px;
-            margin-left: 5px;
-            text-transform: uppercase;
-            box-shadow: 0 0 8px rgba(0, 242, 255, 0.4);
-            display: inline-block;
-        }
+        /* ⚡ Slim & Stylish Header */
+        .header-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; background: #080808; }
+        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+        
+        .action-row { display: flex; gap: 5px; }
+        .action-btn { padding: 4px 10px; background: #1a1a1a; border-radius: 5px; border: 1px solid #333; color: #bbb; font-size: 10px; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .btn-apk { background: rgba(255, 69, 0, 0.1); color: var(--fire); border-color: var(--fire); font-weight: bold; }
 
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
+        /* 🔍 Small Search Bar */
+        .search-area { padding: 0 10px 8px 10px; background: #080808; }
+        .search-input { width: 100%; padding: 7px 12px; background: #121212; border: 1px solid #222; border-radius: 6px; color: #fff; font-size: 11px; outline: none; transition: 0.3s; }
+        .search-input:focus { border-color: var(--primary); background: #181818; }
+
+        /* 📂 Categories */
+        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding: 7px 10px; scrollbar-width: none; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; background: #050505; }
+        .cat-pill { padding: 4px 12px; background: #1a1a1a; border-radius: 5px; font-size: 10px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
+        .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); }
+
+        /* Grid & Cards */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+        .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: 0.3s; }
+        .logo-area { height: 90px; background: #000; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; cursor: pointer; }
+        .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
+        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); display: none; }
+        .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: width 10s linear; }
+        .ch-info { padding: 7px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
+        .ch-name { font-size: 10px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #eee; }
+        .fav-star { position: absolute; top: 5px; right: 5px; z-index: 20; padding: 4px; cursor: pointer; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; }
+        .fav-star svg { fill: #555; width: 12px; height: 12px; }
+        .fav-star.active svg { fill: #ffcc00; }
 
         /* Gesture Elements */
         #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 10; }
-        .gesture-indicator { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.8); color: var(--primary); padding: 10px 18px; border-radius: 30px; font-size: 13px; font-weight: bold; z-index: 20; display: none; pointer-events: none; border: 1px solid var(--primary); }
-        #vol-indicator { right: 20px; }
-        #bri-indicator { left: 20px; }
+        .gesture-indicator { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.8); color: var(--primary); padding: 7px 14px; border-radius: 30px; font-size: 11px; font-weight: bold; z-index: 20; display: none; border: 1px solid var(--primary); }
+        #vol-indicator { right: 15px; }
+        #bri-indicator { left: 15px; }
 
-        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 900; text-align: center; padding: 15px 0; color: #fff; text-shadow: 0 0 10px var(--primary); text-transform: uppercase; letter-spacing: 2px; }
-        
-        /* 🔥 Action Buttons & Large Search Bar */
-        .controls-area { padding: 10px; border-bottom: 1px solid #1a1a1a; }
-        .action-row { display: flex; gap: 10px; margin-bottom: 15px; }
-        .action-btn { flex: 1; padding: 10px; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; color: #bbb; font-size: 12px; cursor: pointer; text-align: center; text-decoration: none; transition: 0.3s; }
-        .action-btn:hover { background: #222; color: #fff; border-color: #555; }
-        .btn-apk { background: rgba(255, 69, 0, 0.1); color: var(--fire); border-color: var(--fire); font-weight: bold; }
-        .btn-apk:hover { background: var(--fire); color: #fff; }
-
-        .search-container { position: relative; width: 100%; }
-        .search-input { width: 100%; padding: 15px; background: #121212; border: 2px solid #222; border-radius: 12px; color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
-        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
-
-        .cat-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px; scrollbar-width: none; border-bottom: 1px solid #1a1a1a; }
-        .cat-pill { padding: 6px 15px; background: #1a1a1a; border-radius: 8px; font-size: 11px; color: #bbb; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
-        .cat-pill.active { background: rgba(0, 242, 255, 0.2); color: var(--primary); border-color: var(--primary); }
-
-        /* Grid */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
-        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: 0.3s; }
-        .card:hover { transform: translateY(-3px); border-color: #333; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        
-        .logo-area { height: 100px; background: #000; display: flex; align-items: center; justify-content: center; padding: 15px; position: relative; cursor: pointer; }
-        .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
-
-        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.1); z-index: 15; display: none; }
-        .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: width 10s linear; }
-
-        .ch-info { padding: 10px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
-        .ch-name { font-size: 11px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #eee; }
-
-        .fav-star { position: absolute; top: 6px; right: 6px; z-index: 20; padding: 5px; cursor: pointer; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; }
-        .fav-star svg { fill: #666; transition: 0.3s; }
-        .fav-star.active svg { fill: #ffcc00; }
-
-        .footer-area { padding: 40px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 20px; }
-        .dev-title { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-        .dev-name { 
-            font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; 
-            color: #fff; text-transform: uppercase; letter-spacing: 2px;
-            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--primary), 0 0 20px var(--primary);
-            animation: flicker 2s infinite alternate;
-        }
-        @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--primary), 0 0 20px var(--primary);
-                opacity: 1;
-            }
-            20%, 22%, 24%, 55% {
-                text-shadow: none;
-                opacity: 0.5;
-            }
-        }
+        /* ⚡ Tiny & Stylish Footer */
+        .footer-area { padding: 12px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 10px; background: #080808; }
+        .dev-title { font-size: 8px; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .dev-name { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .dev-name:hover { color: var(--primary); text-shadow: 0 0 8px var(--primary); }
 
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
     </style>
@@ -145,16 +96,16 @@
         </div>
     </div>
 
-    <div class="brand-name">RIVO TV</div>
-    
-    <div class="controls-area">
+    <div class="header-row">
+        <div class="brand-name">RIVO TV</div>
         <div class="action-row">
-            <button class="action-btn" onclick="shareApp()"><i class="fas fa-share-alt"></i> Share Site</button>
-            <a href="YOUR_APK_LINK_HERE" target="_blank" class="action-btn btn-apk"><i class="fas fa-download"></i> Get App</a>
+            <button class="action-btn" onclick="shareApp()">Share</button>
+            <a href="YOUR_APK_LINK_HERE" target="_blank" class="action-btn btn-apk">Get App</a>
         </div>
-        <div class="search-container">
-            <input type="text" id="search-input" class="search-input" placeholder="সার্চ চ্যানেল (Sports, Bangla...)" oninput="liveSearch()">
-        </div>
+    </div>
+    
+    <div class="search-area">
+        <input type="text" id="search-input" class="search-input" placeholder="সার্চ চ্যানেল..." oninput="liveSearch()">
     </div>
 
     <div class="cat-row">
@@ -251,13 +202,13 @@
 
     function renderChannels(list) {
         const grid = document.getElementById('mainGrid');
-        grid.innerHTML = list.length === 0 ? "<div style='grid-column:1/-1; color:gray; padding:20px; text-align:center;'>কোনো চ্যানেল পাওয়া যায়নি</div>" : 
+        grid.innerHTML = list.length === 0 ? "<div style='grid-column:1/-1; color:gray; padding:20px; text-align:center; font-size:11px;'>চ্যানেল পাওয়া যায়নি</div>" : 
         list.map((ch, index) => {
             const isFav = favorites.includes(ch.id);
             return `
             <div class="card">
                 <div class="fav-star ${isFav?'active':''}" onclick="toggleFav(event, '${ch.id}')">
-                    <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 </div>
                 <div class="logo-area" id="logo-box-${index}" onclick="playMain('${ch.url}')">
                     <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/80?text=TV'">
@@ -342,7 +293,7 @@
 
     function shareApp() {
         if (navigator.share) navigator.share({ title: 'Rivo TV', url: window.location.href });
-        else alert("লিংক: " + window.location.href);
+        else alert("Link: " + window.location.href);
     }
 
     init();
