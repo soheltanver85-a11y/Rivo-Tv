@@ -22,21 +22,22 @@
 
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.9); }
         
-        /* Video Container & Gesture Overlay */
-        .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; }
-        video#player { width: 100%; aspect-ratio: 16/9; display: block; background: #000; pointer-events: auto; }
+        /* Video & Gesture Overlay */
+        .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
+        video#player { width: 100%; aspect-ratio: 16/9; display: block; background: #000; pointer-events: none; }
 
-        /* MX Player Style Overlay */
+        /* MX Style Overlay Layer */
         #player-ui-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10; display: flex; align-items: center; justify-content: center;
-            pointer-events: all; /* এটি টাচ ইনপুট নিবে */
+            z-index: 50; display: flex; align-items: center; justify-content: center;
+            background: transparent; pointer-events: all;
         }
         .gesture-status {
-            background: rgba(0,0,0,0.7); color: #fff; padding: 10px 20px;
-            border-radius: 50px; font-size: 14px; font-weight: bold;
-            opacity: 0; transition: opacity 0.3s; pointer-events: none;
-            border: 1px solid var(--primary);
+            background: rgba(0, 242, 255, 0.2); color: #fff; padding: 12px 25px;
+            border-radius: 50px; font-size: 14px; font-weight: 800;
+            opacity: 0; transition: opacity 0.2s; pointer-events: none;
+            border: 1.5px solid var(--primary); backdrop-filter: blur(5px);
+            text-shadow: 0 0 5px #000;
         }
 
         .controls-area { padding: 4px 8px; }
@@ -92,7 +93,7 @@
 
 <div class="fixed-top-container">
     <div class="video-box">
-        <video id="player" controls autoplay playsinline></video>
+        <video id="player" autoplay playsinline></video>
         <div id="player-ui-overlay">
             <div class="gesture-status" id="gestureStatus">100%</div>
         </div>
@@ -131,9 +132,8 @@
     let allChannels = [], recents = JSON.parse(localStorage.getItem('recent_rivo')) || [], favorites = JSON.parse(localStorage.getItem('fav_rivo')) || [];
     let hlsPlayer = null, shakaPlayer = null;
     const player = document.getElementById('player'), grid = document.getElementById('mainGrid');
-    const uiOverlay = document.getElementById('player-ui-overlay'), statusBox = document.getElementById('gestureStatus');
+    const overlay = document.getElementById('player-ui-overlay'), statusBox = document.getElementById('gestureStatus');
 
-    // 1. Initialize
     async function init() {
         try {
             const res = await fetch(M3U_URL);
@@ -146,57 +146,63 @@
             shakaPlayer = new shaka.Player(player);
         }
         
-        handleMXControls(); // MX Player logic চালু করা হলো
+        setupPlayerGestures();
     }
 
-    // 2. MX Player Style Logic (Tap to Pause, Volume & Brightness)
-    function handleMXControls() {
-        let startY = 0, lastY = 0, isRight = false;
+    function setupPlayerGestures() {
+        let startY = 0, lastY = 0, isRightSide = false;
         let isMoving = false;
 
-        uiOverlay.addEventListener('click', (e) => {
+        overlay.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+            lastY = startY;
+            isRightSide = e.touches[0].clientX > (window.innerWidth / 2);
+            isMoving = false;
+        }, {passive: true});
+
+        overlay.addEventListener('touchmove', (e) => {
+            let currentY = e.touches[0].clientY;
+            let diff = lastY - currentY;
+            
+            // ছোট মুভমেন্ট ইগনোর করা (ট্যাপ আর স্ক্রলের পার্থক্য করার জন্য)
+            if (Math.abs(diff) > 2) {
+                isMoving = true;
+                lastY = currentY;
+                statusBox.style.opacity = '1';
+
+                if (isRightSide) {
+                    let newVol = player.volume + (diff / 300);
+                    player.volume = Math.min(Math.max(newVol, 0), 1);
+                    statusBox.innerHTML = `🔊 Volume: ${Math.round(player.volume * 100)}%`;
+                } else {
+                    let currentB = parseFloat(player.style.filter.replace('brightness(', '').replace(')', '')) || 1;
+                    let newB = currentB + (diff / 300);
+                    newB = Math.min(Math.max(newB, 0.3), 1.8);
+                    player.style.filter = `brightness(${newB})`;
+                    statusBox.innerHTML = `☀️ Brightness: ${Math.round(newB * 100)}%`;
+                }
+            }
+        }, {passive: false});
+
+        overlay.addEventListener('touchend', (e) => {
+            if (!isMoving) {
+                // ট্যাপ করলে প্লে/পজ হবে
+                if (player.paused) player.play();
+                else player.pause();
+            }
+            setTimeout(() => { statusBox.style.opacity = '0'; }, 800);
+        });
+        
+        // ডেস্কটপ সাপোর্ট (ক্লিক)
+        overlay.addEventListener('click', () => {
             if (!isMoving) {
                 if (player.paused) player.play();
                 else player.pause();
             }
         });
-
-        uiOverlay.addEventListener('touchstart', (e) => {
-            startY = e.touches[0].clientY;
-            lastY = startY;
-            isRight = e.touches[0].clientX > (window.innerWidth / 2);
-            isMoving = false;
-        });
-
-        uiOverlay.addEventListener('touchmove', (e) => {
-            isMoving = true;
-            let currentY = e.touches[0].clientY;
-            let diff = lastY - currentY;
-            lastY = currentY;
-
-            statusBox.style.opacity = '1';
-
-            if (isRight) {
-                // Volume Control (Right)
-                let newVol = player.volume + (diff / 200);
-                player.volume = Math.min(Math.max(newVol, 0), 1);
-                statusBox.innerHTML = `🔊 Volume: ${Math.round(player.volume * 100)}%`;
-            } else {
-                // Brightness Control (Left - CSS Filter)
-                let currentBright = parseFloat(player.style.filter.replace('brightness(', '').replace(')', '')) || 1;
-                let newBright = currentBright + (diff / 200);
-                newBright = Math.min(Math.max(newBright, 0.3), 1.8);
-                player.style.filter = `brightness(${newBright})`;
-                statusBox.innerHTML = `☀️ Brightness: ${Math.round(newBright * 100)}%`;
-            }
-        });
-
-        uiOverlay.addEventListener('touchend', () => {
-            setTimeout(() => { statusBox.style.opacity = '0'; isMoving = false; }, 800);
-        });
     }
 
-    // --- অন্যান্য ফাংশন (অপরিবর্তিত) ---
+    // --- অন্যান্য ফাংশন ---
     function parseM3U(data) {
         const lines = data.split('\n');
         let item = {}; allChannels = [];
@@ -244,7 +250,7 @@
 
         if (url.includes('.mpd')) {
             try { await shakaPlayer.load(url); player.play(); } 
-            catch (e) { alert("MPD load error."); }
+            catch (e) { alert("MPD error."); }
         } else if (url.includes('.m3u8')) {
             if (Hls.isSupported()) {
                 hlsPlayer = new Hls(); hlsPlayer.loadSource(url); hlsPlayer.attachMedia(player);
