@@ -22,21 +22,21 @@
 
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.9); }
         
-        /* Player Styles */
-        .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; touch-action: none; overflow: hidden; }
-        video#player { width: 100%; aspect-ratio: 16/9; display: block; background: #000; transition: filter 0.2s; }
+        /* Video Container & Gesture Overlay */
+        .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; }
+        video#player { width: 100%; aspect-ratio: 16/9; display: block; background: #000; pointer-events: auto; }
 
-        /* Gesture Overlay Layer */
-        .player-overlay {
+        /* MX Player Style Overlay */
+        #player-ui-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            z-index: 10; pointer-events: all;
+            z-index: 10; display: flex; align-items: center; justify-content: center;
+            pointer-events: all; /* এটি টাচ ইনপুট নিবে */
         }
-        .gesture-indicator {
-            background: rgba(0,0,0,0.7); color: var(--primary); padding: 12px 24px;
-            border-radius: 30px; font-weight: 800; font-size: 14px;
+        .gesture-status {
+            background: rgba(0,0,0,0.7); color: #fff; padding: 10px 20px;
+            border-radius: 50px; font-size: 14px; font-weight: bold;
             opacity: 0; transition: opacity 0.3s; pointer-events: none;
-            border: 1px solid var(--primary); text-transform: uppercase;
+            border: 1px solid var(--primary);
         }
 
         .controls-area { padding: 4px 8px; }
@@ -93,8 +93,8 @@
 <div class="fixed-top-container">
     <div class="video-box">
         <video id="player" controls autoplay playsinline></video>
-        <div class="player-overlay" id="playerOverlay">
-            <div class="gesture-indicator" id="gestureIndicator">100%</div>
+        <div id="player-ui-overlay">
+            <div class="gesture-status" id="gestureStatus">100%</div>
         </div>
     </div>
     <div class="controls-area">
@@ -131,8 +131,9 @@
     let allChannels = [], recents = JSON.parse(localStorage.getItem('recent_rivo')) || [], favorites = JSON.parse(localStorage.getItem('fav_rivo')) || [];
     let hlsPlayer = null, shakaPlayer = null;
     const player = document.getElementById('player'), grid = document.getElementById('mainGrid');
-    const overlay = document.getElementById('playerOverlay'), indicator = document.getElementById('gestureIndicator');
+    const uiOverlay = document.getElementById('player-ui-overlay'), statusBox = document.getElementById('gestureStatus');
 
+    // 1. Initialize
     async function init() {
         try {
             const res = await fetch(M3U_URL);
@@ -144,52 +145,58 @@
         if (shaka.Player.isBrowserSupported()) {
             shakaPlayer = new shaka.Player(player);
         }
-        setupGestures();
+        
+        handleMXControls(); // MX Player logic চালু করা হলো
     }
 
-    // --- Gesture Logic (MX Player Style) ---
-    function setupGestures() {
-        let startY = 0, lastY = 0, isRightSide = false;
+    // 2. MX Player Style Logic (Tap to Pause, Volume & Brightness)
+    function handleMXControls() {
+        let startY = 0, lastY = 0, isRight = false;
+        let isMoving = false;
 
-        overlay.addEventListener('click', () => {
-            if (player.paused) player.play();
-            else player.pause();
-        });
-
-        overlay.addEventListener('touchstart', (e) => {
-            startY = e.touches[0].clientY;
-            lastY = startY;
-            isRightSide = e.touches[0].clientX > window.innerWidth / 2;
-        });
-
-        overlay.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            let currentY = e.touches[0].clientY;
-            let deltaY = lastY - currentY;
-            lastY = currentY;
-
-            indicator.style.opacity = '1';
-
-            if (isRightSide) {
-                // Volume Control
-                let newVol = player.volume + (deltaY / 200);
-                player.volume = Math.min(Math.max(newVol, 0), 1);
-                indicator.innerHTML = `🔊 ${Math.round(player.volume * 100)}%`;
-            } else {
-                // Brightness Control (Via Filter)
-                let currentB = parseFloat(player.style.filter.replace('brightness(', '').replace(')', '')) || 1;
-                let newB = currentB + (deltaY / 200);
-                newB = Math.min(Math.max(newB, 0.3), 1.8);
-                player.style.filter = `brightness(${newB})`;
-                indicator.innerHTML = `☀️ ${Math.round(newB * 100)}%`;
+        uiOverlay.addEventListener('click', (e) => {
+            if (!isMoving) {
+                if (player.paused) player.play();
+                else player.pause();
             }
         });
 
-        overlay.addEventListener('touchend', () => {
-            setTimeout(() => { indicator.style.opacity = '0'; }, 800);
+        uiOverlay.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+            lastY = startY;
+            isRight = e.touches[0].clientX > (window.innerWidth / 2);
+            isMoving = false;
+        });
+
+        uiOverlay.addEventListener('touchmove', (e) => {
+            isMoving = true;
+            let currentY = e.touches[0].clientY;
+            let diff = lastY - currentY;
+            lastY = currentY;
+
+            statusBox.style.opacity = '1';
+
+            if (isRight) {
+                // Volume Control (Right)
+                let newVol = player.volume + (diff / 200);
+                player.volume = Math.min(Math.max(newVol, 0), 1);
+                statusBox.innerHTML = `🔊 Volume: ${Math.round(player.volume * 100)}%`;
+            } else {
+                // Brightness Control (Left - CSS Filter)
+                let currentBright = parseFloat(player.style.filter.replace('brightness(', '').replace(')', '')) || 1;
+                let newBright = currentBright + (diff / 200);
+                newBright = Math.min(Math.max(newBright, 0.3), 1.8);
+                player.style.filter = `brightness(${newBright})`;
+                statusBox.innerHTML = `☀️ Brightness: ${Math.round(newBright * 100)}%`;
+            }
+        });
+
+        uiOverlay.addEventListener('touchend', () => {
+            setTimeout(() => { statusBox.style.opacity = '0'; isMoving = false; }, 800);
         });
     }
 
+    // --- অন্যান্য ফাংশন (অপরিবর্তিত) ---
     function parseM3U(data) {
         const lines = data.split('\n');
         let item = {}; allChannels = [];
