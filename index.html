@@ -28,11 +28,26 @@
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         
-        /* ⚡ মূল পরিবর্তন ⚡: ভিডিও রেশিও এবং ডিসপ্লে ফিক্স */
-        .video-js { width: 100% !important; aspect-ratio: 16/9; background-color: #000; }
-        
-        /* ভিডিওর মূল এলিমেন্টকে Contain করা হচ্ছে */
+        /* ⚡ চরম সমাধান (Fixed Video Cut Issue) ⚡ */
+        .video-js { 
+            width: 100% !important; 
+            height: auto !important;
+            aspect-ratio: 16/9 !important; 
+            background-color: #000 !important; 
+        }
+
+        /* এটি ভিডিওর আসল ট্যাগকে কন্ট্রোল করবে */
+        .video-js video.vjs-tech, 
         .video-js .vjs-tech {
+            object-fit: contain !important; /* ভিডিও কাটবে না */
+            width: 100% !important;
+            height: 100% !important;
+            top: 0 !important;
+            left: 0 !important;
+        }
+
+        /* ফুলস্ক্রিন মোডেও যেন না কাটে */
+        .video-js.vjs-fullscreen .vjs-tech {
             object-fit: contain !important;
         }
         
@@ -149,8 +164,9 @@
     async function init() {
         // Player Initialize
         mainPlayer = videojs('rivo-player', { 
-            fluid: true, 
-            aspectRatio: '16:9', // ⚡ রেশিও নিশ্চিত করা হলো
+            fluid: true,
+            responsive: true,
+            playbackRates: [0.5, 1, 1.5, 2],
             userActions: { click: false } 
         });
         
