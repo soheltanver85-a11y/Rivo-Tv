@@ -24,12 +24,15 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 30px; }
 
-        /* Fixed Top Container */
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
-        .video-js { width: 100% !important; aspect-ratio: 16/9; }
+        
+        /* 📺 Player Height Increased */
+        .video-js { width: 100% !important; aspect-ratio: 16/10; }
+        @media (max-width: 768px) {
+            .video-js { aspect-ratio: 4/3; } /* মোবাইলে আরও বড় দেখাবে */
+        }
 
-        /* 🔊 Gesture Indicators (Fixed Position) */
         #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 10; }
         .gesture-indicator { 
             position: absolute; 
@@ -47,17 +50,15 @@
             border: 1px solid var(--primary); 
             box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
         }
-        #vol-indicator { right: 20px; } /* ডান পাশে ভলিউম */
-        #bri-indicator { left: 20px; }  /* বাম পাশে ব্রাইটনেস */
+        #vol-indicator { right: 20px; }
+        #bri-indicator { left: 20px; }
 
-        /* 📢 Compact Notice Board */
         .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 5px 0; }
         .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 11px; color: #bbb; }
         .notice-text a { color: var(--primary); text-decoration: none; font-weight: 800; font-family: 'Orbitron', sans-serif; border: 1px solid var(--primary); padding: 1px 6px; border-radius: 4px; margin-left: 5px; text-transform: uppercase; font-size: 10px; }
 
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* ⚡ Slim Header */
         .header-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #080808; }
         .brand-name { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
         
@@ -66,16 +67,13 @@
         .btn-contact { color: var(--telegram); border-color: var(--telegram); }
         .btn-apk { background: rgba(255, 69, 0, 0.1); color: var(--fire); border-color: var(--fire); font-weight: bold; }
 
-        /* 🔍 Search */
         .search-area { padding: 0 10px 8px 10px; background: #080808; }
         .search-input { width: 100%; padding: 7px 12px; background: #121212; border: 1px solid #222; border-radius: 6px; color: #fff; font-size: 11px; outline: none; }
 
-        /* 📂 Categories */
         .cat-row { display: flex; gap: 6px; overflow-x: auto; padding: 7px 10px; scrollbar-width: none; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; }
         .cat-pill { padding: 4px 12px; background: #1a1a1a; border-radius: 5px; font-size: 10px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
         .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); }
 
-        /* Grid */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
         .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
         .logo-area { height: 90px; background: #000; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; cursor: pointer; }
@@ -88,7 +86,6 @@
         .fav-star svg { fill: #555; width: 12px; height: 12px; }
         .fav-star.active svg { fill: #ffcc00; }
 
-        /* Footer */
         .footer-area { padding: 12px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 10px; background: #080808; }
         .dev-title { font-size: 8px; color: #444; text-transform: uppercase; margin-bottom: 2px; }
         .dev-name { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 800; color: #888; }
