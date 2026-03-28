@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#050505">
-    <title>Rivo TV | Optimized Edition</title>
+    <title>Rivo TV | Classic Style</title>
     
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Orbitron:wght@900&display=swap" rel="stylesheet">
@@ -21,137 +21,120 @@
             --bg: #050505; 
             --card-bg: #0f0f0f; 
             --text: #fff; 
-            --accent: #ff4081;
         }
-        
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        html, body { background-color: var(--bg); color: var(--text); overflow-x: hidden; width: 100%; height: 100%; }
+        body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 30px; }
 
-        /* 📺 Top Fixed Section (Avia TV Style) */
-        #top-section { position: fixed; top: 0; left: 0; width: 100%; background: var(--bg); z-index: 1000; border-bottom: 1px solid #222; }
-
-        /* 📱 Video Player Container */
-        .video-container { 
-            position: relative; 
-            width: 100%; 
-            aspect-ratio: 16/9; 
-            max-width: 1200px; 
-            margin: 0 auto; 
+        .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
+        
+        /* 📺 DISPLAY SIZE FIX: Avia TV এর মতো বড় সাইজ */
+        .video-box { 
             background: #000; 
+            border-bottom: 2px solid var(--primary); 
+            position: relative; 
             overflow: hidden; 
-            touch-action: none; 
+            width: 100%;
+            aspect-ratio: 16/9; /* প্লেয়ারটি এখন বড় দেখাবে */
         }
         
         .video-js { width: 100% !important; height: 100% !important; }
-        
-        /* 🖥️ Fullscreen Optimization */
-        .vjs-fullscreen #brand-header, 
-        .vjs-fullscreen .notice-board, 
-        .vjs-fullscreen header, 
-        .vjs-fullscreen .search-area,
-        .vjs-fullscreen .cat-row { display: none !important; }
 
-        .video-js .vjs-tech { object-fit: contain !important; }
+        /* FULLSCREEN FIX: ভিডিও যেন কেটে না যায় */
+        .video-js .vjs-tech {
+            object-fit: contain !important;
+        }
 
-        /* Gesture Indicators */
+        /* ফুলস্ক্রিন অবস্থায় বাকি সব হাইড করা */
+        .vjs-fullscreen .fixed-top-container, 
+        .vjs-fullscreen .grid, 
+        .vjs-fullscreen .footer-area { display: none !important; }
+
+        .vjs-loading-spinner { display: none !important; }
+
         #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 2147483647; }
         .gesture-indicator { 
             position: absolute; top: 50%; transform: translateY(-50%); 
-            background: rgba(0,0,0,0.8); color: var(--primary); padding: 12px 20px; 
-            border-radius: 30px; font-size: 14px; font-weight: bold; z-index: 2147483647; 
+            background: rgba(0,0,0,0.8); color: var(--primary); padding: 8px 15px; 
+            border-radius: 30px; font-size: 12px; font-weight: bold; z-index: 2147483647; 
             display: none; pointer-events: none; border: 1px solid var(--primary); 
         }
-        #vol-indicator { right: 20px; }
-        #bri-indicator { left: 20px; }
+        #vol-indicator { right: 15px; }
+        #bri-indicator { left: 15px; }
 
-        /* Header Styles */
-        .brand-header { padding: 10px 15px; background: #080808; display: flex; align-items: center; justify-content: space-between; }
-        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
-
+        /* বাকি সব ডিজাইন আগের মতো */
         .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 4px 0; }
-        .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 11px; color: #aaa; }
+        .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 10px; color: #999; }
+        .notice-text a { color: var(--primary); text-decoration: none; font-weight: 800; font-family: 'Orbitron', sans-serif; border: 1px solid var(--primary); padding: 0 5px; border-radius: 3px; margin-left: 5px; text-transform: uppercase; font-size: 9px; }
+
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        header { padding: 10px 12px; background: #080808; }
-        .action-btns { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; justify-content: space-between; }
-        .rect-btn { flex: 1; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-size: 16px; outline: none; background: #1a1a1a; color: #fff; text-decoration: none; }
+        .header-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #080808; }
+        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .btn-refresh { color: var(--refresh); border-color: var(--refresh); background: rgba(0, 255, 136, 0.05); }
-        .btn-tg { color: var(--telegram); border-color: var(--telegram); background: rgba(0, 136, 204, 0.05); }
-        .btn-rotate { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: bold; }
+        .action-row { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+        .action-btn { padding: 4px 8px; background: #1a1a1a; border-radius: 5px; border: 1px solid #333; color: #bbb; font-size: 9px; cursor: pointer; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .btn-refresh { color: var(--refresh); border-color: var(--refresh); }
 
-        .search-area { padding: 0 12px 10px 12px; display: flex; gap: 8px; align-items: center; }
-        .search-input { flex: 1; padding: 8px 12px; background: #121212; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 12px; outline: none; }
-        #count-badge { font-size: 10px; color: var(--primary); font-weight: bold; background: rgba(0, 242, 255, 0.1); padding: 4px 8px; border-radius: 4px; }
+        .search-area { padding: 0 10px 8px 10px; background: #080808; }
+        .search-input { width: 100%; padding: 6px 12px; background: #121212; border: 1px solid #222; border-radius: 6px; color: #fff; font-size: 11px; outline: none; }
 
-        .cat-row { display: flex; gap: 8px; overflow-x: auto; padding: 0 12px 10px 12px; scrollbar-width: none; }
-        .cat-pill { padding: 6px 14px; background: #1a1a1a; border: 1px solid #333; color: #bbb; border-radius: 5px; font-size: 11px; cursor: pointer; white-space: nowrap; }
-        .cat-pill.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding: 7px 10px; scrollbar-width: none; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; }
+        .cat-pill { padding: 4px 12px; background: #1a1a1a; border-radius: 5px; font-size: 10px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
+        .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); }
 
-        /* 📱 Content Area (Below Fixed Top) */
-        #content-area { margin-top: 280px; padding-bottom: 50px; } /* dynamically adjusted by JS */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+        .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
+        .logo-area { height: 85px; background: #000; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; cursor: pointer; }
+        .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
+        .ch-info { padding: 6px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
+        .ch-name { font-size: 9px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #eee; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 12px; padding: 15px; }
-        .card { background: var(--card-bg); border-radius: 12px; padding: 12px 5px; text-align: center; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; position: relative; transition: 0.2s; }
-        .card:active { transform: scale(0.95); }
-        .fav-star { position: absolute; top: 6px; right: 8px; font-size: 18px; color: rgba(255,255,255,0.2); z-index: 10; }
-        .fav-star.active { color: #ffcc00; }
-        .channel-logo { height: 35px; object-fit: contain; margin-bottom: 8px; pointer-events: none; }
-        .channel-name { font-size: 10px; color: #ccc; pointer-events: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-        .footer-area { padding: 30px 0; text-align: center; border-top: 1px solid #1a1a1a; }
-        .dev-info { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
-
-        @media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); } }
+        .footer-area { padding: 12px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 10px; background: #080808; }
+        .dev-name { font-family: 'Orbitron', sans-serif; font-size: 9px; font-weight: 800; color: #777; }
     </style>
 </head>
 <body>
 
-<div id="top-section">
-    <div id="brand-header" class="brand-header">
-        <div class="brand-name">RIVO TV</div>
-    </div>
-
-    <div class="notice-board">
-        <div class="notice-text">
-            📢 বর্তমানে আপনি সেরা স্ট্রিমিং সার্ভারে যুক্ত আছেন। কোনো চ্যানেল না চললে রিফ্রেশ দিন। সাপোর্ট: <span style="color:var(--primary)">TECH BD</span>
-        </div>
-    </div>
-
-    <div class="video-container" id="player-wrapper">
+<div class="fixed-top-container">
+    <div class="video-box" id="player-wrapper">
         <video id="rivo-player" class="video-js vjs-big-play-centered" controls preload="auto" playsinline></video>
         <div id="brightness-overlay"></div>
         <div id="vol-indicator" class="gesture-indicator">🔊 100%</div>
         <div id="bri-indicator" class="gesture-indicator">☀️ 100%</div>
     </div>
 
-    <header>
-        <div class="action-btns">
-            <button class="rect-btn btn-refresh" onclick="location.reload()"><i class="fas fa-sync-alt"></i></button>
-            <a href="https://t.me/techbd_group" target="_blank" class="rect-btn btn-tg"><i class="fab fa-telegram-plane"></i></a>
-            <button class="rect-btn" onclick="shareApp()"><i class="fas fa-share-alt"></i></button>
-            <button class="rect-btn btn-rotate" onclick="toggleRotateManual()"><i class="fas fa-expand"></i></button>
+    <div class="notice-board">
+        <div class="notice-text">
+            📢 𝚂𝚞𝚙𝚙𝚘𝚛𝚝 𝙲𝚎𝚗𝚝𝚎𝚛: 🛠️ বাফারিং হচ্ছে? 📡 নতুন চ্যানেল প্রয়োজন? ⚡ দ্রুত সমাধান পেতে এখনই যুক্ত হোন 
+            <a href="https://t.me/techbd_group" target="_blank">𝚃𝚎𝚌𝚑 𝙱𝙳</a>
         </div>
-        
-        <div class="search-area">
-            <input type="text" id="search-input" class="search-input" placeholder="সার্চ চ্যানেল..." oninput="liveSearch()">
-            <span id="count-badge">0 CH</span>
-        </div>
+    </div>
 
-        <div class="cat-row">
-            <div class="cat-pill active" onclick="filterCat('ALL', this)">All</div>
-            <div class="cat-pill" onclick="filterCat('Sports', this)">Sports</div>
-            <div class="cat-pill" onclick="filterCat('Bangla', this)">Bangla</div>
-            <div class="cat-pill" style="color:#ffcc00" onclick="filterCat('Fav', this)">★ Favorites</div>
+    <div class="header-row">
+        <div class="brand-name">RIVO TV</div>
+        <div class="action-row">
+            <button class="action-btn" onclick="shareApp()"><i class="fas fa-share-alt"></i> Share</button>
+            <button class="action-btn btn-refresh" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <a href="https://t.me/techbd_group" target="_blank" class="action-btn"><i class="fab fa-telegram"></i> Contact</a>
         </div>
-    </header>
+    </div>
+    
+    <div class="search-area">
+        <input type="text" id="search-input" class="search-input" placeholder="সার্চ চ্যানেল..." oninput="liveSearch()">
+    </div>
+
+    <div class="cat-row">
+        <div class="cat-pill active" onclick="filterCat('ALL', this)">All</div>
+        <div class="cat-pill" onclick="filterCat('Sports', this)">Sports</div>
+        <div class="cat-pill" onclick="filterCat('Bangla', this)">Bangla</div>
+        <div class="cat-pill" onclick="filterCat('Fav', this)">★ Favorites</div>
+    </div>
 </div>
 
-<div id="content-area">
-    <div class="grid" id="mainGrid">লোডিং...</div>
-    <div class="footer-area">
-        <div class="dev-info">Developed By Sohel Tanvir</div>
-    </div>
+<div class="grid" id="mainGrid">Loading...</div>
+
+<div class="footer-area">
+    <div class="dev-name">Developed By Sohel Tanvir</div>
 </div>
 
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
@@ -165,8 +148,8 @@
     async function init() {
         mainPlayer = videojs('rivo-player', { 
             fluid: true, 
-            aspectRatio: '16:9',
-            userActions: { click: false }
+            aspectRatio: '16:9', 
+            userActions: { click: false } 
         });
         
         setupGestures();
@@ -176,13 +159,6 @@
             const data = await res.text();
             allChannels = parseM3U(data);
             renderChannels(allChannels);
-            
-            // Adjust content area margin
-            setInterval(() => {
-                const topH = document.getElementById('top-section').offsetHeight;
-                document.getElementById('content-area').style.marginTop = topH + 'px';
-            }, 500);
-
             if(allChannels.length > 0) playMain(allChannels[0].url);
         } catch (e) { console.error("M3U Load Error"); }
     }
@@ -251,17 +227,16 @@
 
     function renderChannels(list) {
         const grid = document.getElementById('mainGrid');
-        grid.innerHTML = list.length === 0 ? "<div style='grid-column:1/-1; color:gray; padding:20px; text-align:center;'>চ্যানেল পাওয়া যায়নি</div>" : 
-        list.map(ch => {
-            const isFav = favorites.includes(ch.id);
-            return `
+        grid.innerHTML = list.length === 0 ? "<div>No Channels</div>" : 
+        list.map(ch => `
             <div class="card" onclick="playMain('${ch.url}')">
-                <span class="fav-star ${isFav?'active':''}" onclick="toggleFav(event, '${ch.id}')">★</span>
-                <img src="${ch.logo}" class="channel-logo" onerror="this.src='https://via.placeholder.com/50?text=TV'">
-                <div class="channel-name">${ch.name}</div>
-            </div>`;
-        }).join('');
-        document.getElementById("count-badge").innerText = list.length + " CH";
+                <div class="logo-area">
+                    <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/80?text=TV'">
+                </div>
+                <div class="ch-info">
+                    <span class="ch-name">${ch.name}</span>
+                </div>
+            </div>`).join('');
     }
 
     function playMain(url) {
@@ -269,49 +244,14 @@
         mainPlayer.play().catch(() => {});
     }
 
-    function toggleFav(event, id) {
-        event.stopPropagation();
-        if (favorites.includes(id)) favorites = favorites.filter(f => f !== id);
-        else favorites.push(id);
-        localStorage.setItem('rivo_favs', JSON.stringify(favorites));
-        event.currentTarget.classList.toggle('active');
-        if (currentCategory === 'Fav') renderChannels(allChannels.filter(ch => favorites.includes(ch.id)));
-    }
-
-    function filterCat(cat, btn) {
-        currentCategory = cat;
-        document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById("search-input").value = "";
-        
-        if (cat === 'ALL') renderChannels(allChannels);
-        else if (cat === 'Fav') renderChannels(allChannels.filter(ch => favorites.includes(ch.id)));
-        else renderChannels(allChannels.filter(ch => ch.name.toLowerCase().includes(cat.toLowerCase())));
-    }
-
     function liveSearch() {
-        const query = document.getElementById("search-input").value.toLowerCase().trim();
-        if (query === "") {
-            filterCat(currentCategory, document.querySelector('.cat-pill.active'));
-            return;
-        }
-        renderChannels(allChannels.filter(ch => ch.name.toLowerCase().includes(query)));
-    }
-
-    function toggleRotateManual() {
-        if (!mainPlayer.isFullscreen()) {
-            mainPlayer.requestFullscreen();
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('landscape').catch(() => {});
-            }
-        } else {
-            mainPlayer.exitFullscreen();
-        }
+        const q = document.getElementById("search-input").value.toLowerCase();
+        renderChannels(allChannels.filter(ch => ch.name.toLowerCase().includes(q)));
     }
 
     function shareApp() {
         if (navigator.share) navigator.share({ title: 'Rivo TV', url: window.location.href });
-        else alert("Link: " + window.location.href);
+        else alert(window.location.href);
     }
 
     init();
