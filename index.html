@@ -17,6 +17,7 @@
             --primary: #00f2ff; 
             --fire: #ff4500; 
             --telegram: #0088cc;
+            --refresh: #00ff88;
             --bg: #050505; 
             --card-bg: #0f0f0f; 
             --text: #fff; 
@@ -27,11 +28,9 @@
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         
-        /* 📺 Player Settings */
         .video-js { width: 100% !important; aspect-ratio: 16/10; }
         @media (max-width: 768px) { .video-js { aspect-ratio: 4/3; } }
 
-        /* 🚫 Hide Loading Spinner (মাঝখানের ঘোরা বন্ধ) */
         .vjs-loading-spinner { display: none !important; }
 
         #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 10; }
@@ -51,11 +50,13 @@
 
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
+        /* ⚡ Header with Refresh Button */
         .header-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #080808; }
         .brand-name { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .action-row { display: flex; gap: 4px; }
-        .action-btn { padding: 4px 8px; background: #1a1a1a; border-radius: 5px; border: 1px solid #333; color: #bbb; font-size: 10px; cursor: pointer; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 4px; }
+        .action-row { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+        .action-btn { padding: 4px 8px; background: #1a1a1a; border-radius: 5px; border: 1px solid #333; color: #bbb; font-size: 10px; cursor: pointer; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .btn-refresh { color: var(--refresh); border-color: var(--refresh); }
         .btn-contact { color: var(--telegram); border-color: var(--telegram); }
         .btn-apk { background: rgba(255, 69, 0, 0.1); color: var(--fire); border-color: var(--fire); font-weight: bold; }
 
@@ -106,6 +107,7 @@
         <div class="brand-name">RIVO TV</div>
         <div class="action-row">
             <button class="action-btn" onclick="shareApp()"><i class="fas fa-share-alt"></i> Share</button>
+            <button class="action-btn btn-refresh" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Refresh</button>
             <a href="https://t.me/techbd_group" target="_blank" class="action-btn btn-contact"><i class="fab fa-telegram"></i> Contact</a>
             <a href="YOUR_APK_LINK_HERE" target="_blank" class="action-btn btn-apk">Get App</a>
         </div>
@@ -147,8 +149,7 @@
             const data = await res.text();
             allChannels = parseM3U(data);
             renderChannels(allChannels);
-            // প্রথম লোডে যেন উপরে না লাফায় সেজন্য smooth scroll বাদ দিয়েছি এখানে
-            if(allChannels.length > 0) playMain(allChannels[0].url, false);
+            if(allChannels.length > 0) playMain(allChannels[0].url);
         } catch (e) { console.error("M3U Load Error"); }
     }
 
@@ -217,7 +218,7 @@
                 <div class="fav-star ${isFav?'active':''}" onclick="toggleFav(event, '${ch.id}')">
                     <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 </div>
-                <div class="logo-area" id="logo-box-${index}" onclick="playMain('${ch.url}', true)">
+                <div class="logo-area" id="logo-box-${index}" onclick="playMain('${ch.url}')">
                     <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/80?text=TV'">
                     <div class="progress-container" id="prog-cont-${index}"><div class="progress-bar" id="prog-bar-${index}"></div></div>
                 </div>
@@ -228,14 +229,10 @@
         }).join('');
     }
 
-    // ⚡ প্লে করার সময় স্ক্রিন লক রাখা হয়েছে
-    function playMain(url, shouldFocus) {
+    function playMain(url) {
         stopAllPreviews();
         mainPlayer.src({ src: url, type: 'application/x-mpegURL' });
         mainPlayer.play().catch(() => {});
-        
-        // নিচের লাইনটি কমেন্ট করে দেওয়া হয়েছে যাতে প্লে করলে উপরে লাফ দিয়ে না যায়
-        // window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function startPreview(url, index) {
