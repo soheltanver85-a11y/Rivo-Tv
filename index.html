@@ -28,12 +28,12 @@
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         
-        /* ভিডিও রেশিও এবং ডিসপ্লে ফিক্স */
+        /* ⚡ মূল পরিবর্তন ⚡: ভিডিও রেশিও এবং ডিসপ্লে ফিক্স */
         .video-js { width: 100% !important; aspect-ratio: 16/9; background-color: #000; }
         
-        /* প্রধান পরিবর্তন: ভিডিও যেন কেটে না যায় */
-        .video-js video {
-            object-fit: contain !important; 
+        /* ভিডিওর মূল এলিমেন্টকে Contain করা হচ্ছে */
+        .video-js .vjs-tech {
+            object-fit: contain !important;
         }
         
         @media (max-width: 768px) { .video-js { aspect-ratio: 16/9; } }
@@ -147,10 +147,10 @@
     let currentCategory = 'ALL';
 
     async function init() {
-        // Player Initialize with Fill/Fluid
+        // Player Initialize
         mainPlayer = videojs('rivo-player', { 
             fluid: true, 
-            fill: true,
+            aspectRatio: '16:9', // ⚡ রেশিও নিশ্চিত করা হলো
             userActions: { click: false } 
         });
         
