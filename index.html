@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#050505">
-    <title>Rivo TV | Final Fix</title>
+    <title>Rivo TV | Optimized Player</title>
     
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Orbitron:wght@900&display=swap" rel="stylesheet">
@@ -28,21 +28,17 @@
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         
-        /* 📺 Player Settings - Normal Mode */
+        /* 📺 Standard Player Size (Normal Mode) */
         .video-js { 
             width: 100% !important; 
-            aspect-ratio: 21/9 !important; 
+            aspect-ratio: 16/9 !important; /* সাধারণ অবস্থায় বড় দেখাবে */
         }
 
-        /* 🖥️ CRITICAL FULLSCREEN FIX: ভিডিওর চারপাশ কাটা রোধ করতে */
+        /* 🖥️ Fullscreen Fix: ফুলস্ক্রিন করলে যেন ভিডিও কেটে না যায় */
         .video-js .vjs-tech {
-            object-fit: contain !important; /* ভিডিও যেন নিজে থেকে জুম না হয় */
+            object-fit: contain !important; 
         }
 
-        /* ব্রাউজার লেভেলে ফুলস্ক্রিন হ্যান্ডেলিং */
-        video::-webkit-media-controls-panel { display: flex !important; }
-        
-        /* ফুলস্ক্রিন মোডে ব্ল্যাক ব্যাকগ্রাউন্ড নিশ্চিত করা */
         .vjs-fullscreen .vjs-tech {
             background-color: #000 !important;
         }
@@ -152,15 +148,14 @@
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
     let allChannels = [], favorites = JSON.parse(localStorage.getItem('rivo_favs')) || [];
-    let mainPlayer, previewHls = null;
+    let mainPlayer;
     let currentCategory = 'ALL';
 
     async function init() {
         mainPlayer = videojs('rivo-player', { 
             fluid: true, 
-            aspectRatio: '21:9', 
-            userActions: { click: false },
-            html5: { vhs: { overrideNative: true }, nativeAudioTracks: false, nativeVideoTracks: false }
+            aspectRatio: '16:9', 
+            userActions: { click: false }
         });
         
         setupGestures();
@@ -241,9 +236,8 @@
                 </div>
                 <div class="logo-area" id="logo-box-${index}" onclick="playMain('${ch.url}')">
                     <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/80?text=TV'">
-                    <div class="progress-container" id="prog-cont-${index}"><div class="progress-bar" id="prog-bar-${index}"></div></div>
                 </div>
-                <div class="ch-info" onclick="startPreview('${ch.url}', ${index})">
+                <div class="ch-info" onclick="playMain('${ch.url}')">
                     <span class="ch-name">▶ ${ch.name}</span>
                 </div>
             </div>`;
@@ -251,42 +245,8 @@
     }
 
     function playMain(url) {
-        stopAllPreviews();
         mainPlayer.src({ src: url, type: 'application/x-mpegURL' });
         mainPlayer.play().catch(() => {});
-    }
-
-    function startPreview(url, index) {
-        stopAllPreviews();
-        const container = document.getElementById(`logo-box-${index}`);
-        const pCont = document.getElementById(`prog-cont-${index}`);
-        const pBar = document.getElementById(`prog-bar-${index}`);
-        
-        const video = document.createElement('video');
-        video.className = 'preview-v';
-        video.style.cssText = "position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:10; background:#000;";
-        video.muted = true; video.autoplay = true; video.playsinline = true;
-        
-        container.appendChild(video);
-        pCont.style.display = 'block';
-        setTimeout(() => { pBar.style.width = '100%'; }, 50);
-
-        if (window.Hls && Hls.isSupported()) {
-            previewHls = new Hls();
-            previewHls.loadSource(url);
-            previewHls.attachMedia(video);
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = url;
-        }
-
-        setTimeout(() => stopAllPreviews(), 10000);
-    }
-
-    function stopAllPreviews() {
-        if (previewHls) { previewHls.destroy(); previewHls = null; }
-        document.querySelectorAll('.preview-v').forEach(v => v.remove());
-        document.querySelectorAll('.progress-container').forEach(c => c.style.display = 'none');
-        document.querySelectorAll('.progress-bar').forEach(b => b.style.width = '0%');
     }
 
     function toggleFav(event, id) {
