@@ -28,9 +28,12 @@
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         
-        .video-js { width: 100% !important; aspect-ratio: 16/10; }
-        @media (max-width: 768px) { .video-js { aspect-ratio: 4/3; } }
-
+        /* 📺 Standard Player Size (Fixed) */
+        .video-js { 
+            width: 100% !important; 
+            aspect-ratio: 16/9 !important; /* স্ট্যান্ডার্ড ১৬:৯ রেশিও করা হয়েছে */
+        }
+        
         .vjs-loading-spinner { display: none !important; }
 
         #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 10; }
@@ -50,7 +53,6 @@
 
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* ⚡ Header with Refresh Button */
         .header-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #080808; }
         .brand-name { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
         
