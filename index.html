@@ -12,7 +12,13 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
     <style>
-        :root { --primary: #00f2ff; --bg: #050505; --card-bg: #0f0f0f; --text: #fff; }
+        :root { 
+            --primary: #00f2ff; 
+            --fire: #ff4500; 
+            --bg: #050505; 
+            --card-bg: #0f0f0f; 
+            --text: #fff; 
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 50px; }
 
@@ -26,15 +32,28 @@
         #vol-indicator { right: 20px; }
         #bri-indicator { left: 20px; }
 
-        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; text-align: center; padding: 10px 0; color: #fff; text-shadow: 0 0 10px var(--primary); }
+        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 900; text-align: center; padding: 15px 0; color: #fff; text-shadow: 0 0 10px var(--primary); text-transform: uppercase; letter-spacing: 2px; }
         
-        .cat-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px; scrollbar-width: none; }
+        /* 🔥 Action Buttons & Large Search Bar */
+        .controls-area { padding: 10px; border-bottom: 1px solid #1a1a1a; }
+        .action-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .action-btn { flex: 1; padding: 10px; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; color: #bbb; font-size: 12px; cursor: pointer; text-align: center; text-decoration: none; transition: 0.3s; }
+        .action-btn:hover { background: #222; color: #fff; border-color: #555; }
+        .btn-apk { background: rgba(255, 69, 0, 0.1); color: var(--fire); border-color: var(--fire); font-weight: bold; }
+        .btn-apk:hover { background: var(--fire); color: #fff; }
+
+        .search-container { position: relative; width: 100%; }
+        .search-input { width: 100%; padding: 15px; background: #121212; border: 2px solid #222; border-radius: 12px; color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
+        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
+
+        .cat-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px; scrollbar-width: none; border-bottom: 1px solid #1a1a1a; }
         .cat-pill { padding: 6px 15px; background: #1a1a1a; border-radius: 8px; font-size: 11px; color: #bbb; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
         .cat-pill.active { background: rgba(0, 242, 255, 0.2); color: var(--primary); border-color: var(--primary); }
 
         /* Grid */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
-        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: 0.3s; }
+        .card:hover { transform: translateY(-3px); border-color: #333; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
         
         .logo-area { height: 100px; background: #000; display: flex; align-items: center; justify-content: center; padding: 15px; position: relative; cursor: pointer; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
@@ -43,11 +62,31 @@
         .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: width 10s linear; }
 
         .ch-info { padding: 10px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
-        .ch-name { font-size: 11px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ch-name { font-size: 11px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #eee; }
 
-        .fav-star { position: absolute; top: 6px; right: 6px; z-index: 20; padding: 5px; cursor: pointer; }
-        .fav-star svg { fill: #444; }
+        .fav-star { position: absolute; top: 6px; right: 6px; z-index: 20; padding: 5px; cursor: pointer; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; }
+        .fav-star svg { fill: #666; transition: 0.3s; }
         .fav-star.active svg { fill: #ffcc00; }
+
+        /* 🔥 Stylish Flicker Developer Credit */
+        .footer-area { padding: 40px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 20px; }
+        .dev-title { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .dev-name { 
+            font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; 
+            color: #fff; text-transform: uppercase; letter-spacing: 2px;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--primary), 0 0 20px var(--primary);
+            animation: flicker 2s infinite alternate;
+        }
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--primary), 0 0 20px var(--primary);
+                opacity: 1;
+            }
+            20%, 22%, 24%, 55% {
+                text-shadow: none;
+                opacity: 0.5;
+            }
+        }
 
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
     </style>
@@ -62,21 +101,40 @@
         <div id="bri-indicator" class="gesture-indicator">☀️ 100%</div>
     </div>
     <div class="brand-name">RIVO TV</div>
+    
+    <div class="controls-area">
+        <div class="action-row">
+            <button class="action-btn" onclick="shareApp()"><i class="fas fa-share-alt"></i> Share Site</button>
+            <a href="YOUR_APK_LINK_HERE" target="_blank" class="action-btn btn-apk"><i class="fas fa-download"></i> Get App</a>
+        </div>
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="সার্চ চ্যানেল (Sports, Bangla...)" oninput="liveSearch()">
+        </div>
+    </div>
+
     <div class="cat-row">
         <div class="cat-pill active" onclick="filterCat('ALL', this)">All</div>
         <div class="cat-pill" onclick="filterCat('Sports', this)">Sports</div>
+        <div class="cat-pill" onclick="filterCat('Bangla', this)">Bangla</div>
         <div class="cat-pill" onclick="filterCat('Fav', this)">★ Favorites</div>
     </div>
 </div>
 
 <div class="grid" id="mainGrid">Loading...</div>
 
+<div class="footer-area">
+    <div class="dev-title">Developed By</div>
+    <div class="dev-name">Sohel Tanvir</div>
+</div>
+
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
     let allChannels = [], favorites = JSON.parse(localStorage.getItem('rivo_favs')) || [];
     let mainPlayer, previewHls = null;
+    let currentCategory = 'ALL';
 
     async function init() {
         mainPlayer = videojs('rivo-player', { fluid: true, userActions: { click: false } });
@@ -115,7 +173,7 @@
                 briInd.style.display = 'block';
             } else {
                 mainPlayer.volume(newVal);
-                volInd.innerText = `🔊 ${Math.round(newVal * 100)}%`;
+                volInd.innerText = `🔊 ${Math.round(newVol * 100)}%`;
                 volInd.style.display = 'block';
             }
         }, {passive: true});
@@ -148,7 +206,8 @@
 
     function renderChannels(list) {
         const grid = document.getElementById('mainGrid');
-        grid.innerHTML = list.map((ch, index) => {
+        grid.innerHTML = list.length === 0 ? "<div style='grid-column:1/-1; color:gray; padding:20px; text-align:center;'>কোনো চ্যানেল পাওয়া যায়নি</div>" : 
+        list.map((ch, index) => {
             const isFav = favorites.includes(ch.id);
             return `
             <div class="card">
@@ -200,10 +259,7 @@
     }
 
     function stopAllPreviews() {
-        if (previewHls) {
-            previewHls.destroy();
-            previewHls = null;
-        }
+        if (previewHls) { previewHls.destroy(); previewHls = null; }
         document.querySelectorAll('.preview-v').forEach(v => v.remove());
         document.querySelectorAll('.progress-container').forEach(c => c.style.display = 'none');
         document.querySelectorAll('.progress-bar').forEach(b => b.style.width = '0%');
@@ -215,14 +271,35 @@
         else favorites.push(id);
         localStorage.setItem('rivo_favs', JSON.stringify(favorites));
         event.currentTarget.classList.toggle('active');
+        if (currentCategory === 'Fav') renderChannels(allChannels.filter(ch => favorites.includes(ch.id)));
     }
 
     function filterCat(cat, btn) {
+        currentCategory = cat;
         document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        document.getElementById("search-input").value = "";
+        
         if (cat === 'ALL') renderChannels(allChannels);
         else if (cat === 'Fav') renderChannels(allChannels.filter(ch => favorites.includes(ch.id)));
         else renderChannels(allChannels.filter(ch => ch.name.toLowerCase().includes(cat.toLowerCase())));
+    }
+
+    // 🔥 Live Search Logic
+    function liveSearch() {
+        const query = document.getElementById("search-input").value.toLowerCase().trim();
+        if (query === "") {
+            filterCat(currentCategory, document.querySelector('.cat-pill.active'));
+            return;
+        }
+        const filtered = allChannels.filter(ch => ch.name.toLowerCase().includes(query));
+        renderChannels(filtered);
+    }
+
+    // 🔥 Share Logic
+    function shareApp() {
+        if (navigator.share) navigator.share({ title: 'Rivo TV', url: window.location.href });
+        else alert("লিংক: " + window.location.href);
     }
 
     init();
