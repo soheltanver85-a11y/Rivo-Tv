@@ -28,8 +28,15 @@
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         
-        .video-js { width: 100% !important; aspect-ratio: 16/10; }
-        @media (max-width: 768px) { .video-js { aspect-ratio: 4/3; } }
+        /* ভিডিও রেশিও এবং ডিসপ্লে ফিক্স */
+        .video-js { width: 100% !important; aspect-ratio: 16/9; background-color: #000; }
+        
+        /* প্রধান পরিবর্তন: ভিডিও যেন কেটে না যায় */
+        .video-js video {
+            object-fit: contain !important; 
+        }
+        
+        @media (max-width: 768px) { .video-js { aspect-ratio: 16/9; } }
 
         .vjs-loading-spinner { display: none !important; }
 
@@ -50,7 +57,6 @@
 
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* ⚡ Header with Refresh Button */
         .header-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #080808; }
         .brand-name { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
         
@@ -141,7 +147,13 @@
     let currentCategory = 'ALL';
 
     async function init() {
-        mainPlayer = videojs('rivo-player', { fluid: true, userActions: { click: false } });
+        // Player Initialize with Fill/Fluid
+        mainPlayer = videojs('rivo-player', { 
+            fluid: true, 
+            fill: true,
+            userActions: { click: false } 
+        });
+        
         setupGestures();
 
         try {
