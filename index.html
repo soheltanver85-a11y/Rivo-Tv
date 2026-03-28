@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#050505">
-    <title>Rivo TV | Classic Style</title>
+    <title>Rivo TV | Final Style</title>
     
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Orbitron:wght@900&display=swap" rel="stylesheet">
@@ -39,6 +39,13 @@
         .video-js { width: 100% !important; height: 100% !important; }
         .video-js .vjs-tech { object-fit: contain !important; }
 
+        /* চলন্ত নোটিশ বোর্ড */
+        .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 4px 0; }
+        .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 10px; color: #999; }
+        .notice-text a { color: var(--primary); text-decoration: none; font-weight: 800; font-family: 'Orbitron', sans-serif; border: 1px solid var(--primary); padding: 0 5px; border-radius: 3px; margin-left: 5px; text-transform: uppercase; font-size: 9px; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        /* Gesture & Brightness */
         #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 2147483647; }
         .gesture-indicator { 
             position: absolute; top: 50%; transform: translateY(-50%); 
@@ -49,7 +56,7 @@
         #vol-indicator { right: 15px; }
         #bri-indicator { left: 15px; }
 
-        /* Header & Action Row */
+        /* Header & Buttons */
         .header-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #080808; }
         .brand-name { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
         
@@ -57,7 +64,6 @@
         .action-btn { padding: 4px 8px; background: #1a1a1a; border-radius: 5px; border: 1px solid #333; color: #bbb; font-size: 9px; cursor: pointer; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
         .btn-refresh { color: var(--refresh); border-color: var(--refresh); }
 
-        /* Search & Category */
         .search-area { padding: 0 10px 8px 10px; background: #080808; }
         .search-input { width: 100%; padding: 6px 12px; background: #121212; border: 1px solid #222; border-radius: 6px; color: #fff; font-size: 11px; outline: none; }
 
@@ -65,24 +71,22 @@
         .cat-pill { padding: 4px 12px; background: #1a1a1a; border-radius: 5px; font-size: 10px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
         .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); }
 
-        /* Grid & Card Designs */
+        /* Grid */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
         .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
         
         .logo-area { height: 85px; background: #000; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; }
         .logo-area img { max-height: 80%; max-width: 80%; object-fit: contain; }
 
-        /* Preview Container */
         .preview-box { position: absolute; top:0; left:0; width:100%; height:100%; display:none; background:#000; z-index:5; }
         .card.is-previewing .preview-box { display: block; }
-        .card.is-previewing img { display: none; }
+        .card.is-previewing img { opacity: 0; }
 
-        /* Star Button */
         .fav-star { position: absolute; top: 5px; right: 5px; color: rgba(255,255,255,0.2); font-size: 14px; z-index: 10; cursor: pointer; transition: 0.3s; }
         .fav-star.active { color: #FFD700; text-shadow: 0 0 5px rgba(255,215,0,0.5); }
 
         .ch-info { padding: 6px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; text-align: center; }
-        .ch-name { font-size: 10px; font-weight: 600; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ch-name { font-size: 10px; font-weight: 600; color: #eee; }
 
         .footer-area { padding: 20px; text-align: center; font-family: 'Orbitron'; font-size: 9px; color: #555; }
     </style>
@@ -95,6 +99,13 @@
         <div id="brightness-overlay"></div>
         <div id="vol-indicator" class="gesture-indicator">🔊 100%</div>
         <div id="bri-indicator" class="gesture-indicator">☀️ 100%</div>
+    </div>
+
+    <div class="notice-board">
+        <div class="notice-text">
+            📢 𝚂𝚞𝚙𝚙𝚘𝚛𝚝 𝙲𝚎𝚗𝚝𝚎𝚛: 🛠️ বাফারিং হচ্ছে? 📡 নতুন চ্যানেল প্রয়োজন? ⚡ দ্রুত সমাধান পেতে এখনই যুক্ত হোন 
+            <a href="https://t.me/techbd_group" target="_blank">𝚃𝚎𝚌𝚑 𝙱𝙳</a>
+        </div>
     </div>
 
     <div class="header-row">
@@ -134,10 +145,10 @@
             fluid: true, 
             aspectRatio: '16:9',
             controls: true,
-            userActions: { click: true } // প্লেয়ারের ভেতর ক্লিকে প্লে/পজ হবে
+            userActions: { click: true } 
         });
 
-        // প্লেয়ারের মাঝখানে ক্লিকে প্লে-পজ হ্যান্ডলার (Extra Safety)
+        // প্লেয়ারের মাঝখানে ক্লিকে প্লে-পজ হ্যান্ডলার
         mainPlayer.on('click', function() {
             if (this.paused()) this.play();
             else this.pause();
@@ -161,7 +172,7 @@
             if (l.startsWith('#EXTINF')) {
                 item.name = l.split(',')[1]?.trim();
                 item.logo = l.match(/tvg-logo="(.*?)"/)?.[1] || "";
-                item.cat = l.match(/group-title="(.*?)"/)?.[1] || "General";
+                item.cat = l.match(/group-title="(.*?)"/)?.[1] || "Bangla";
             } else if (l.startsWith('http')) {
                 item.url = l.trim();
                 if(item.name) list.push({...item});
@@ -189,11 +200,9 @@
         }).join('');
     }
 
-    // লাইভ চ্যানেল ১০ সেকেন্ড প্রিভিউ
     function startPreview(url, idx) {
         const card = document.getElementById(`card-${idx}`);
         const box = document.getElementById(`pv-box-${idx}`);
-        
         card.classList.add('is-previewing');
         box.innerHTML = `<video id="pv-vid-${idx}" class="video-js" muted playsinline style="width:100%;height:100%"></video>`;
         
@@ -242,7 +251,7 @@
 
     function shareApp() {
         if (navigator.share) navigator.share({ title: 'Rivo TV', url: window.location.href });
-        else alert("Link: " + window.location.href);
+        else alert("লিঙ্ক: " + window.location.href);
     }
 
     function setupGestures() {
