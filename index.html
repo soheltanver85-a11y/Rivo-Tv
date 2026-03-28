@@ -27,28 +27,22 @@
 
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         
-        /* 📺 DISPLAY SIZE FIX: Avia TV এর মতো বড় সাইজ */
         .video-box { 
             background: #000; 
             border-bottom: 2px solid var(--primary); 
             position: relative; 
             overflow: hidden; 
             width: 100%;
-            aspect-ratio: 16/9; /* প্লেয়ারটি এখন বড় দেখাবে */
+            aspect-ratio: 16/9; 
         }
         
         .video-js { width: 100% !important; height: 100% !important; }
+        .video-js .vjs-tech { object-fit: contain !important; }
 
-        /* FULLSCREEN FIX: ভিডিও যেন কেটে না যায় */
-        .video-js .vjs-tech {
-            object-fit: contain !important;
-        }
-
-        /* ফুলস্ক্রিন অবস্থায় বাকি সব হাইড করা */
+        /* Fullscreen adjustment */
         .vjs-fullscreen .fixed-top-container, 
         .vjs-fullscreen .grid, 
         .vjs-fullscreen .footer-area { display: none !important; }
-
         .vjs-loading-spinner { display: none !important; }
 
         #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 2147483647; }
@@ -61,16 +55,14 @@
         #vol-indicator { right: 15px; }
         #bri-indicator { left: 15px; }
 
-        /* বাকি সব ডিজাইন আগের মতো */
+        /* Notice & Header */
         .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 4px 0; }
         .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 10px; color: #999; }
         .notice-text a { color: var(--primary); text-decoration: none; font-weight: 800; font-family: 'Orbitron', sans-serif; border: 1px solid var(--primary); padding: 0 5px; border-radius: 3px; margin-left: 5px; text-transform: uppercase; font-size: 9px; }
-
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
         .header-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #080808; }
         .brand-name { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
-        
         .action-row { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
         .action-btn { padding: 4px 8px; background: #1a1a1a; border-radius: 5px; border: 1px solid #333; color: #bbb; font-size: 9px; cursor: pointer; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
         .btn-refresh { color: var(--refresh); border-color: var(--refresh); }
@@ -82,12 +74,25 @@
         .cat-pill { padding: 4px 12px; background: #1a1a1a; border-radius: 5px; font-size: 10px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
         .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); }
 
+        /* Grid & Cards */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
         .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
+        
         .logo-area { height: 85px; background: #000; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; cursor: pointer; }
-        .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
-        .ch-info { padding: 6px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
-        .ch-name { font-size: 9px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #eee; }
+        .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; transition: 0.3s; }
+        
+        /* New: Favorite Star */
+        .fav-star { position: absolute; top: 5px; right: 5px; color: rgba(255,255,255,0.3); font-size: 14px; z-index: 10; transition: 0.3s; }
+        .fav-star.active { color: #FFD700; text-shadow: 0 0 5px rgba(255,215,0,0.5); }
+
+        /* New: Preview Video Style */
+        .preview-vid { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 5; background: #000; }
+        .card.playing-preview img { opacity: 0; }
+        .card.playing-preview .preview-vid { display: block; }
+
+        .ch-info { padding: 6px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; text-align: center; }
+        .ch-name { font-size: 10px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #eee; padding: 2px 0; }
+        .ch-name:active { color: var(--primary); }
 
         .footer-area { padding: 12px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 10px; background: #080808; }
         .dev-name { font-family: 'Orbitron', sans-serif; font-size: 9px; font-weight: 800; color: #777; }
@@ -170,13 +175,6 @@
         const volInd = document.getElementById('vol-indicator');
         const briInd = document.getElementById('bri-indicator');
 
-        mainPlayer.on('ready', () => {
-            const el = mainPlayer.el();
-            el.appendChild(briOverlay);
-            el.appendChild(volInd);
-            el.appendChild(briInd);
-        });
-
         wrapper.addEventListener('touchstart', (e) => {
             isMoving = false; startY = e.touches[0].pageY;
             const x = e.touches[0].pageX - wrapper.getBoundingClientRect().left;
@@ -215,6 +213,8 @@
             if (l.startsWith('#EXTINF')) {
                 item.name = l.split(',')[1]?.trim();
                 item.logo = l.match(/tvg-logo="(.*?)"/)?.[1] || "";
+                // ক্যাটাগরি ডিটেকশন (যদি M3U তে থাকে)
+                item.cat = l.match(/group-title="(.*?)"/)?.[1] || "Bangla";
                 item.id = btoa(unescape(encodeURIComponent(item.name || "")));
             } else if (l.startsWith('http')) {
                 item.url = l.trim();
@@ -227,26 +227,81 @@
 
     function renderChannels(list) {
         const grid = document.getElementById('mainGrid');
-        grid.innerHTML = list.length === 0 ? "<div>No Channels</div>" : 
-        list.map(ch => `
-            <div class="card" onclick="playMain('${ch.url}')">
-                <div class="logo-area">
+        grid.innerHTML = list.length === 0 ? "<div style='grid-column: 1/-1; text-align:center; padding:20px; color:#555;'>No Channels Found</div>" : 
+        list.map(ch => {
+            const isFav = favorites.includes(ch.url) ? 'active' : '';
+            return `
+            <div class="card" data-url="${ch.url}">
+                <i class="fas fa-star fav-star ${isFav}" onclick="toggleFavorite(event, '${ch.url}')"></i>
+                <div class="logo-area" onclick="playMain('${ch.url}')">
                     <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/80?text=TV'">
+                    <video class="preview-vid" muted playsinline loop>
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                    </video>
                 </div>
-                <div class="ch-info">
+                <div class="ch-info" onclick="triggerPreview(this)">
                     <span class="ch-name">${ch.name}</span>
                 </div>
-            </div>`).join('');
+            </div>`;
+        }).join('');
+    }
+
+    // স্টার বাটনের কাজ
+    function toggleFavorite(event, url) {
+        event.stopPropagation();
+        const icon = event.currentTarget;
+        const index = favorites.indexOf(url);
+        
+        if (index > -1) {
+            favorites.splice(index, 1);
+            icon.classList.remove('active');
+        } else {
+            favorites.push(url);
+            icon.classList.add('active');
+        }
+        localStorage.setItem('rivo_favs', JSON.stringify(favorites));
+    }
+
+    // ১০ সেকেন্ডের প্রিভিউ ট্রিমার
+    function triggerPreview(infoElement) {
+        const card = infoElement.parentElement;
+        const vid = card.querySelector('.preview-vid');
+        
+        card.classList.add('playing-preview');
+        vid.play();
+
+        setTimeout(() => {
+            vid.pause();
+            vid.currentTime = 0;
+            card.classList.remove('playing-preview');
+        }, 10000); // ১০ সেকেন্ড
     }
 
     function playMain(url) {
         mainPlayer.src({ src: url, type: 'application/x-mpegURL' });
         mainPlayer.play().catch(() => {});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function filterCat(cat, el) {
+        document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        currentCategory = cat;
+
+        if (cat === 'Fav') {
+            const favList = allChannels.filter(ch => favorites.includes(ch.url));
+            renderChannels(favList);
+        } else if (cat === 'ALL') {
+            renderChannels(allChannels);
+        } else {
+            renderChannels(allChannels.filter(ch => ch.cat.toLowerCase().includes(cat.toLowerCase())));
+        }
     }
 
     function liveSearch() {
         const q = document.getElementById("search-input").value.toLowerCase();
-        renderChannels(allChannels.filter(ch => ch.name.toLowerCase().includes(q)));
+        const filtered = allChannels.filter(ch => ch.name.toLowerCase().includes(q));
+        renderChannels(filtered);
     }
 
     function shareApp() {
