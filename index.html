@@ -8,6 +8,7 @@
     
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
@@ -15,6 +16,7 @@
         :root { 
             --primary: #00f2ff; 
             --fire: #ff4500; 
+            --telegram: #0088cc;
             --bg: #050505; 
             --card-bg: #0f0f0f; 
             --text: #fff; 
@@ -26,34 +28,34 @@
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         .video-js { width: 100% !important; aspect-ratio: 16/9; }
 
-        /* 📢 Ultra Compact Notice Board */
+        /* 📢 Compact Notice Board */
         .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 5px 0; }
         .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 11px; color: #bbb; }
-        .notice-text a { color: var(--primary); text-decoration: none; font-weight: 800; font-family: 'Orbitron', sans-serif; border: 1px solid var(--primary); padding: 1px 6px; border-radius: 4px; margin-left: 5px; text-transform: uppercase; font-size: 10px; box-shadow: 0 0 5px rgba(0, 242, 255, 0.3); }
+        .notice-text a { color: var(--primary); text-decoration: none; font-weight: 800; font-family: 'Orbitron', sans-serif; border: 1px solid var(--primary); padding: 1px 6px; border-radius: 4px; margin-left: 5px; text-transform: uppercase; font-size: 10px; }
 
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* ⚡ Slim & Stylish Header */
-        .header-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; background: #080808; }
-        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+        /* ⚡ Slim Header with Contact Button */
+        .header-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #080808; }
+        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .action-row { display: flex; gap: 5px; }
-        .action-btn { padding: 4px 10px; background: #1a1a1a; border-radius: 5px; border: 1px solid #333; color: #bbb; font-size: 10px; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .action-row { display: flex; gap: 4px; }
+        .action-btn { padding: 4px 8px; background: #1a1a1a; border-radius: 5px; border: 1px solid #333; color: #bbb; font-size: 10px; cursor: pointer; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 4px; }
+        .btn-contact { color: var(--telegram); border-color: var(--telegram); }
         .btn-apk { background: rgba(255, 69, 0, 0.1); color: var(--fire); border-color: var(--fire); font-weight: bold; }
 
         /* 🔍 Small Search Bar */
         .search-area { padding: 0 10px 8px 10px; background: #080808; }
-        .search-input { width: 100%; padding: 7px 12px; background: #121212; border: 1px solid #222; border-radius: 6px; color: #fff; font-size: 11px; outline: none; transition: 0.3s; }
-        .search-input:focus { border-color: var(--primary); background: #181818; }
+        .search-input { width: 100%; padding: 7px 12px; background: #121212; border: 1px solid #222; border-radius: 6px; color: #fff; font-size: 11px; outline: none; }
 
         /* 📂 Categories */
-        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding: 7px 10px; scrollbar-width: none; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; background: #050505; }
+        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding: 7px 10px; scrollbar-width: none; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; }
         .cat-pill { padding: 4px 12px; background: #1a1a1a; border-radius: 5px; font-size: 10px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
         .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); }
 
-        /* Grid & Cards */
+        /* Grid */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
-        .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: 0.3s; }
+        .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
         .logo-area { height: 90px; background: #000; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; cursor: pointer; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
         .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); display: none; }
@@ -64,17 +66,10 @@
         .fav-star svg { fill: #555; width: 12px; height: 12px; }
         .fav-star.active svg { fill: #ffcc00; }
 
-        /* Gesture Elements */
-        #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 10; }
-        .gesture-indicator { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.8); color: var(--primary); padding: 7px 14px; border-radius: 30px; font-size: 11px; font-weight: bold; z-index: 20; display: none; border: 1px solid var(--primary); }
-        #vol-indicator { right: 15px; }
-        #bri-indicator { left: 15px; }
-
-        /* ⚡ Tiny & Stylish Footer */
+        /* Footer */
         .footer-area { padding: 12px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 10px; background: #080808; }
-        .dev-title { font-size: 8px; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
-        .dev-name { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
-        .dev-name:hover { color: var(--primary); text-shadow: 0 0 8px var(--primary); }
+        .dev-title { font-size: 8px; color: #444; text-transform: uppercase; margin-bottom: 2px; }
+        .dev-name { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 800; color: #888; }
 
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
     </style>
@@ -99,7 +94,8 @@
     <div class="header-row">
         <div class="brand-name">RIVO TV</div>
         <div class="action-row">
-            <button class="action-btn" onclick="shareApp()">Share</button>
+            <button class="action-btn" onclick="shareApp()"><i class="fas fa-share-alt"></i> Share</button>
+            <a href="https://t.me/techbd_group" target="_blank" class="action-btn btn-contact"><i class="fab fa-telegram"></i> Contact</a>
             <a href="YOUR_APK_LINK_HERE" target="_blank" class="action-btn btn-apk">Get App</a>
         </div>
     </div>
@@ -124,7 +120,6 @@
 </div>
 
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
@@ -243,7 +238,7 @@
         pCont.style.display = 'block';
         setTimeout(() => { pBar.style.width = '100%'; }, 50);
 
-        if (Hls.isSupported()) {
+        if (window.Hls && Hls.isSupported()) {
             previewHls = new Hls();
             previewHls.loadSource(url);
             previewHls.attachMedia(video);
