@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#050505">
-    <title>Rivo TV | Compact Edition</title>
+    <title>Rivo TV | Final Fix</title>
     
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Orbitron:wght@900&display=swap" rel="stylesheet">
@@ -28,13 +28,23 @@
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         
-        /* 📺 Player Settings */
-        .video-js { width: 100% !important; aspect-ratio: 21/9 !important; }
+        /* 📺 Player Settings - Normal Mode */
+        .video-js { 
+            width: 100% !important; 
+            aspect-ratio: 21/9 !important; 
+        }
+
+        /* 🖥️ CRITICAL FULLSCREEN FIX: ভিডিওর চারপাশ কাটা রোধ করতে */
+        .video-js .vjs-tech {
+            object-fit: contain !important; /* ভিডিও যেন নিজে থেকে জুম না হয় */
+        }
+
+        /* ব্রাউজার লেভেলে ফুলস্ক্রিন হ্যান্ডেলিং */
+        video::-webkit-media-controls-panel { display: flex !important; }
         
-        /* 🖥️ Fullscreen Fix: ভিডিও যেন ফুলস্ক্রিনে অতিরিক্ত বড় বা জুম না হয় */
-        .video-js video, .video-js.vjs-fullscreen video {
-            object-fit: contain !important; 
-            background-color: #000;
+        /* ফুলস্ক্রিন মোডে ব্ল্যাক ব্যাকগ্রাউন্ড নিশ্চিত করা */
+        .vjs-fullscreen .vjs-tech {
+            background-color: #000 !important;
         }
 
         .vjs-loading-spinner { display: none !important; }
@@ -146,7 +156,13 @@
     let currentCategory = 'ALL';
 
     async function init() {
-        mainPlayer = videojs('rivo-player', { fluid: true, userActions: { click: false } });
+        mainPlayer = videojs('rivo-player', { 
+            fluid: true, 
+            aspectRatio: '21:9', 
+            userActions: { click: false },
+            html5: { vhs: { overrideNative: true }, nativeAudioTracks: false, nativeVideoTracks: false }
+        });
+        
         setupGestures();
 
         try {
