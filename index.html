@@ -25,7 +25,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 30px; }
 
-        /* Branding Header */
         .brand-header { padding: 6px 12px; background: #000; }
         .brand-name { 
             font-family: 'Orbitron', sans-serif; 
@@ -39,7 +38,8 @@
         
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; }
         .video-js { width: 100% !important; aspect-ratio: 16/9; }
-        .vjs-loading-spinner { display: none !important; }
+        /* Hide default Fullscreen button if you only want yours */
+        .vjs-fullscreen-control { display: none !important; }
 
         #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 10; }
         .gesture-indicator { 
@@ -49,12 +49,10 @@
             display: none; border: 1px solid var(--primary); 
         }
 
-        /* Notice Board */
         .notice-board { background: #0a0a0a; border-bottom: 1px solid #1a1a1a; overflow: hidden; white-space: nowrap; padding: 3px 0; }
         .notice-text { display: inline-block; padding-left: 100%; animation: marquee 25s linear infinite; font-size: 10px; color: #777; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* ULTRA COMPACT ACTION BUTTONS */
         .action-row { 
             display: flex; 
             gap: 5px; 
@@ -79,18 +77,13 @@
             align-items: center; 
             gap: 3px; 
             white-space: nowrap; 
-            transition: 0.2s;
         }
-        .action-btn i { font-size: 10px; }
-        
-        /* Button Colors */
-        .btn-share { color: #fff; border-color: #333; }
-        .btn-refresh { color: var(--refresh); border-color: rgba(0, 255, 136, 0.2); }
-        .btn-contact { color: var(--telegram); border-color: rgba(0, 136, 204, 0.2); }
-        .btn-apk { color: var(--fire); border-color: rgba(255, 69, 0, 0.2); font-weight: bold; }
+        .btn-share { color: #fff; }
+        .btn-refresh { color: var(--refresh); }
+        .btn-contact { color: var(--telegram); }
+        .btn-apk { color: var(--fire); font-weight: bold; }
         .btn-fullscreen { background: var(--primary); color: #000; border: none; font-weight: 900; }
 
-        /* Search Input */
         .search-area { padding: 0 10px 6px 10px; background: #080808; }
         .search-input { 
             width: 100%; 
@@ -104,7 +97,6 @@
             border-left: 2px solid var(--primary); 
         }
 
-        /* ULTRA COMPACT CATEGORIES */
         .cat-row { 
             display: flex; 
             gap: 4px; 
@@ -131,7 +123,6 @@
             font-weight: 600; 
         }
 
-        /* Channel Grid */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 8px; }
         .card { background: var(--card-bg); border-radius: 6px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
         .logo-area { height: 75px; background: #000; display: flex; align-items: center; justify-content: center; padding: 8px; cursor: pointer; }
@@ -165,9 +156,7 @@
     </div>
 
     <div class="notice-board">
-        <div class="notice-text">
-            📢 বাফারিং সমস্যা? নতুন চ্যানেল প্রয়োজন? দ্রুত সমাধান পেতে যুক্ত হোন আমাদের টেলিগ্রাম গ্রুপে।
-        </div>
+        <div class="notice-text">📢 বাফারিং সমস্যা? নতুন চ্যানেল প্রয়োজন? দ্রুত সমাধান পেতে যুক্ত হোন আমাদের টেলিগ্রাম গ্রুপে।</div>
     </div>
 
     <div class="action-row">
@@ -175,7 +164,7 @@
         <button class="action-btn btn-refresh" onclick="location.reload()"><i class="fas fa-rotate"></i> Refresh</button>
         <a href="https://t.me/techbd_group" target="_blank" class="action-btn btn-contact"><i class="fab fa-telegram"></i> Telegram</a>
         <a href="https://www.mediafire.com/file/wm4p7mwuk2geuim/Rivo_Tv_1.0.0.apk/file" target="_blank" class="action-btn btn-apk"><i class="fas fa-download"></i> Get App</a>
-        <button class="action-btn btn-fullscreen" onclick="toggleFullscreen()"><i class="fas fa-expand"></i> Full</button>
+        <button class="action-btn btn-fullscreen" onclick="goFullscreen()"><i class="fas fa-expand"></i> Full</button>
     </div>
     
     <div class="search-area">
@@ -206,7 +195,10 @@
     let currentCategory = 'ALL';
 
     async function init() {
-        mainPlayer = videojs('rivo-player', { fluid: true, userActions: { click: false } });
+        mainPlayer = videojs('rivo-player', { 
+            fluid: true, 
+            userActions: { click: true } 
+        });
         setupGestures();
 
         try {
@@ -218,16 +210,18 @@
         } catch (e) { console.error("M3U Load Error"); }
     }
 
-    function toggleFullscreen() {
-        const player = document.getElementById('rivo-player');
-        if (!document.fullscreenElement) {
-            if (player.requestFullscreen) player.requestFullscreen();
-            else if (player.webkitRequestFullscreen) player.webkitRequestFullscreen();
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('landscape').catch(() => {});
+    // Improved Fullscreen Function
+    function goFullscreen() {
+        if (mainPlayer) {
+            if (!mainPlayer.isFullscreen()) {
+                mainPlayer.requestFullscreen();
+                // Landscape orientation for mobile
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').catch(() => {});
+                }
+            } else {
+                mainPlayer.exitFullscreen();
             }
-        } else {
-            document.exitFullscreen();
         }
     }
 
