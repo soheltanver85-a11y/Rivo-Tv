@@ -15,9 +15,6 @@
     <style>
         :root { 
             --primary: #00f2ff; 
-            --fire: #ff4500; 
-            --telegram: #0088cc;
-            --refresh: #00ff88;
             --bg: #050505; 
             --card-bg: #0f0f0f; 
             --text: #fff; 
@@ -25,76 +22,59 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 30px; }
 
-        .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
-        .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
+        /* ১. ভিডিও বক্স এবং প্লেয়ার ফিক্স */
+        .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; }
+        .video-box { 
+            background: #000; 
+            border-bottom: 2px solid var(--primary); 
+            position: relative; 
+            overflow: hidden; 
+            width: 100%;
+        }
         
-        /* ভিডিওর জুম সমস্যা সমাধানের জন্য ফিক্সড সিএসএস */
         .video-js { 
             width: 100% !important; 
             height: auto !important; 
-            aspect-ratio: 16 / 9; 
+            aspect-ratio: 16/9; /* এটি ভিডিওর আসল অনুপাত রাখবে */
         }
-        
-        /* এটি ভিডিও জুম হওয়া বন্ধ করবে */
+
+        /* ২. ভিডিও স্ট্রেচ বা জুম বন্ধ করার প্রধান কোড */
         .vjs-tech { 
+            object-fit: contain !important; /* ভিডিও কাটবে না, কালো বর্ডার থাকলেও পুরো ভিডিও দেখাবে */
+        }
+
+        /* ৩. ফুলস্ক্রিন বা রোটেশন অবস্থায় যাতে জুম না হয় */
+        video:fullscreen, 
+        video:-webkit-full-screen,
+        .vjs-fullscreen .vjs-tech { 
             object-fit: contain !important; 
         }
 
-        /* ফুলস্ক্রিন মোডে জুম ফিক্স */
-        video:fullscreen { object-fit: contain !important; }
-        video:-webkit-full-screen { object-fit: contain !important; }
-
-        .vjs-loading-spinner { display: none !important; }
-
-        #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 10; }
-        .gesture-indicator { 
-            position: absolute; top: 50%; transform: translateY(-50%); 
-            background: rgba(0,0,0,0.8); color: var(--primary); padding: 10px 20px; 
-            border-radius: 30px; font-size: 14px; font-weight: bold; z-index: 20; 
-            display: none; pointer-events: none; border: 1px solid var(--primary); 
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
-        }
-        #vol-indicator { right: 20px; }
-        #bri-indicator { left: 20px; }
-
-        .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 5px 0; }
-        .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 11px; color: #bbb; }
-        .notice-text a { color: var(--primary); text-decoration: none; font-weight: 800; font-family: 'Orbitron', sans-serif; border: 1px solid var(--primary); padding: 1px 6px; border-radius: 4px; margin-left: 5px; text-transform: uppercase; font-size: 10px; }
-
+        .notice-board { background: #111; padding: 5px 0; overflow: hidden; white-space: nowrap; }
+        .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 11px; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
         .header-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #080808; }
-        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: var(--primary); }
         
-        .action-row { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
-        .action-btn { padding: 4px 8px; background: #1a1a1a; border-radius: 5px; border: 1px solid #333; color: #bbb; font-size: 10px; cursor: pointer; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-        .btn-refresh { color: var(--refresh); border-color: var(--refresh); }
-        .btn-contact { color: var(--telegram); border-color: var(--telegram); }
-        .btn-apk { background: rgba(255, 69, 0, 0.1); color: var(--fire); border-color: var(--fire); font-weight: bold; }
+        .action-row { display: flex; gap: 4px; overflow-x: auto; }
+        .action-btn { padding: 4px 8px; background: #1a1a1a; border-radius: 5px; border: 1px solid #333; color: #bbb; font-size: 10px; cursor: pointer; text-decoration: none; }
 
-        .search-area { padding: 0 10px 8px 10px; background: #080808; }
+        .search-area { padding: 0 10px 8px 10px; }
         .search-input { width: 100%; padding: 7px 12px; background: #121212; border: 1px solid #222; border-radius: 6px; color: #fff; font-size: 11px; outline: none; }
 
-        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding: 7px 10px; scrollbar-width: none; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; }
-        .cat-pill { padding: 4px 12px; background: #1a1a1a; border-radius: 5px; font-size: 10px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
+        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding: 7px 10px; }
+        .cat-pill { padding: 4px 12px; background: #1a1a1a; border-radius: 5px; font-size: 10px; color: #aaa; white-space: nowrap; border: 1px solid #333; }
         .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); }
 
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
-        .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
-        .logo-area { height: 90px; background: #000; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; cursor: pointer; }
+        .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #1a1a1a; }
+        .logo-area { height: 90px; background: #000; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
-        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); display: none; }
-        .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: width 10s linear; }
-        .ch-info { padding: 7px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
-        .ch-name { font-size: 10px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #eee; }
-        .fav-star { position: absolute; top: 5px; right: 5px; z-index: 20; padding: 4px; cursor: pointer; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; }
-        .fav-star svg { fill: #555; width: 12px; height: 12px; }
-        .fav-star.active svg { fill: #ffcc00; }
+        .ch-info { padding: 7px; background: #0d0d0d; text-align: center; cursor: pointer; }
+        .ch-name { font-size: 10px; font-weight: 600; color: #eee; }
 
-        .footer-area { padding: 12px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 10px; background: #080808; }
-        .dev-title { font-size: 8px; color: #444; text-transform: uppercase; margin-bottom: 2px; }
-        .dev-name { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 800; color: #888; }
-
+        .footer-area { padding: 12px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 10px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
     </style>
 </head>
@@ -103,25 +83,17 @@
 <div class="fixed-top-container">
     <div class="video-box" id="player-wrapper">
         <video id="rivo-player" class="video-js vjs-big-play-centered" controls preload="auto" playsinline></video>
-        <div id="brightness-overlay"></div>
-        <div id="vol-indicator" class="gesture-indicator">🔊 100%</div>
-        <div id="bri-indicator" class="gesture-indicator">☀️ 100%</div>
     </div>
 
     <div class="notice-board">
-        <div class="notice-text">
-            📢 𝚂𝚞𝚙𝚙𝚘𝚛𝚝 𝙲𝚎𝚗𝚝𝚎𝚛: 🛠️ বাফারিং হচ্ছে? 📡 নতুন চ্যানেল প্রয়োজন? ⚡ দ্রুত সমাধান পেতে এখনই যুক্ত হোন 
-            <a href="https://t.me/techbd_group" target="_blank">𝚃𝚎𝚌𝚑 𝙱𝙳</a>
-        </div>
+        <div class="notice-text">📢 বাফারিং সমস্যা হলে রিফ্রেশ করুন। নতুন চ্যানেল আপডেট পেতে যুক্ত হোন Telegram-এ।</div>
     </div>
 
     <div class="header-row">
         <div class="brand-name">RIVO TV</div>
         <div class="action-row">
-            <button class="action-btn" onclick="shareApp()"><i class="fas fa-share-alt"></i> Share</button>
-            <button class="action-btn btn-refresh" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Refresh</button>
-            <a href="https://t.me/techbd_group" target="_blank" class="action-btn btn-contact"><i class="fab fa-telegram"></i> Contact</a>
-            <a href="https://www.mediafire.com/file/wm4p7mwuk2geuim/Rivo_Tv_1.0.0.apk/file" target="_blank" class="action-btn btn-apk">Get App</a>
+            <button class="action-btn" onclick="location.reload()">Refresh</button>
+            <a href="https://t.me/techbd_group" class="action-btn">Telegram</a>
         </div>
     </div>
     
@@ -133,36 +105,31 @@
         <div class="cat-pill active" onclick="filterCat('ALL', this)">All</div>
         <div class="cat-pill" onclick="filterCat('Sports', this)">Sports</div>
         <div class="cat-pill" onclick="filterCat('Bangla', this)">Bangla</div>
-        <div class="cat-pill" onclick="filterCat('Fav', this)">★ Favorites</div>
     </div>
 </div>
 
 <div class="grid" id="mainGrid">Loading...</div>
 
 <div class="footer-area">
-    <div class="dev-title">Developed By</div>
-    <div class="dev-name">Sohel Tanvir</div>
+    <div style="font-size: 10px; color: #888;">Developed By Sohel Tanvir</div>
 </div>
 
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
-    let allChannels = [], favorites = JSON.parse(localStorage.getItem('rivo_favs')) || [];
-    let mainPlayer, previewHls = null;
-    let currentCategory = 'ALL';
+    let allChannels = [], mainPlayer;
 
     async function init() {
-        // প্লেয়ার অপটিমাইজেশন
         mainPlayer = videojs('rivo-player', { 
             fluid: true, 
             responsive: true,
-            aspectRatio: '16:9',
-            playbackRates: [0.5, 1, 1.5, 2],
-            userActions: { click: false } 
+            // ৪. প্লেয়ার যাতে ভিডিও স্ট্রেচ না করে সেজন্য নিচের অংশটুকু
+            playbackRates: [1],
+            controlBar: {
+                pictureInPictureToggle: false
+            }
         });
-        
-        setupGestures();
 
         try {
             const res = await fetch(M3U_URL);
@@ -170,45 +137,7 @@
             allChannels = parseM3U(data);
             renderChannels(allChannels);
             if(allChannels.length > 0) playMain(allChannels[0].url);
-        } catch (e) { console.error("M3U Load Error"); }
-    }
-
-    function setupGestures() {
-        let startY, startVal, isBrightness, isMoving = false;
-        const wrapper = document.getElementById('player-wrapper');
-        const briOverlay = document.getElementById('brightness-overlay');
-        const volInd = document.getElementById('vol-indicator');
-        const briInd = document.getElementById('bri-indicator');
-
-        wrapper.addEventListener('touchstart', (e) => {
-            isMoving = false; startY = e.touches[0].pageY;
-            const x = e.touches[0].pageX - wrapper.getBoundingClientRect().left;
-            isBrightness = x < wrapper.offsetWidth / 2;
-            startVal = isBrightness ? (1 - parseFloat(briOverlay.style.opacity || 0)) : mainPlayer.volume();
-        }, {passive: true});
-
-        wrapper.addEventListener('touchmove', (e) => {
-            isMoving = true;
-            const diff = (startY - e.touches[0].pageY) / 150;
-            let newVal = Math.min(Math.max(startVal + diff, 0), 1);
-            if (isBrightness) {
-                briOverlay.style.opacity = 1 - newVal;
-                briInd.innerText = `☀️ ${Math.round(newVal * 100)}%`;
-                briInd.style.display = 'block';
-            } else {
-                mainPlayer.volume(newVal);
-                volInd.innerText = `🔊 ${Math.round(newVal * 100)}%`;
-                volInd.style.display = 'block';
-            }
-        }, {passive: true});
-
-        wrapper.addEventListener('touchend', () => {
-            if (!isMoving) {
-                if (mainPlayer.paused()) mainPlayer.play();
-                else mainPlayer.pause();
-            }
-            setTimeout(() => { volInd.style.display = 'none'; briInd.style.display = 'none'; }, 800);
-        });
+        } catch (e) { console.error("Error loading channels"); }
     }
 
     function parseM3U(data) {
@@ -218,7 +147,6 @@
             if (l.startsWith('#EXTINF')) {
                 item.name = l.split(',')[1]?.trim();
                 item.logo = l.match(/tvg-logo="(.*?)"/)?.[1] || "";
-                item.id = btoa(unescape(encodeURIComponent(item.name || "")));
             } else if (l.startsWith('http')) {
                 item.url = l.trim();
                 if(item.name) list.push({...item});
@@ -230,97 +158,34 @@
 
     function renderChannels(list) {
         const grid = document.getElementById('mainGrid');
-        grid.innerHTML = list.length === 0 ? "<div style='grid-column:1/-1; color:gray; padding:20px; text-align:center; font-size:11px;'>চ্যানেল পাওয়া যায়নি</div>" : 
-        list.map((ch, index) => {
-            const isFav = favorites.includes(ch.id);
-            return `
-            <div class="card">
-                <div class="fav-star ${isFav?'active':''}" onclick="toggleFav(event, '${ch.id}')">
-                    <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                </div>
-                <div class="logo-area" id="logo-box-${index}" onclick="playMain('${ch.url}')">
+        grid.innerHTML = list.map((ch) => `
+            <div class="card" onclick="playMain('${ch.url}')">
+                <div class="logo-area">
                     <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/80?text=TV'">
-                    <div class="progress-container" id="prog-cont-${index}"><div class="progress-bar" id="prog-bar-${index}"></div></div>
                 </div>
-                <div class="ch-info" onclick="startPreview('${ch.url}', ${index})">
-                    <span class="ch-name">▶ ${ch.name}</span>
+                <div class="ch-info">
+                    <span class="ch-name">${ch.name}</span>
                 </div>
-            </div>`;
-        }).join('');
+            </div>`).join('');
     }
 
     function playMain(url) {
-        stopAllPreviews();
         mainPlayer.src({ src: url, type: 'application/x-mpegURL' });
         mainPlayer.play().catch(() => {});
-    }
-
-    function startPreview(url, index) {
-        stopAllPreviews();
-        const container = document.getElementById(`logo-box-${index}`);
-        const pCont = document.getElementById(`prog-cont-${index}`);
-        const pBar = document.getElementById(`prog-bar-${index}`);
-        
-        const video = document.createElement('video');
-        video.className = 'preview-v';
-        video.style.cssText = "position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:10; background:#000;";
-        video.muted = true; video.autoplay = true; video.playsinline = true;
-        
-        container.appendChild(video);
-        pCont.style.display = 'block';
-        setTimeout(() => { pBar.style.width = '100%'; }, 50);
-
-        if (window.Hls && Hls.isSupported()) {
-            previewHls = new Hls();
-            previewHls.loadSource(url);
-            previewHls.attachMedia(video);
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = url;
-        }
-
-        setTimeout(() => stopAllPreviews(), 10000);
-    }
-
-    function stopAllPreviews() {
-        if (previewHls) { previewHls.destroy(); previewHls = null; }
-        document.querySelectorAll('.preview-v').forEach(v => v.remove());
-        document.querySelectorAll('.progress-container').forEach(c => c.style.display = 'none');
-        document.querySelectorAll('.progress-bar').forEach(b => b.style.width = '0%');
-    }
-
-    function toggleFav(event, id) {
-        event.stopPropagation();
-        if (favorites.includes(id)) favorites = favorites.filter(f => f !== id);
-        else favorites.push(id);
-        localStorage.setItem('rivo_favs', JSON.stringify(favorites));
-        event.currentTarget.classList.toggle('active');
-        if (currentCategory === 'Fav') renderChannels(allChannels.filter(ch => favorites.includes(ch.id)));
-    }
-
-    function filterCat(cat, btn) {
-        currentCategory = cat;
-        document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById("search-input").value = "";
-        
-        if (cat === 'ALL') renderChannels(allChannels);
-        else if (cat === 'Fav') renderChannels(allChannels.filter(ch => favorites.includes(ch.id)));
-        else renderChannels(allChannels.filter(ch => ch.name.toLowerCase().includes(cat.toLowerCase())));
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function liveSearch() {
-        const query = document.getElementById("search-input").value.toLowerCase().trim();
-        if (query === "") {
-            filterCat(currentCategory, document.querySelector('.cat-pill.active'));
-            return;
-        }
+        const query = document.getElementById("search-input").value.toLowerCase();
         const filtered = allChannels.filter(ch => ch.name.toLowerCase().includes(query));
         renderChannels(filtered);
     }
 
-    function shareApp() {
-        if (navigator.share) navigator.share({ title: 'Rivo TV', url: window.location.href });
-        else alert("Link: " + window.location.href);
+    function filterCat(cat, btn) {
+        document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filtered = (cat === 'ALL') ? allChannels : allChannels.filter(ch => ch.name.toLowerCase().includes(cat.toLowerCase()));
+        renderChannels(filtered);
     }
 
     init();
