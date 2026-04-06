@@ -25,52 +25,48 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 30px; }
 
-        /* Header Layout */
+        /* Header Branding */
         .brand-header { 
             display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 10px 15px; 
+            padding: 8px 12px; 
             background: #000;
         }
         .brand-name { 
             font-family: 'Orbitron', sans-serif; 
-            font-size: 18px; 
+            font-size: 16px; 
             font-weight: 900; 
             color: var(--primary); 
-            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+            text-shadow: 0 0 8px rgba(0, 242, 255, 0.4);
             letter-spacing: 1px;
         }
 
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         
-        /* Video Box */
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         .video-js { width: 100% !important; aspect-ratio: 16/9; }
-        @media (max-width: 768px) { .video-js { aspect-ratio: 16/10; } }
         .vjs-loading-spinner { display: none !important; }
 
         #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 10; }
         .gesture-indicator { 
             position: absolute; top: 50%; transform: translateY(-50%); 
-            background: rgba(0,0,0,0.8); color: var(--primary); padding: 10px 20px; 
-            border-radius: 30px; font-size: 14px; font-weight: bold; z-index: 20; 
+            background: rgba(0,0,0,0.8); color: var(--primary); padding: 8px 15px; 
+            border-radius: 20px; font-size: 12px; font-weight: bold; z-index: 20; 
             display: none; pointer-events: none; border: 1px solid var(--primary); 
         }
-        #vol-indicator { right: 20px; }
-        #bri-indicator { left: 20px; }
+        #vol-indicator { right: 15px; }
+        #bri-indicator { left: 15px; }
 
         /* Notice Board */
-        .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 6px 0; }
-        .notice-text { display: inline-block; padding-left: 100%; animation: marquee 25s linear infinite; font-size: 12px; color: #bbb; }
-        .notice-text a { color: var(--primary); text-decoration: none; font-weight: 800; border: 1px solid var(--primary); padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-size: 10px; }
+        .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 4px 0; }
+        .notice-text { display: inline-block; padding-left: 100%; animation: marquee 25s linear infinite; font-size: 11px; color: #999; }
+        .notice-text a { color: var(--primary); text-decoration: none; font-weight: 800; border: 1px solid var(--primary); padding: 1px 5px; border-radius: 3px; margin-left: 5px; font-size: 9px; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* Actions Row */
+        /* Compact Action Row (Buttons) */
         .action-row { 
             display: flex; 
-            gap: 8px; 
-            padding: 8px 10px; 
+            gap: 6px; 
+            padding: 6px 10px; 
             background: #080808; 
             overflow-x: auto; 
             scrollbar-width: none;
@@ -79,56 +75,83 @@
         .action-row::-webkit-scrollbar { display: none; }
 
         .action-btn { 
-            padding: 6px 12px; 
-            background: #1a1a1a; 
-            border-radius: 6px; 
-            border: 1px solid #333; 
-            color: #ddd; 
-            font-size: 11px; 
+            padding: 4px 8px; 
+            background: #151515; 
+            border-radius: 4px; 
+            border: 1px solid #252525; 
+            color: #ccc; 
+            font-size: 10px; 
             cursor: pointer; 
             text-decoration: none; 
             display: flex; 
             align-items: center; 
-            gap: 6px; 
+            gap: 4px; 
             white-space: nowrap; 
             transition: 0.2s;
         }
-        .action-btn i { font-size: 13px; }
-        .btn-share { color: #fff; background: linear-gradient(45deg, #444, #222); border-color: #555; }
-        .btn-refresh { color: var(--refresh); border-color: var(--refresh); }
-        .btn-contact { color: var(--telegram); border-color: var(--telegram); }
-        .btn-apk { color: var(--fire); border-color: var(--fire); font-weight: bold; }
-        .btn-fullscreen { color: #fff; background: var(--primary); border-color: var(--primary); color: #000; font-weight: bold; }
+        .action-btn i { font-size: 11px; }
+        .btn-share { color: #fff; background: #222; }
+        .btn-refresh { color: var(--refresh); border-color: rgba(0, 255, 136, 0.3); }
+        .btn-contact { color: var(--telegram); border-color: rgba(0, 136, 204, 0.3); }
+        .btn-apk { color: var(--fire); border-color: rgba(255, 69, 0, 0.3); font-weight: bold; }
+        .btn-fullscreen { background: var(--primary); color: #000; border: none; font-weight: 800; }
 
-        /* Search & Categories */
-        .search-area { padding: 0 10px 10px 10px; background: #080808; }
-        .search-input { width: 100%; padding: 10px 15px; background: #121212; border: 1px solid #222; border-radius: 8px; color: #fff; font-size: 12px; outline: none; border-left: 3px solid var(--primary); }
+        /* Search Area */
+        .search-area { padding: 0 10px 8px 10px; background: #080808; }
+        .search-input { 
+            width: 100%; 
+            padding: 7px 12px; 
+            background: #121212; 
+            border: 1px solid #222; 
+            border-radius: 6px; 
+            color: #fff; 
+            font-size: 11px; 
+            outline: none; 
+            border-left: 2px solid var(--primary); 
+        }
 
-        .cat-row { display: flex; gap: 8px; overflow-x: auto; padding: 8px 10px; scrollbar-width: none; background: #050505; }
-        .cat-pill { padding: 6px 16px; background: #1a1a1a; border-radius: 20px; font-size: 11px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
-        .cat-pill.active { background: var(--primary); color: #000; border-color: var(--primary); font-weight: 600; }
+        /* Compact Category Row */
+        .cat-row { 
+            display: flex; 
+            gap: 5px; 
+            overflow-x: auto; 
+            padding: 6px 10px; 
+            scrollbar-width: none; 
+            background: #050505; 
+            border-bottom: 1px solid #111;
+        }
+        .cat-pill { 
+            padding: 4px 10px; 
+            background: #121212; 
+            border-radius: 4px; 
+            font-size: 10px; 
+            color: #888; 
+            white-space: nowrap; 
+            cursor: pointer; 
+            border: 1px solid #222; 
+        }
+        .cat-pill.active { 
+            background: rgba(0, 242, 255, 0.1); 
+            color: var(--primary); 
+            border-color: var(--primary); 
+            font-weight: 600; 
+        }
 
         /* Channel Grid */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
-        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: 0.3s; }
-        .card:hover { border-color: var(--primary); transform: translateY(-2px); }
-        
-        .logo-area { height: 100px; background: #000; display: flex; align-items: center; justify-content: center; padding: 15px; position: relative; cursor: pointer; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+        .card { background: var(--card-bg); border-radius: 8px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
+        .logo-area { height: 85px; background: #000; display: flex; align-items: center; justify-content: center; padding: 10px; position: relative; cursor: pointer; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
+        .ch-info { padding: 6px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; text-align: center; }
+        .ch-name { font-size: 10px; font-weight: 600; color: #ddd; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); display: none; }
-        .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: width 10s linear; }
-        
-        .ch-info { padding: 8px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
-        .ch-name { font-size: 11px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #eee; text-align: center; }
-        
-        .fav-star { position: absolute; top: 8px; right: 8px; z-index: 20; padding: 6px; cursor: pointer; background: rgba(0,0,0,0.6); border-radius: 50%; display: flex; }
-        .fav-star svg { fill: #555; width: 14px; height: 14px; }
+        .fav-star { position: absolute; top: 6px; right: 6px; z-index: 20; padding: 4px; cursor: pointer; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; }
+        .fav-star svg { fill: #444; width: 12px; height: 12px; }
         .fav-star.active svg { fill: #ffcc00; }
 
-        .footer-area { padding: 20px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 20px; background: #080808; }
-        .dev-title { font-size: 9px; color: #666; text-transform: uppercase; letter-spacing: 2px; }
-        .dev-name { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 800; color: #fff; margin-top: 5px; }
+        .footer-area { padding: 15px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 15px; background: #080808; }
+        .dev-title { font-size: 8px; color: #555; text-transform: uppercase; }
+        .dev-name { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 800; color: #888; }
 
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
     </style>
@@ -149,7 +172,7 @@
 
     <div class="notice-board">
         <div class="notice-text">
-            📢 𝚂𝚞𝚙𝚙𝚘𝚛𝚝 𝙲𝚎𝚗𝚝𝚎𝚛: 🛠️ বাফারিং হচ্ছে? 📡 নতুন চ্যানেল প্রয়োজন? ⚡ দ্রুত সমাধান পেতে এখনই যুক্ত হোন 
+            📢 বাফারিং সমস্যা? নতুন চ্যানেল প্রয়োজন? দ্রুত সমাধান পেতে যুক্ত হোন 
             <a href="https://t.me/techbd_group" target="_blank">𝚃𝚎𝚌𝚑 𝙱𝙳</a>
         </div>
     </div>
@@ -163,14 +186,14 @@
     </div>
     
     <div class="search-area">
-        <input type="text" id="search-input" class="search-input" placeholder="পছন্দের চ্যানেল খুঁজুন..." oninput="liveSearch()">
+        <input type="text" id="search-input" class="search-input" placeholder="চ্যানেল খুঁজুন..." oninput="liveSearch()">
     </div>
 
     <div class="cat-row">
-        <div class="cat-pill active" onclick="filterCat('ALL', this)">All Channels</div>
+        <div class="cat-pill active" onclick="filterCat('ALL', this)">All</div>
         <div class="cat-pill" onclick="filterCat('Sports', this)">Sports</div>
         <div class="cat-pill" onclick="filterCat('Bangla', this)">Bangla</div>
-        <div class="cat-pill" onclick="filterCat('Fav', this)">★ Favorites</div>
+        <div class="cat-pill" onclick="filterCat('Fav', this)">Favorites</div>
     </div>
 </div>
 
@@ -186,15 +209,11 @@
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
     let allChannels = [], favorites = JSON.parse(localStorage.getItem('rivo_favs')) || [];
-    let mainPlayer, previewHls = null;
+    let mainPlayer;
     let currentCategory = 'ALL';
 
     async function init() {
-        mainPlayer = videojs('rivo-player', { 
-            fluid: true, 
-            playbackRates: [0.5, 1, 1.5, 2],
-            userActions: { click: false } 
-        });
+        mainPlayer = videojs('rivo-player', { fluid: true, userActions: { click: false } });
         setupGestures();
 
         try {
@@ -206,20 +225,16 @@
         } catch (e) { console.error("M3U Load Error"); }
     }
 
-    // Fullscreen Functionality
     function toggleFullscreen() {
         const player = document.getElementById('rivo-player');
         if (!document.fullscreenElement) {
             if (player.requestFullscreen) player.requestFullscreen();
             else if (player.webkitRequestFullscreen) player.webkitRequestFullscreen();
-            else if (player.msRequestFullscreen) player.msRequestFullscreen();
-            
-            // Screen Orientation Rotate for Mobile
             if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('landscape').catch(e => console.log(e));
+                screen.orientation.lock('landscape').catch(e => {});
             }
         } else {
-            if (document.exitFullscreen) document.exitFullscreen();
+            document.exitFullscreen();
         }
     }
 
@@ -253,10 +268,6 @@
         }, {passive: true});
 
         wrapper.addEventListener('touchend', () => {
-            if (!isMoving) {
-                if (mainPlayer.paused()) mainPlayer.play();
-                else mainPlayer.pause();
-            }
             setTimeout(() => { volInd.style.display = 'none'; briInd.style.display = 'none'; }, 800);
         });
     }
@@ -280,7 +291,7 @@
 
     function renderChannels(list) {
         const grid = document.getElementById('mainGrid');
-        grid.innerHTML = list.length === 0 ? "<div style='grid-column:1/-1; color:gray; padding:40px; text-align:center; font-size:13px;'>কোনো চ্যানেল খুঁজে পাওয়া যায়নি</div>" : 
+        grid.innerHTML = list.length === 0 ? "<div style='grid-column:1/-1; color:gray; padding:40px; text-align:center; font-size:12px;'>No Channels Found</div>" : 
         list.map((ch, index) => {
             const isFav = favorites.includes(ch.id);
             return `
@@ -288,9 +299,8 @@
                 <div class="fav-star ${isFav?'active':''}" onclick="toggleFav(event, '${ch.id}')">
                     <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 </div>
-                <div class="logo-area" id="logo-box-${index}" onclick="playMain('${ch.url}')">
-                    <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/150x100?text=No+Logo'">
-                    <div class="progress-container" id="prog-cont-${index}"><div class="progress-bar" id="prog-bar-${index}"></div></div>
+                <div class="logo-area" onclick="playMain('${ch.url}')">
+                    <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/100?text=TV'">
                 </div>
                 <div class="ch-info" onclick="playMain('${ch.url}')">
                     <span class="ch-name">${ch.name}</span>
@@ -300,17 +310,9 @@
     }
 
     function playMain(url) {
-        stopAllPreviews();
         mainPlayer.src({ src: url, type: 'application/x-mpegURL' });
         mainPlayer.play().catch(() => {});
         window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-
-    function stopAllPreviews() {
-        if (previewHls) { previewHls.destroy(); previewHls = null; }
-        document.querySelectorAll('.preview-v').forEach(v => v.remove());
-        document.querySelectorAll('.progress-container').forEach(c => c.style.display = 'none');
-        document.querySelectorAll('.progress-bar').forEach(b => b.style.width = '0%');
     }
 
     function toggleFav(event, id) {
@@ -345,18 +347,8 @@
 
     function shareApp() {
         if (navigator.share) {
-            navigator.share({ 
-                title: 'Rivo TV - Premium Live Streaming', 
-                text: 'Watch your favorite TV channels on Rivo TV!',
-                url: window.location.href 
-            });
+            navigator.share({ title: 'Rivo TV', url: window.location.href });
         } else {
-            const dummy = document.createElement('input');
-            document.body.appendChild(dummy);
-            dummy.value = window.location.href;
-            dummy.select();
-            document.execCommand('copy');
-            document.body.removeChild(dummy);
             alert("লিঙ্ক কপি করা হয়েছে!");
         }
     }
