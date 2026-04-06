@@ -27,7 +27,7 @@
 
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         
-        /* ভিডিও বক্স ফিক্স */
+        /* ভিডিও বক্স এবং প্লেয়ার ফিক্স (রোটেশন সমস্যা সমাধান) */
         .video-box { 
             background: #000; 
             border-bottom: 2px solid var(--primary); 
@@ -37,23 +37,26 @@
             width: 100%;
         }
         
-        /* ভিডিও যাতে জুম বা চ্যাপ্টা না হয় */
         .video-js { 
             width: 100% !important; 
             height: auto !important; 
             aspect-ratio: 16/9; 
             background-color: #000;
         }
-        
+
+        /* এটিই মূল কোড যা জুম হওয়া বন্ধ করবে */
         .vjs-tech { 
-            object-fit: contain !important; /* আসল রেশিও বজায় রাখবে */
+            object-fit: contain !important; 
         }
 
-        /* ফুলস্ক্রিন ও রোটেশন ফিক্স */
+        /* মোবাইল রোটেট বা ফুলস্ক্রিন অবস্থায় জুম রোধ */
         video:fullscreen, 
         video:-webkit-full-screen,
-        .vjs-fullscreen .vjs-tech { 
+        .vjs-fullscreen .vjs-tech,
+        .vjs-layout-landscape .vjs-tech { 
             object-fit: contain !important; 
+            width: 100% !important;
+            height: 100% !important;
         }
 
         .vjs-loading-spinner { display: none !important; }
@@ -170,6 +173,14 @@
             responsive: true,
             userActions: { click: false } 
         });
+
+        // রোটেট করলে প্লেয়ার রিসাইজ করার ইভেন্ট
+        window.addEventListener("orientationchange", function() {
+            setTimeout(() => {
+                mainPlayer.trigger('resize');
+            }, 200);
+        });
+
         setupGestures();
 
         try {
