@@ -28,8 +28,15 @@
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         
-        .video-js { width: 100% !important; aspect-ratio: 16/10; }
-        @media (max-width: 768px) { .video-js { aspect-ratio: 4/3; } }
+        /* ভিডিও প্লেয়ার ফিক্স: ভিডিও যাতে কেটে না যায় */
+        .video-js { 
+            width: 100% !important; 
+            height: auto !important; 
+            aspect-ratio: 16/9; /* স্ট্যান্ডার্ড ভিডিও রেশিও */
+        }
+        .vjs-tech { 
+            object-fit: contain !important; /* ভিডিও সম্পূর্ণ দেখাবে, কাটবে না */
+        }
 
         .vjs-loading-spinner { display: none !important; }
 
@@ -97,7 +104,7 @@
 
     <div class="notice-board">
         <div class="notice-text">
-            📢 𝚂𝚞𝚙𝚙𝚘𝚛𝚝 𝙲𝚎𝚗𝚝𝚎𝚛: 🛠️ বাফারিং হচ্ছে? 📡 নতুন চ্যানেল প্রয়োজন? ⚡ দ্রুত সমাধান পেতে এখনই যুক্ত হোন 
+            📢 𝚂𝚞𝚙𝚙𝚘𝚛𝚝 𝙲𝚎🏽𝚗𝚝𝚎𝚛: 🛠️ বাফারিং হচ্ছে? 📡 নতুন চ্যানেল প্রয়োজন? ⚡ দ্রুত সমাধান পেতে এখনই যুক্ত হোন 
             <a href="https://t.me/techbd_group" target="_blank">𝚃𝚎𝚌𝚑 𝙱𝙳</a>
         </div>
     </div>
@@ -140,7 +147,13 @@
     let currentCategory = 'ALL';
 
     async function init() {
-        mainPlayer = videojs('rivo-player', { fluid: true, userActions: { click: false } });
+        // প্লেয়ার অপশন আপডেট করা হয়েছে
+        mainPlayer = videojs('rivo-player', { 
+            fluid: true, 
+            fill: true,
+            responsive: true,
+            userActions: { click: false } 
+        });
         setupGestures();
 
         try {
