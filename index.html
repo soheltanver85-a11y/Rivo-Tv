@@ -16,7 +16,6 @@
             --card-bg: #0f0f0f; 
             --text: #fff; 
             --primary: #00f2ff;
-            /* Gradients for Buttons */
             --grad-share: linear-gradient(45deg, #6a11cb, #2575fc);
             --grad-refresh: linear-gradient(45deg, #00b09b, #96c93d);
             --grad-tg: linear-gradient(45deg, #0088cc, #00c6ff);
@@ -26,102 +25,72 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 20px; }
 
-        .brand-header { padding: 5px 12px; background: #000; border-bottom: 1px solid #111; }
-        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: var(--primary); }
+        .brand-header { padding: 8px 15px; background: #000; border-bottom: 1px solid #111; }
+        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; color: var(--primary); }
 
         .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
         .video-js { width: 100% !important; aspect-ratio: 16/9; }
 
-        /* Brightness & Volume Indicators */
         #brightness-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0; pointer-events: none; z-index: 5; }
         .gesture-indicator { 
             position: absolute; top: 50%; transform: translateY(-50%); 
-            background: rgba(0,0,0,0.8); color: var(--primary); padding: 5px 10px; 
-            border-radius: 20px; font-size: 10px; font-weight: bold; z-index: 100; 
+            background: rgba(0,0,0,0.8); color: var(--primary); padding: 6px 12px; 
+            border-radius: 20px; font-size: 11px; font-weight: bold; z-index: 100; 
             display: none; border: 1px solid var(--primary); pointer-events: none;
         }
 
-        /* --- Marquee (চলন্ত লেখা) - Fixed Animation --- */
-        .notice-board { background: #0a0a0a; border-bottom: 1px solid #1a1a1a; overflow: hidden; white-space: nowrap; padding: 3px 0; }
-        .notice-text { 
-            display: inline-block; 
-            padding-left: 100%; 
-            animation: marquee 20s linear infinite; 
-            font-size: 10px; 
-            color: #888; 
-        }
-        @keyframes marquee { 
-            0% { transform: translateX(0); } 
-            100% { transform: translateX(-100%); } 
-        }
+        .notice-board { background: #0a0a0a; border-bottom: 1px solid #1a1a1a; overflow: hidden; white-space: nowrap; padding: 4px 0; }
+        .notice-text { display: inline-block; padding-left: 100%; animation: marquee 25s linear infinite; font-size: 11px; color: #aaa; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* --- Compact & Colorful Action Buttons --- */
-        .action-row { 
-            display: flex; gap: 5px; padding: 6px 10px; 
-            background: #080808; overflow-x: auto; 
-            scrollbar-width: none; align-items: center;
-        }
+        /* Action Buttons */
+        .action-row { display: flex; gap: 6px; padding: 8px 10px; background: #080808; overflow-x: auto; scrollbar-width: none; }
         .action-row::-webkit-scrollbar { display: none; }
-
-        .action-btn { 
-            padding: 4px 8px; border-radius: 5px; border: none; 
-            color: #fff; font-size: 9px; font-weight: 600; 
-            cursor: pointer; text-decoration: none; display: flex; 
-            align-items: center; gap: 4px; white-space: nowrap; 
-            transition: 0.2s;
-        }
-        .action-btn i { font-size: 10px; }
+        .action-btn { padding: 5px 10px; border-radius: 6px; border: none; color: #fff; font-size: 10px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
         .btn-share { background: var(--grad-share); }
         .btn-refresh { background: var(--grad-refresh); }
         .btn-contact { background: var(--grad-tg); }
         .btn-apk { background: var(--grad-apk); }
-        .btn-fullscreen { background: var(--grad-full); color: #000; font-weight: 800; }
+        .btn-fullscreen { background: var(--grad-full); color: #000; }
 
-        /* Search Area */
-        .search-area { padding: 0 10px 5px 10px; background: #080808; }
-        .search-input { 
-            width: 100%; padding: 6px 12px; background: #111; 
-            border: 1px solid #222; border-radius: 6px; color: #fff; 
-            font-size: 10px; outline: none; border-left: 2px solid var(--primary);
-        }
+        .search-area { padding: 0 10px 8px 10px; background: #080808; }
+        .search-input { width: 100%; padding: 8px 15px; background: #111; border: 1px solid #222; border-radius: 8px; color: #fff; font-size: 12px; outline: none; border-left: 3px solid var(--primary); }
 
-        /* --- Ultra Compact Categories --- */
-        .cat-row { 
-            display: flex; gap: 5px; overflow-x: auto; 
-            padding: 6px 10px; scrollbar-width: none; 
-            background: #050505; border-bottom: 1px solid #111;
-        }
-        .cat-pill { 
-            padding: 3px 10px; background: #111; border-radius: 4px; 
-            font-size: 9px; color: #666; white-space: nowrap; 
-            cursor: pointer; border: 1px solid #1a1a1a; transition: 0.2s;
-        }
-        /* Active Category Colors */
-        .cat-pill[data-cat="ALL"].active { background: var(--grad-full); color: #000; border-color: var(--primary); }
-        .cat-pill[data-cat="Sports"].active { background: var(--grad-apk); color: #fff; border-color: #f5af19; }
-        .cat-pill[data-cat="Bangla"].active { background: var(--grad-refresh); color: #fff; border-color: #96c93d; }
-        .cat-pill[data-cat="Fav"].active { background: var(--grad-share); color: #fff; border-color: #2575fc; }
+        /* Category Buttons - Adjusted Size */
+        .cat-row { display: flex; gap: 10px; overflow-x: auto; padding: 12px 10px; scrollbar-width: none; background: #050505; border-bottom: 1px solid #111; }
+        .cat-pill { padding: 8px 18px; background: #1a1a1a; border-radius: 8px; font-size: 12px; color: #bbb; white-space: nowrap; cursor: pointer; border: 1px solid #333; transition: 0.3s; font-weight: 600; }
+        .cat-pill.active { background: var(--grad-full); color: #000; border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 242, 255, 0.4); }
 
-        /* Channel Grid */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 8px; }
-        .card { background: var(--card-bg); border-radius: 8px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
-        .logo-area { height: 75px; background: #000; display: flex; align-items: center; justify-content: center; padding: 10px; cursor: pointer; }
+        /* Channel Grid & Cards */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: 0.3s; }
+        
+        /* Star (Favorite) Button */
+        .fav-star { 
+            position: absolute; top: 8px; right: 8px; z-index: 10; 
+            background: rgba(0,0,0,0.6); padding: 5px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .fav-star i { font-size: 12px; color: #444; transition: 0.3s; }
+        .fav-star.active i { color: #ffcc00; text-shadow: 0 0 8px #ffcc00; }
+
+        .logo-area { height: 90px; background: #000; display: flex; align-items: center; justify-content: center; padding: 15px; cursor: pointer; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
-        .ch-info { padding: 5px; background: #0d0d0d; border-top: 1px solid #1a1a1a; text-align: center; }
-        .ch-name { font-size: 9px; font-weight: 600; color: #ccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .ch-info { padding: 10px; background: #0d0d0d; border-top: 1px solid #1a1a1a; text-align: center; cursor: pointer; }
+        .ch-name { font-size: 11px; font-weight: 600; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .footer-area { padding: 15px 0; text-align: center; background: #080808; border-top: 1px solid #1a1a1a; margin-top: 10px; }
-        .dev-name { font-family: 'Orbitron', sans-serif; font-size: 9px; font-weight: 800; color: #555; letter-spacing: 0.5px; }
+        .footer-area { padding: 20px 0; text-align: center; background: #080808; border-top: 1px solid #111; margin-top: 15px; }
+        .dev-name { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 800; color: var(--primary); letter-spacing: 1px; }
 
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
     </style>
 </head>
 <body>
 
-<div class="brand-header">
-    <div class="brand-name">RIVO TV</div>
-</div>
+<div class="brand-header"><div class="brand-name">RIVO TV</div></div>
 
 <div class="fixed-top-container">
     <div class="video-box" id="player-wrapper">
@@ -131,9 +100,7 @@
         <div id="bri-indicator" class="gesture-indicator">☀️ 100%</div>
     </div>
 
-    <div class="notice-board">
-        <div class="notice-text">📢 বাফারিং সমস্যা? নতুন চ্যানেল প্রয়োজন? দ্রুত সমাধান পেতে যুক্ত হোন আমাদের টেলিগ্রাম গ্রুপে। 🚀</div>
-    </div>
+    <div class="notice-board"><div class="notice-text">📢 বাফারিং সমস্যা? নতুন চ্যানেল প্রয়োজন? দ্রুত সমাধান পেতে যুক্ত হোন আমাদের টেলিগ্রাম গ্রুপে। 🚀</div></div>
 
     <div class="action-row">
         <button class="action-btn btn-share" onclick="shareApp()"><i class="fas fa-share-nodes"></i> Share</button>
@@ -144,28 +111,27 @@
     </div>
     
     <div class="search-area">
-        <input type="text" id="search-input" class="search-input" placeholder="সার্চ..." oninput="liveSearch()">
+        <input type="text" id="search-input" class="search-input" placeholder="সার্চ চ্যানেল..." oninput="liveSearch()">
     </div>
 
     <div class="cat-row">
-        <div class="cat-pill active" data-cat="ALL" onclick="filterCat('ALL', this)">All</div>
-        <div class="cat-pill" data-cat="Sports" onclick="filterCat('Sports', this)">Sports</div>
-        <div class="cat-pill" data-cat="Bangla" onclick="filterCat('Bangla', this)">Bangla</div>
-        <div class="cat-pill" data-cat="Fav" onclick="filterCat('Fav', this)">★ Fav</div>
+        <div class="cat-pill active" onclick="filterCat('ALL', this)">All</div>
+        <div class="cat-pill" onclick="filterCat('Sports', this)">Sports</div>
+        <div class="cat-pill" onclick="filterCat('Bangla', this)">Bangla</div>
+        <div class="cat-pill" onclick="filterCat('Fav', this)">★ Favorites</div>
     </div>
 </div>
 
 <div class="grid" id="mainGrid"></div>
 
-<div class="footer-area">
-    <div class="dev-name">DEVELOPED BY SOHEL TANVEER</div>
-</div>
+<div class="footer-area"><div class="dev-name">DEVELOPED BY SOHEL TANVEER</div></div>
 
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
-    let allChannels = [], mainPlayer;
+    let allChannels = [], favorites = JSON.parse(localStorage.getItem('rivo_favs')) || [];
+    let mainPlayer;
 
     async function init() {
         mainPlayer = videojs('rivo-player', { fluid: true, controls: true, userActions: { click: false } });
@@ -230,6 +196,7 @@
             if (l.startsWith('#EXTINF')) {
                 item.name = l.split(',')[1]?.trim();
                 item.logo = l.match(/tvg-logo="(.*?)"/)?.[1] || "";
+                item.id = btoa(unescape(encodeURIComponent(item.name || "")));
             } else if (l.startsWith('http')) {
                 item.url = l.trim();
                 if(item.name) list.push({...item});
@@ -241,15 +208,21 @@
 
     function renderChannels(list) {
         const grid = document.getElementById('mainGrid');
-        grid.innerHTML = list.map(ch => `
-            <div class="card" onclick="playMain('${ch.url}')">
-                <div class="logo-area">
+        grid.innerHTML = list.map(ch => {
+            const isFav = favorites.includes(ch.id);
+            return `
+            <div class="card">
+                <div class="fav-star ${isFav?'active':''}" onclick="toggleFav(event, '${ch.id}')">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="logo-area" onclick="playMain('${ch.url}')">
                     <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/80x50?text=TV'">
                 </div>
-                <div class="ch-info">
+                <div class="ch-info" onclick="playMain('${ch.url}')">
                     <span class="ch-name">${ch.name}</span>
                 </div>
-            </div>`).join('');
+            </div>`;
+        }).join('');
     }
 
     function playMain(url) {
@@ -258,10 +231,19 @@
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
+    function toggleFav(event, id) {
+        event.stopPropagation();
+        if (favorites.includes(id)) favorites = favorites.filter(f => f !== id);
+        else favorites.push(id);
+        localStorage.setItem('rivo_favs', JSON.stringify(favorites));
+        event.currentTarget.classList.toggle('active');
+    }
+
     function filterCat(cat, btn) {
         document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         if (cat === 'ALL') renderChannels(allChannels);
+        else if (cat === 'Fav') renderChannels(allChannels.filter(ch => favorites.includes(ch.id)));
         else renderChannels(allChannels.filter(ch => ch.name.toLowerCase().includes(cat.toLowerCase())));
     }
 
