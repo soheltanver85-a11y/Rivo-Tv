@@ -53,7 +53,6 @@
         .video-js { width: 100% !important; aspect-ratio: 16/10; }
         @media (max-width: 768px) { .video-js { aspect-ratio: 4/3; } }
 
-        /* Gesture indicators */
         .gesture-indicator { 
             position: absolute; top: 50%; transform: translateY(-50%); 
             background: rgba(0,0,0,0.8); color: var(--primary); padding: 8px 16px; 
@@ -67,7 +66,6 @@
         .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 10px; color: #bbb; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* Actions Frame Style */
         .actions-frame { 
             display: flex; 
             gap: 6px; 
@@ -91,13 +89,11 @@
             align-items: center; 
             gap: 4px; 
             white-space: nowrap;
-            transition: 0.2s;
         }
-        .action-chip i { font-size: 11px; }
-        .chip-fs { color: var(--primary); border-color: rgba(0, 242, 255, 0.3); }
-        .chip-rf { color: var(--refresh); border-color: rgba(0, 255, 136, 0.3); }
-        .chip-tg { color: var(--telegram); border-color: rgba(0, 136, 204, 0.3); }
-        .chip-apk { color: var(--fire); border-color: rgba(255, 69, 0, 0.3); }
+        .chip-fs { color: var(--primary); border-color: rgba(0, 242, 255, 0.4); }
+        .chip-rf { color: var(--refresh); }
+        .chip-tg { color: var(--telegram); }
+        .chip-apk { color: var(--fire); }
 
         .search-area { padding: 0 10px 8px 10px; background: #080808; }
         .search-input { width: 100%; padding: 8px 12px; background: #121212; border: 1px solid #222; border-radius: 6px; color: #fff; font-size: 11px; outline: none; }
@@ -106,7 +102,6 @@
         .cat-pill { padding: 5px 12px; background: #1a1a1a; border-radius: 4px; font-size: 10px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
         .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); }
 
-        /* Grid & Cards */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
         .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
         
@@ -115,7 +110,7 @@
             background: rgba(0,0,0,0.6); padding: 5px; border-radius: 50%; 
             display: flex; cursor: pointer; border: 1px solid rgba(255,255,255,0.1);
         }
-        .fav-star svg { width: 14px; height: 14px; fill: #555; transition: 0.3s; }
+        .fav-star svg { width: 14px; height: 14px; fill: #555; }
         .fav-star.active svg { fill: #ffcc00; }
 
         .logo-area { height: 95px; background: #000; display: flex; align-items: center; justify-content: center; padding: 15px; position: relative; cursor: pointer; }
@@ -140,7 +135,8 @@
         <div class="brand-name">RIVO TV</div>
     </div>
 
-    <div class="video-box" id="player-wrapper" onclick="togglePlayPause()">
+    <div class="video-box" id="player-wrapper">
+        <div id="click-overlay" style="position:absolute; inset:0; z-index:5;" onclick="togglePlayPause()"></div>
         <video id="rivo-player" class="video-js vjs-big-play-centered" controls preload="auto" playsinline></video>
         <div id="brightness-overlay"></div>
         <div id="vol-indicator" class="gesture-indicator">🔊 100%</div>
@@ -190,7 +186,7 @@
         mainPlayer = videojs('rivo-player', { 
             fluid: true, 
             userActions: { click: false },
-            controlBar: { children: ['playToggle', 'volumePanel', 'currentTimeDisplay', 'timeDivider', 'durationDisplay', 'progressControl', 'fullscreenToggle'] }
+            controlBar: { children: ['playToggle', 'volumePanel', 'progressControl', 'fullscreenToggle'] }
         });
         setupGestures();
 
@@ -205,14 +201,21 @@
         }
     }
 
-    // প্লে/পজ ফাংশন
     function togglePlayPause() {
         if (mainPlayer.paused()) mainPlayer.play();
         else mainPlayer.pause();
     }
 
+    // সরাসরি ব্রাউজার লেভেল ফুলস্ক্রিন রিকোয়েস্ট
     function goFullscreen() {
-        if (mainPlayer) mainPlayer.requestFullscreen();
+        const playerEl = document.getElementById('rivo-player');
+        if (playerEl.requestFullscreen) {
+            playerEl.requestFullscreen();
+        } else if (playerEl.webkitRequestFullscreen) { /* Safari */
+            playerEl.webkitRequestFullscreen();
+        } else if (playerEl.msRequestFullscreen) { /* IE11 */
+            playerEl.msRequestFullscreen();
+        }
     }
 
     function setupGestures() {
@@ -223,14 +226,13 @@
         const briInd = document.getElementById('bri-indicator');
 
         wrapper.addEventListener('touchstart', (e) => {
-            isMoving = false; startY = e.touches[0].pageY;
+            startY = e.touches[0].pageY;
             const x = e.touches[0].pageX - wrapper.getBoundingClientRect().left;
             isBrightness = x < wrapper.offsetWidth / 2;
             startVal = isBrightness ? (1 - parseFloat(briOverlay.style.opacity || 0)) : mainPlayer.volume();
         }, {passive: true});
 
         wrapper.addEventListener('touchmove', (e) => {
-            isMoving = true;
             const diff = (startY - e.touches[0].pageY) / 150;
             let newVal = Math.min(Math.max(startVal + diff, 0), 1);
             if (isBrightness) {
@@ -288,11 +290,8 @@
 
     function toggleFav(event, id) {
         event.stopPropagation();
-        if (favorites.includes(id)) {
-            favorites = favorites.filter(f => f !== id);
-        } else {
-            favorites.push(id);
-        }
+        if (favorites.includes(id)) favorites = favorites.filter(f => f !== id);
+        else favorites.push(id);
         localStorage.setItem('rivo_favs', JSON.stringify(favorites));
         event.currentTarget.classList.toggle('active');
         if (currentCategory === 'Fav') filterCat('Fav', document.querySelector('.cat-pill.active'));
@@ -307,16 +306,13 @@
     function startPreview(url, index) {
         stopAllPreviews();
         const container = document.getElementById(`logo-box-${index}`);
-        const pCont = document.getElementById(`prog-cont-${index}`);
         const pBar = document.getElementById(`prog-bar-${index}`);
-        
         const video = document.createElement('video');
         video.className = 'preview-v';
         video.style.cssText = "position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:10; background:#000;";
         video.muted = true; video.autoplay = true; video.playsinline = true;
-        
         container.appendChild(video);
-        pCont.style.display = 'block';
+        document.getElementById(`prog-cont-${index}`).style.display = 'block';
         setTimeout(() => { pBar.style.width = '100%'; }, 50);
 
         if (window.Hls && Hls.isSupported()) {
@@ -326,7 +322,6 @@
         } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
             video.src = url;
         }
-
         setTimeout(() => stopAllPreviews(), 10000);
     }
 
@@ -341,18 +336,14 @@
         currentCategory = cat;
         document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        
-        let filtered = allChannels;
-        if (cat === 'Fav') filtered = allChannels.filter(ch => favorites.includes(ch.id));
-        else if (cat !== 'ALL') filtered = allChannels.filter(ch => ch.name.toLowerCase().includes(cat.toLowerCase()));
-        
+        let filtered = cat === 'Fav' ? allChannels.filter(ch => favorites.includes(ch.id)) : 
+                      cat === 'ALL' ? allChannels : allChannels.filter(ch => ch.name.toLowerCase().includes(cat.toLowerCase()));
         renderChannels(filtered);
     }
 
     function liveSearch() {
         const query = document.getElementById("search-input").value.toLowerCase().trim();
-        const filtered = allChannels.filter(ch => ch.name.toLowerCase().includes(query));
-        renderChannels(filtered);
+        renderChannels(allChannels.filter(ch => ch.name.toLowerCase().includes(query)));
     }
 
     init();
