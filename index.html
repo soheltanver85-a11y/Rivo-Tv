@@ -25,6 +25,15 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 30px; }
 
+        /* হেডার এবং প্লেয়ারকে উপরে আটকে রাখার জন্য */
+        .sticky-wrapper {
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+            background: var(--bg);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+        }
+
         .top-brand-header {
             background: linear-gradient(to bottom, #111, #050505);
             padding: 12px 15px;
@@ -43,9 +52,7 @@
             text-transform: uppercase;
         }
 
-        .fixed-top-container { position: sticky; top: 0; z-index: 2000; background: var(--bg); width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
-        
         .video-js { width: 100% !important; aspect-ratio: 16/10; }
         @media (max-width: 768px) { .video-js { aspect-ratio: 4/3; } }
 
@@ -64,7 +71,6 @@
 
         .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 5px 0; }
         .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 11px; color: #bbb; }
-        .notice-text a { color: var(--primary); text-decoration: none; font-weight: 800; font-family: 'Orbitron', sans-serif; border: 1px solid var(--primary); padding: 1px 6px; border-radius: 4px; margin-left: 5px; text-transform: uppercase; font-size: 10px; }
 
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
@@ -74,9 +80,9 @@
             background: linear-gradient(45deg, #00f2ff, #0088cc);
             border: none;
             color: #000;
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 800;
             cursor: pointer;
             display: flex;
@@ -84,47 +90,45 @@
             gap: 5px;
             box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
             text-transform: uppercase;
-            flex-shrink: 0;
         }
 
-        .action-row { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; align-items: center; }
-        .action-btn { padding: 6px 10px; background: #1a1a1a; border-radius: 5px; border: 1px solid #333; color: #bbb; font-size: 10px; cursor: pointer; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .action-row { display: flex; gap: 8px; align-items: center; }
+        .action-btn { padding: 8px 12px; background: #1a1a1a; border-radius: 5px; border: 1px solid #333; color: #bbb; font-size: 11px; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
         .btn-refresh { color: var(--refresh); border-color: var(--refresh); }
         .btn-contact { color: var(--telegram); border-color: var(--telegram); }
         .btn-apk { background: rgba(255, 69, 0, 0.1); color: var(--fire); border-color: var(--fire); font-weight: bold; }
 
         .search-area { padding: 0 10px 8px 10px; background: #080808; }
-        .search-input { width: 100%; padding: 8px 12px; background: #121212; border: 1px solid #222; border-radius: 6px; color: #fff; font-size: 11px; outline: none; }
+        .search-input { width: 100%; padding: 10px 12px; background: #121212; border: 1px solid #222; border-radius: 6px; color: #fff; font-size: 12px; outline: none; }
 
-        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding: 7px 10px; scrollbar-width: none; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; }
-        .cat-pill { padding: 5px 14px; background: #1a1a1a; border-radius: 5px; font-size: 10px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
+        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding: 10px; scrollbar-width: none; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; }
+        .cat-pill { padding: 6px 16px; background: #1a1a1a; border-radius: 5px; font-size: 11px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
         .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); }
 
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
         .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
-        .logo-area { height: 90px; background: #000; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; cursor: pointer; }
+        .logo-area { height: 100px; background: #000; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; cursor: pointer; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
         
-        /* Progress bar for Preview */
         .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); display: none; z-index: 15; }
         .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: width 10s linear; }
 
-        .ch-info { padding: 8px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
-        .ch-name { font-size: 11px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #eee; }
+        .ch-info { padding: 10px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
+        .ch-name { font-size: 12px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #eee; }
         
-        .footer-area { padding: 15px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 10px; background: #080808; }
-        .dev-name { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 800; color: #888; }
+        .footer-area { padding: 20px 0; text-align: center; border-top: 1px solid #1a1a1a; margin-top: 10px; background: #080808; }
+        .dev-name { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 800; color: #888; }
 
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(5, 1fr); } }
     </style>
 </head>
 <body>
 
-<div class="top-brand-header">
-    <div class="brand-name">RIVO TV</div>
-</div>
+<div class="sticky-wrapper">
+    <div class="top-brand-header">
+        <div class="brand-name">RIVO TV</div>
+    </div>
 
-<div class="fixed-top-container">
     <div class="video-box" id="player-wrapper">
         <video id="rivo-player" class="video-js vjs-big-play-centered" controls preload="auto" playsinline></video>
         <div id="brightness-overlay"></div>
@@ -134,18 +138,16 @@
 
     <div class="notice-board">
         <div class="notice-text">
-            📢 𝚂𝚞𝚙𝚙𝚘𝚛𝚝 𝙲𝚎𝚗𝚝𝚎𝚛: 🛠️ বাফারিং হচ্ছে? 📡 নতুন চ্যানেল প্রয়োজন? ⚡ দ্রুত সমাধান পেতে এখনই যুক্ত হোন 
-            <a href="https://t.me/techbd_group" target="_blank">𝚃𝚎𝚌𝚑 𝙱𝙳</a>
+            📢 𝚂𝚞𝚙𝚙𝚘𝚛𝚝 𝙲𝚎𝚗𝚝𝚎𝚛: 🛠️ বাফারিং হচ্ছে? 📡 নতুন চ্যানেল প্রয়োজন? ⚡ দ্রুত সমাধান পেতে এখনই যুক্ত হোন 𝚃𝚎𝚌𝚑 𝙱𝙳
         </div>
     </div>
 
     <div class="header-row">
-        <button class="fullscreen-btn" onclick="toggleFullscreen()">
+        <button class="fullscreen-btn" onclick="goFullscreen()">
             <i class="fas fa-expand"></i> Fullscreen
         </button>
 
         <div class="action-row">
-            <button class="action-btn" onclick="shareApp()"><i class="fas fa-share-alt"></i> Share</button>
             <button class="action-btn btn-refresh" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Refresh</button>
             <a href="https://t.me/techbd_group" target="_blank" class="action-btn btn-contact"><i class="fab fa-telegram"></i> Contact</a>
             <a href="https://www.mediafire.com/file/wm4p7mwuk2geuim/Rivo_Tv_1.0.0.apk/file" target="_blank" class="action-btn btn-apk">Get App</a>
@@ -176,7 +178,6 @@
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
     let allChannels = [], favorites = JSON.parse(localStorage.getItem('rivo_favs')) || [];
     let mainPlayer, previewHls = null;
-    let currentCategory = 'ALL';
 
     async function init() {
         mainPlayer = videojs('rivo-player', { fluid: true, userActions: { click: false } });
@@ -187,15 +188,17 @@
             const data = await res.text();
             allChannels = parseM3U(data);
             renderChannels(allChannels);
-            if(allChannels.length > 0) playMain(allChannels[0].url);
+            if(allChannels.length > 0) playMain(allChannels[0].url, false); // প্রথমে অটো-স্ক্রল বন্ধ
         } catch (e) { 
             document.getElementById('mainGrid').innerHTML = "লোড করতে ব্যর্থ হয়েছে।";
         }
     }
 
-    function toggleFullscreen() {
-        if (!mainPlayer.isFullscreen()) mainPlayer.requestFullscreen();
-        else mainPlayer.exitFullscreen();
+    // সরাসরি ফুলস্কিন করার ফাংশন
+    function goFullscreen() {
+        if (mainPlayer) {
+            mainPlayer.requestFullscreen();
+        }
     }
 
     function setupGestures() {
@@ -239,7 +242,6 @@
             if (l.startsWith('#EXTINF')) {
                 item.name = l.split(',')[1]?.trim();
                 item.logo = l.match(/tvg-logo="(.*?)"/)?.[1] || "";
-                item.id = btoa(unescape(encodeURIComponent(item.name || "")));
             } else if (l.startsWith('http')) {
                 item.url = l.trim();
                 if(item.name) list.push({...item});
@@ -253,7 +255,7 @@
         const grid = document.getElementById('mainGrid');
         grid.innerHTML = list.map((ch, index) => `
             <div class="card">
-                <div class="logo-area" id="logo-box-${index}" onclick="playMain('${ch.url}')">
+                <div class="logo-area" id="logo-box-${index}" onclick="playMain('${ch.url}', true)">
                     <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/80?text=TV'">
                     <div class="progress-container" id="prog-cont-${index}"><div class="progress-bar" id="prog-bar-${index}"></div></div>
                 </div>
@@ -263,11 +265,11 @@
             </div>`).join('');
     }
 
-    function playMain(url) {
+    // playMain ফাংশনে scrollTo সরানো হয়েছে যাতে পেজ লাফ না দেয়
+    function playMain(url, shouldPlay) {
         stopAllPreviews();
         mainPlayer.src({ src: url, type: 'application/x-mpegURL' });
-        mainPlayer.play().catch(() => {});
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if(shouldPlay) mainPlayer.play().catch(() => {});
     }
 
     function startPreview(url, index) {
@@ -278,7 +280,7 @@
         
         const video = document.createElement('video');
         video.className = 'preview-v';
-        video.style.cssText = "position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:10; background:#000; border-radius:10px;";
+        video.style.cssText = "position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:10; background:#000;";
         video.muted = true; video.autoplay = true; video.playsinline = true;
         
         container.appendChild(video);
@@ -293,7 +295,6 @@
             video.src = url;
         }
 
-        // ১০ সেকেন্ড পর প্রিভিউ বন্ধ হবে
         setTimeout(() => stopAllPreviews(), 10000);
     }
 
@@ -305,7 +306,6 @@
     }
 
     function filterCat(cat, btn) {
-        currentCategory = cat;
         document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const filtered = cat === 'ALL' ? allChannels : allChannels.filter(ch => ch.name.toLowerCase().includes(cat.toLowerCase()));
@@ -316,11 +316,6 @@
         const query = document.getElementById("search-input").value.toLowerCase().trim();
         const filtered = allChannels.filter(ch => ch.name.toLowerCase().includes(query));
         renderChannels(filtered);
-    }
-
-    function shareApp() {
-        if (navigator.share) navigator.share({ title: 'Rivo TV', url: window.location.href });
-        else alert("Link: " + window.location.href);
     }
 
     init();
