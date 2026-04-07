@@ -64,7 +64,6 @@
 
         .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 6px 0; }
         .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 11px; color: #bbb; }
-        /* চলন্ত লেখার লিঙ্কের স্টাইল */
         .notice-text a { 
             color: var(--primary); 
             text-decoration: none; 
@@ -218,13 +217,13 @@
         else mainPlayer.pause();
     }
 
+    // আগের মতো সরাসরি মেইন প্লেয়ারকে ফুলস্ক্রিন করা
     function goFullscreen() {
-        const playerWrapper = document.getElementById('player-wrapper');
-        const playerEl = document.getElementById('rivo-player_html5_api') || document.getElementById('rivo-player');
-        
-        if (playerWrapper.requestFullscreen) playerWrapper.requestFullscreen();
-        else if (playerWrapper.webkitRequestFullscreen) playerWrapper.webkitRequestFullscreen();
-        else if (playerEl.webkitEnterFullscreen) playerEl.webkitEnterFullscreen();
+        if (!mainPlayer.isFullscreen()) {
+            mainPlayer.requestFullscreen();
+        } else {
+            mainPlayer.exitFullscreen();
+        }
     }
 
     function setupGestures() {
