@@ -25,13 +25,12 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 30px; }
 
-        /* Top Header with Title on Left */
         .top-brand-header {
             background: linear-gradient(to bottom, #111, #050505);
             padding: 12px 15px;
             display: flex;
             align-items: center;
-            justify-content: flex-start; /* টাইটেল বামে সরানোর জন্য */
+            justify-content: flex-start;
             border-bottom: 1px solid #222;
         }
         .top-brand-header .brand-name {
@@ -71,7 +70,6 @@
 
         .header-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #080808; gap: 10px; }
         
-        /* Fullscreen Button */
         .fullscreen-btn {
             background: linear-gradient(45deg, #00f2ff, #0088cc);
             border: none;
@@ -102,10 +100,15 @@
         .cat-pill { padding: 5px 14px; background: #1a1a1a; border-radius: 5px; font-size: 10px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
         .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); }
 
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; min-height: 200px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
         .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
         .logo-area { height: 90px; background: #000; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; cursor: pointer; }
         .logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
+        
+        /* Progress bar for Preview */
+        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); display: none; z-index: 15; }
+        .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: width 10s linear; }
+
         .ch-info { padding: 8px; background: #0d0d0d; border-top: 1px solid #1a1a1a; cursor: pointer; }
         .ch-name { font-size: 11px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #eee; }
         
@@ -172,7 +175,7 @@
 <script>
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
     let allChannels = [], favorites = JSON.parse(localStorage.getItem('rivo_favs')) || [];
-    let mainPlayer;
+    let mainPlayer, previewHls = null;
     let currentCategory = 'ALL';
 
     async function init() {
@@ -183,24 +186,16 @@
             const res = await fetch(M3U_URL);
             const data = await res.text();
             allChannels = parseM3U(data);
-            if (allChannels.length > 0) {
-                renderChannels(allChannels);
-                playMain(allChannels[0].url);
-            } else {
-                document.getElementById('mainGrid').innerHTML = "কোন চ্যানেল পাওয়া যায়নি।";
-            }
+            renderChannels(allChannels);
+            if(allChannels.length > 0) playMain(allChannels[0].url);
         } catch (e) { 
-            console.error("M3U Load Error", e);
-            document.getElementById('mainGrid').innerHTML = "সার্ভার সমস্যা, রিফ্রেশ করুন।";
+            document.getElementById('mainGrid').innerHTML = "লোড করতে ব্যর্থ হয়েছে।";
         }
     }
 
     function toggleFullscreen() {
-        if (!mainPlayer.isFullscreen()) {
-            mainPlayer.requestFullscreen();
-        } else {
-            mainPlayer.exitFullscreen();
-        }
+        if (!mainPlayer.isFullscreen()) mainPlayer.requestFullscreen();
+        else mainPlayer.exitFullscreen();
     }
 
     function setupGestures() {
@@ -256,35 +251,65 @@
 
     function renderChannels(list) {
         const grid = document.getElementById('mainGrid');
-        if (list.length === 0) {
-            grid.innerHTML = "<div style='grid-column:1/-1; color:gray; text-align:center;'>কোন চ্যানেল নেই</div>";
-            return;
-        }
-        grid.innerHTML = list.map((ch) => `
-            <div class="card" onclick="playMain('${ch.url}')">
-                <div class="logo-area">
+        grid.innerHTML = list.map((ch, index) => `
+            <div class="card">
+                <div class="logo-area" id="logo-box-${index}" onclick="playMain('${ch.url}')">
                     <img src="${ch.logo}" onerror="this.src='https://via.placeholder.com/80?text=TV'">
+                    <div class="progress-container" id="prog-cont-${index}"><div class="progress-bar" id="prog-bar-${index}"></div></div>
                 </div>
-                <div class="ch-info">
+                <div class="ch-info" onclick="startPreview('${ch.url}', ${index})">
                     <span class="ch-name">▶ ${ch.name}</span>
                 </div>
             </div>`).join('');
     }
 
     function playMain(url) {
+        stopAllPreviews();
         mainPlayer.src({ src: url, type: 'application/x-mpegURL' });
         mainPlayer.play().catch(() => {});
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function startPreview(url, index) {
+        stopAllPreviews();
+        const container = document.getElementById(`logo-box-${index}`);
+        const pCont = document.getElementById(`prog-cont-${index}`);
+        const pBar = document.getElementById(`prog-bar-${index}`);
+        
+        const video = document.createElement('video');
+        video.className = 'preview-v';
+        video.style.cssText = "position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:10; background:#000; border-radius:10px;";
+        video.muted = true; video.autoplay = true; video.playsinline = true;
+        
+        container.appendChild(video);
+        pCont.style.display = 'block';
+        setTimeout(() => { pBar.style.width = '100%'; }, 50);
+
+        if (window.Hls && Hls.isSupported()) {
+            previewHls = new Hls();
+            previewHls.loadSource(url);
+            previewHls.attachMedia(video);
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = url;
+        }
+
+        // ১০ সেকেন্ড পর প্রিভিউ বন্ধ হবে
+        setTimeout(() => stopAllPreviews(), 10000);
+    }
+
+    function stopAllPreviews() {
+        if (previewHls) { previewHls.destroy(); previewHls = null; }
+        document.querySelectorAll('.preview-v').forEach(v => v.remove());
+        document.querySelectorAll('.progress-container').forEach(c => c.style.display = 'none');
+        document.querySelectorAll('.progress-bar').forEach(b => b.style.width = '0%');
     }
 
     function filterCat(cat, btn) {
         currentCategory = cat;
         document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        
-        if (cat === 'ALL') renderChannels(allChannels);
-        else if (cat === 'Fav') renderChannels(allChannels.filter(ch => favorites.includes(ch.id)));
-        else renderChannels(allChannels.filter(ch => ch.name.toLowerCase().includes(cat.toLowerCase())));
+        const filtered = cat === 'ALL' ? allChannels : allChannels.filter(ch => ch.name.toLowerCase().includes(cat.toLowerCase()));
+        renderChannels(filtered);
     }
 
     function liveSearch() {
