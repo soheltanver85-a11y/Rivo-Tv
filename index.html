@@ -49,9 +49,10 @@
             color: var(--primary);
             text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* Modern Live Status Design */
+        /* --- Updated Premium Live Status Design --- */
         .live-status {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(8px);
@@ -61,15 +62,55 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.05);
+            transition: 0.3s ease;
         }
-        .dot-container { position: relative; display: flex; align-items: center; justify-content: center; }
-        .dot { width: 8px; height: 8px; background: var(--live-green); border-radius: 50%; z-index: 2; box-shadow: 0 0 10px var(--live-green); }
-        .pulse { position: absolute; width: 100%; height: 100%; background: var(--live-green); border-radius: 50%; z-index: 1; animation: pulse-ring 1.8s infinite; }
-        @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(2.8); opacity: 0; } }
-        .live-count-text { font-size: 11px; font-weight: 700; color: #eee; text-transform: uppercase; }
-        #user-count { color: var(--live-green); font-family: 'Orbitron', sans-serif; }
+        .live-status:hover {
+            border-color: var(--live-green);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+        }
+        .dot-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .dot { 
+            width: 8px; 
+            height: 8px; 
+            background: var(--live-green); 
+            border-radius: 50%; 
+            z-index: 2;
+            box-shadow: 0 0 10px var(--live-green);
+        }
+        .pulse {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--live-green);
+            border-radius: 50%;
+            z-index: 1;
+            animation: pulse-ring 1.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.8; }
+            100% { transform: scale(2.8); opacity: 0; }
+        }
+        .live-count-text {
+            font-size: 11px;
+            font-weight: 700;
+            color: #eee;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        #user-count {
+            color: var(--live-green);
+            font-family: 'Orbitron', sans-serif;
+            margin: 0 2px;
+        }
+        /* --- End of Update --- */
 
-        .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; }
+        .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; cursor: pointer; }
         .video-js { width: 100% !important; aspect-ratio: 16/10; }
         @media (max-width: 768px) { .video-js { aspect-ratio: 4/3; } }
 
@@ -85,26 +126,31 @@
         .notice-board { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 6px 0; }
         .notice-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 11px; color: #bbb; }
         .notice-text a { color: var(--primary); text-decoration: none; font-weight: 800; border: 1px solid var(--primary); padding: 1px 6px; border-radius: 4px; margin-left: 5px; font-size: 10px; }
+
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        .actions-frame { display: flex; gap: 6px; padding: 8px 10px; background: #080808; overflow-x: auto; scrollbar-width: none; }
-        .action-chip { padding: 8px 14px; background: #151515; border-radius: 8px; border: 1px solid #252525; color: #ccc; font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-        .chip-fs { color: var(--primary); }
+        .actions-frame { display: flex; gap: 6px; padding: 8px 10px; background: #080808; overflow-x: auto; scrollbar-width: none; align-items: center; }
+        .action-chip { padding: 8px 14px; background: #151515; border-radius: 8px; border: 1px solid #252525; color: #ccc; font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: 0.2s; }
+        .action-chip:active { transform: scale(0.95); }
+        .chip-fs { color: var(--primary); border-color: rgba(0, 242, 255, 0.4); }
         .chip-rf { color: var(--refresh); }
         .chip-tg { color: var(--telegram); }
         .chip-apk { color: var(--fire); }
 
         .search-area { padding: 0 10px 8px 10px; background: #080808; }
-        .search-input { width: 100%; padding: 10px 15px; background: #121212; border: 1px solid #222; border-radius: 8px; color: #fff; font-size: 12px; outline: none; }
+        .search-input { width: 100%; padding: 10px 15px; background: #121212; border: 1px solid #222; border-radius: 8px; color: #fff; font-size: 12px; outline: none; transition: 0.3s; }
+        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
 
         .cat-row { display: flex; gap: 8px; overflow-x: auto; padding: 12px 10px; scrollbar-width: none; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; }
-        .cat-pill { padding: 6px 15px; background: #1a1a1a; border-radius: 6px; font-size: 11px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; }
+        .cat-pill { padding: 6px 15px; background: #1a1a1a; border-radius: 6px; font-size: 11px; color: #aaa; white-space: nowrap; cursor: pointer; border: 1px solid #333; transition: 0.3s; }
         .cat-pill.active { background: rgba(0, 242, 255, 0.15); color: var(--primary); border-color: var(--primary); font-weight: 600; }
 
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
-        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; }
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: 0.3s; }
+        .card:hover { border-color: #333; }
+        
         .fav-star { position: absolute; top: 8px; right: 8px; z-index: 20; background: rgba(0,0,0,0.6); padding: 6px; border-radius: 50%; display: flex; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
-        .fav-star svg { width: 15px; height: 15px; fill: #555; }
+        .fav-star svg { width: 15px; height: 15px; fill: #555; transition: 0.3s; }
         .fav-star.active svg { fill: #ffcc00; }
 
         .logo-area { height: 100px; background: #000; display: flex; align-items: center; justify-content: center; padding: 15px; position: relative; cursor: pointer; }
@@ -127,16 +173,20 @@
 <div class="sticky-wrapper">
     <div class="top-brand-header">
         <div class="brand-name">RIVO TV</div>
+        
         <div class="live-status">
             <div class="dot-container">
                 <span class="dot"></span>
                 <span class="pulse"></span>
             </div>
-            <div class="live-count-text">Live: <span id="user-count">0</span></div>
+            <div class="live-count-text">
+                Live: <span id="user-count">0</span>
+            </div>
         </div>
     </div>
 
     <div class="video-box" id="player-wrapper">
+        <div id="click-overlay" style="position:absolute; inset:0; z-index:5;" onclick="togglePlayPause()"></div>
         <video id="rivo-player" class="video-js vjs-big-play-centered" controls preload="auto" playsinline></video>
         <div id="brightness-overlay" style="position:absolute; inset:0; background:black; opacity:0; pointer-events:none; z-index:6;"></div>
         <div id="vol-indicator" class="gesture-indicator">🔊 100%</div>
@@ -145,7 +195,7 @@
 
     <div class="notice-board">
         <div class="notice-text">
-            📢 বাফারিং হচ্ছে? দ্রুত সমাধান পেতে এখনই যুক্ত হোন আমাদের টেলিগ্রাম গ্রুপে <a href="https://t.me/techbd_group" target="_blank">𝚃𝚎𝚌𝚑 𝙱𝙳</a>।
+            📢 বাফারিং হচ্ছে? দ্রুত সমাধান পেতে এখনই যুক্ত হোন আমাদের টেলিগ্রাম গ্রুপে <a href="https://t.me/techbd_group" target="_blank">𝚃𝚎𝚌𝚑 𝙱𝙳</a>। চ্যানেল আপডেট ও সাপোর্ট পেতে সাথেই থাকুন।
         </div>
     </div>
 
@@ -191,6 +241,7 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+
   const visitorCountRef = ref(db, 'online_visitors');
   const myPresenceRef = push(visitorCountRef);
   const connectedRef = ref(db, '.info/connected');
@@ -203,7 +254,8 @@
   });
 
   onValue(visitorCountRef, (snapshot) => {
-    document.getElementById('user-count').innerText = snapshot.size || 0;
+    const count = snapshot.size || 0;
+    document.getElementById('user-count').innerText = count;
   });
 </script>
 
@@ -213,47 +265,38 @@
     const M3U_URL = "https://raw.githubusercontent.com/soheltanver85-a11y/Live-tv2/main/Live-tv2";
     let allChannels = [], favorites = JSON.parse(localStorage.getItem('rivo_favs')) || [];
     let mainPlayer, previewHls = null;
+    let currentCategory = 'ALL';
 
     async function init() {
         mainPlayer = videojs('rivo-player', { 
-            fluid: true,
-            userActions: { click: false }, // আমরা কাস্টম ক্লিক লজিক দেব
+            fluid: true, 
+            userActions: { click: false },
             controlBar: { children: ['playToggle', 'volumePanel', 'progressControl', 'fullscreenToggle'] }
         });
-
-        // ফুলস্ক্রিন এবং সাধারণ মোডে ক্লিক করে প্লে/পজ
-        mainPlayer.on('mousedown', function(e) {
-            // যদি কন্ট্রোল বারে ক্লিক না লাগে
-            if (e.target.tagName === 'VIDEO' || e.target.className.includes('vjs-tech')) {
-                if (mainPlayer.paused()) {
-                    mainPlayer.play();
-                } else {
-                    mainPlayer.pause();
-                }
-            }
-        });
-
         setupGestures();
 
         try {
             const res = await fetch(M3U_URL);
             const data = await res.text();
             allChannels = parseM3U(data);
-            if (allChannels.length > 0) {
-                renderChannels(allChannels);
-                playMain(allChannels[0].url, false);
-            } else {
-                document.getElementById('mainGrid').innerHTML = "কোন চ্যানেল খুঁজে পাওয়া যায়নি।";
-            }
+            renderChannels(allChannels);
+            if(allChannels.length > 0) playMain(allChannels[0].url, false);
         } catch (e) { 
-            console.error(e);
-            document.getElementById('mainGrid').innerHTML = "চ্যানেল লোড করতে সমস্যা হয়েছে।"; 
+            document.getElementById('mainGrid').innerHTML = "লোড ব্যর্থ হয়েছে।";
         }
     }
 
+    function togglePlayPause() {
+        if (mainPlayer.paused()) mainPlayer.play();
+        else mainPlayer.pause();
+    }
+
     function goFullscreen() {
-        if (!mainPlayer.isFullscreen()) mainPlayer.requestFullscreen();
-        else mainPlayer.exitFullscreen();
+        if (!mainPlayer.isFullscreen()) {
+            mainPlayer.requestFullscreen();
+        } else {
+            mainPlayer.exitFullscreen();
+        }
     }
 
     function setupGestures() {
@@ -293,13 +336,12 @@
         const lines = data.split('\n');
         let item = {}; let list = [];
         lines.forEach(l => {
-            l = l.trim();
             if (l.startsWith('#EXTINF')) {
-                item.name = l.split(',')[1]?.trim() || "Unknown Channel";
+                item.name = l.split(',')[1]?.trim();
                 item.logo = l.match(/tvg-logo="(.*?)"/)?.[1] || "";
-                item.id = btoa(unescape(encodeURIComponent(item.name)));
+                item.id = btoa(unescape(encodeURIComponent(item.name || "")));
             } else if (l.startsWith('http')) {
-                item.url = l;
+                item.url = l.trim();
                 if(item.name) list.push({...item});
                 item = {};
             }
@@ -309,10 +351,6 @@
 
     function renderChannels(list) {
         const grid = document.getElementById('mainGrid');
-        if (list.length === 0) {
-            grid.innerHTML = "<p style='padding:20px; text-align:center;'>কিছু পাওয়া যায়নি</p>";
-            return;
-        }
         grid.innerHTML = list.map((ch, index) => {
             const isFav = favorites.includes(ch.id);
             return `
@@ -333,22 +371,17 @@
 
     function toggleFav(event, id) {
         event.stopPropagation();
-        if (favorites.includes(id)) {
-            favorites = favorites.filter(f => f !== id);
-        } else {
-            favorites.push(id);
-        }
+        if (favorites.includes(id)) favorites = favorites.filter(f => f !== id);
+        else favorites.push(id);
         localStorage.setItem('rivo_favs', JSON.stringify(favorites));
         event.currentTarget.classList.toggle('active');
+        if (currentCategory === 'Fav') filterCat('Fav', document.querySelector('.cat-pill.active'));
     }
 
     function playMain(url, shouldPlay) {
         stopAllPreviews();
         mainPlayer.src({ src: url, type: 'application/x-mpegURL' });
-        if(shouldPlay) {
-            mainPlayer.play().catch(e => console.log("Auto-play blocked"));
-        }
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        if(shouldPlay) mainPlayer.play().catch(() => {});
     }
 
     function startPreview(event, url, index) {
@@ -361,10 +394,8 @@
         video.style.cssText = "position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:10; background:#000;";
         video.muted = true; video.autoplay = true; video.playsinline = true;
         container.appendChild(video);
-        
-        const cont = document.getElementById(`prog-cont-${index}`);
-        if(cont) cont.style.display = 'block';
-        setTimeout(() => { if(pBar) pBar.style.width = '100%'; }, 50);
+        document.getElementById(`prog-cont-${index}`).style.display = 'block';
+        setTimeout(() => { pBar.style.width = '100%'; }, 50);
 
         if (window.Hls && Hls.isSupported()) {
             previewHls = new Hls();
@@ -384,23 +415,17 @@
     }
 
     function filterCat(cat, btn) {
+        currentCategory = cat;
         document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        let filtered = [];
-        if (cat === 'Fav') {
-            filtered = allChannels.filter(ch => favorites.includes(ch.id));
-        } else if (cat === 'ALL') {
-            filtered = allChannels;
-        } else {
-            filtered = allChannels.filter(ch => ch.name.toLowerCase().includes(cat.toLowerCase()));
-        }
+        let filtered = cat === 'Fav' ? allChannels.filter(ch => favorites.includes(ch.id)) : 
+                      cat === 'ALL' ? allChannels : allChannels.filter(ch => ch.name.toLowerCase().includes(cat.toLowerCase()));
         renderChannels(filtered);
     }
 
     function liveSearch() {
         const query = document.getElementById("search-input").value.toLowerCase().trim();
-        const filtered = allChannels.filter(ch => ch.name.toLowerCase().includes(query));
-        renderChannels(filtered);
+        renderChannels(allChannels.filter(ch => ch.name.toLowerCase().includes(query)));
     }
 
     init();
