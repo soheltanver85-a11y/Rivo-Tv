@@ -217,15 +217,19 @@
     async function init() {
         mainPlayer = videojs('rivo-player', { 
             fluid: true,
-            userActions: { click: true }, // Enables default play/pause click
+            userActions: { click: false }, // আমরা কাস্টম ক্লিক লজিক দেব
             controlBar: { children: ['playToggle', 'volumePanel', 'progressControl', 'fullscreenToggle'] }
         });
 
-        // Click to Toggle Play/Pause (Full Screen & Normal)
+        // ফুলস্ক্রিন এবং সাধারণ মোডে ক্লিক করে প্লে/পজ
         mainPlayer.on('mousedown', function(e) {
+            // যদি কন্ট্রোল বারে ক্লিক না লাগে
             if (e.target.tagName === 'VIDEO' || e.target.className.includes('vjs-tech')) {
-                if (mainPlayer.paused()) mainPlayer.play();
-                else mainPlayer.pause();
+                if (mainPlayer.paused()) {
+                    mainPlayer.play();
+                } else {
+                    mainPlayer.pause();
+                }
             }
         });
 
@@ -235,9 +239,16 @@
             const res = await fetch(M3U_URL);
             const data = await res.text();
             allChannels = parseM3U(data);
-            renderChannels(allChannels);
-            if(allChannels.length > 0) playMain(allChannels[0].url, false);
-        } catch (e) { document.getElementById('mainGrid').innerHTML = "লোড ব্যর্থ হয়েছে।"; }
+            if (allChannels.length > 0) {
+                renderChannels(allChannels);
+                playMain(allChannels[0].url, false);
+            } else {
+                document.getElementById('mainGrid').innerHTML = "কোন চ্যানেল খুঁজে পাওয়া যায়নি।";
+            }
+        } catch (e) { 
+            console.error(e);
+            document.getElementById('mainGrid').innerHTML = "চ্যানেল লোড করতে সমস্যা হয়েছে।"; 
+        }
     }
 
     function goFullscreen() {
@@ -282,12 +293,13 @@
         const lines = data.split('\n');
         let item = {}; let list = [];
         lines.forEach(l => {
+            l = l.trim();
             if (l.startsWith('#EXTINF')) {
-                item.name = l.split(',')[1]?.trim();
+                item.name = l.split(',')[1]?.trim() || "Unknown Channel";
                 item.logo = l.match(/tvg-logo="(.*?)"/)?.[1] || "";
-                item.id = btoa(unescape(encodeURIComponent(item.name || "")));
+                item.id = btoa(unescape(encodeURIComponent(item.name)));
             } else if (l.startsWith('http')) {
-                item.url = l.trim();
+                item.url = l;
                 if(item.name) list.push({...item});
                 item = {};
             }
@@ -297,6 +309,10 @@
 
     function renderChannels(list) {
         const grid = document.getElementById('mainGrid');
+        if (list.length === 0) {
+            grid.innerHTML = "<p style='padding:20px; text-align:center;'>কিছু পাওয়া যায়নি</p>";
+            return;
+        }
         grid.innerHTML = list.map((ch, index) => {
             const isFav = favorites.includes(ch.id);
             return `
@@ -317,8 +333,11 @@
 
     function toggleFav(event, id) {
         event.stopPropagation();
-        if (favorites.includes(id)) favorites = favorites.filter(f => f !== id);
-        else favorites.push(id);
+        if (favorites.includes(id)) {
+            favorites = favorites.filter(f => f !== id);
+        } else {
+            favorites.push(id);
+        }
         localStorage.setItem('rivo_favs', JSON.stringify(favorites));
         event.currentTarget.classList.toggle('active');
     }
@@ -326,7 +345,10 @@
     function playMain(url, shouldPlay) {
         stopAllPreviews();
         mainPlayer.src({ src: url, type: 'application/x-mpegURL' });
-        if(shouldPlay) mainPlayer.play().catch(() => {});
+        if(shouldPlay) {
+            mainPlayer.play().catch(e => console.log("Auto-play blocked"));
+        }
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function startPreview(event, url, index) {
@@ -339,8 +361,10 @@
         video.style.cssText = "position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:10; background:#000;";
         video.muted = true; video.autoplay = true; video.playsinline = true;
         container.appendChild(video);
-        document.getElementById(`prog-cont-${index}`).style.display = 'block';
-        setTimeout(() => { pBar.style.width = '100%'; }, 50);
+        
+        const cont = document.getElementById(`prog-cont-${index}`);
+        if(cont) cont.style.display = 'block';
+        setTimeout(() => { if(pBar) pBar.style.width = '100%'; }, 50);
 
         if (window.Hls && Hls.isSupported()) {
             previewHls = new Hls();
@@ -356,10 +380,31 @@
         if (previewHls) { previewHls.destroy(); previewHls = null; }
         document.querySelectorAll('.preview-v').forEach(v => v.remove());
         document.querySelectorAll('.progress-container').forEach(c => c.style.display = 'none');
-        document.querySelectorAll('.progress-bar').forEach(b => b.width = '0%');
+        document.querySelectorAll('.progress-bar').forEach(b => b.style.width = '0%');
     }
 
     function filterCat(cat, btn) {
         document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        let filtered = cat === 'Fav' ? allChannels
+        let filtered = [];
+        if (cat === 'Fav') {
+            filtered = allChannels.filter(ch => favorites.includes(ch.id));
+        } else if (cat === 'ALL') {
+            filtered = allChannels;
+        } else {
+            filtered = allChannels.filter(ch => ch.name.toLowerCase().includes(cat.toLowerCase()));
+        }
+        renderChannels(filtered);
+    }
+
+    function liveSearch() {
+        const query = document.getElementById("search-input").value.toLowerCase().trim();
+        const filtered = allChannels.filter(ch => ch.name.toLowerCase().includes(query));
+        renderChannels(filtered);
+    }
+
+    init();
+</script>
+
+</body>
+</html>
