@@ -38,6 +38,7 @@
             padding: 10px 15px;
             display: flex;
             align-items: center;
+            justify-content: space-between; /* স্পেস ঠিক করার জন্য */
             border-bottom: 1px solid #222;
         }
         .top-brand-header .brand-name {
@@ -47,6 +48,27 @@
             color: var(--primary);
             text-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
             text-transform: uppercase;
+        }
+
+        /* Live Counter Style */
+        .live-status {
+            background: rgba(255, 69, 0, 0.1);
+            border: 1px solid var(--fire);
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #ff4500;
+            animation: pulse 2s infinite;
+        }
+        .dot { width: 6px; height: 6px; background: var(--fire); border-radius: 50%; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 69, 0, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(255, 69, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 69, 0, 0); }
         }
 
         .video-box { background: #000; border-bottom: 2px solid var(--primary); position: relative; overflow: hidden; touch-action: none; cursor: pointer; }
@@ -144,6 +166,10 @@
 <div class="sticky-wrapper">
     <div class="top-brand-header">
         <div class="brand-name">RIVO TV</div>
+        <div class="live-status">
+            <span class="dot"></span>
+            <span id="user-count">...</span> Online
+        </div>
     </div>
 
     <div class="video-box" id="player-wrapper">
@@ -184,6 +210,48 @@
 <div class="footer-area">
     <div class="dev-name">Developed By Sohel Tanvir</div>
 </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+  import { getDatabase, ref, set, onValue, onDisconnect, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBzLW5uVTRHR6F03yM-0lbSrNK497nFgcc",
+    authDomain: "rivo-tv.firebaseapp.com",
+    projectId: "rivo-tv",
+    storageBucket: "rivo-tv.firebasestorage.app",
+    messagingSenderId: "431115621841",
+    appId: "1:431115621841:web:3db78dfb47cd51ef0dbcf0",
+    measurementId: "G-VVW59RPGRY",
+    databaseURL: "https://rivo-tv-default-rtdb.firebaseio.com" // আপনার ডাটাবেস URL এখানে চেক করবেন
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db = getDatabase(app);
+
+  // Live Visitor Counting Logic
+  const myPresenceRef = push(ref(db, 'online_users'));
+  
+  // Connect/Disconnect logic
+  const connectedRef = ref(db, '.info/connected');
+  onValue(connectedRef, (snap) => {
+    if (snap.val() === true) {
+      // Remove when user leaves
+      onDisconnect(myPresenceRef).remove();
+      // Add when user joins
+      set(myPresenceRef, { active: true });
+    }
+  });
+
+  // Display Total Users
+  const userCountRef = ref(db, 'online_users');
+  onValue(userCountRef, (snapshot) => {
+    const count = snapshot.size || 0;
+    document.getElementById('user-count').innerText = count;
+  });
+</script>
 
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 
@@ -356,8 +424,6 @@
 
     init();
 </script>
-
-<script src="https://pl29099655.profitablecpmratenetwork.com/2e/88/07/2e8807247a7be9b1c6540a9e1753f140.js"></script>
 
 </body>
 </html>
